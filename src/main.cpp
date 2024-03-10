@@ -1,4 +1,5 @@
 #include "libsUtils.hpp"
+#include "Server.hpp"
 
 /**
  * The main function.
@@ -21,7 +22,9 @@ int main(int argc, char **argv) {
     }
 
     try {
-        Server server(std::string(argv[1]), std::string(argv[2]));
+        std::string port = std::string(argv[1]);
+        std::string password = std::string(argv[2]);
+        Server server(port, password);
     } catch (ServerException& e) {
         std::cerr << e.what() << std::endl;
     }

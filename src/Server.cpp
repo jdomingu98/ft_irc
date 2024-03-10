@@ -7,12 +7,12 @@
  * @param port The port number to validate.
  * @return `true` if the port is valid, `false` otherwise.
  */
-bool isValidPort(const char* port) {
-    for (char p : port) {
-        if (!std::isdigit(p))
+bool Server::isValidPort(const std::string port) {
+    for (size_t i = 0; i < port.length(); i++){
+        if (!std::isdigit(port[i]))
             return false;
     }
-    int portNum = std::atoi(port);
+    int portNum = std::atoi(port.c_str());
     return portNum >= 1 && portNum <= 65535;
 }
 
@@ -25,9 +25,9 @@ bool isValidPort(const char* port) {
  * @throws `ServerException` if the port is out of range.
  */
 Server::Server(const std::string port, const std::string password): _password(password) {
-    if (!isValidPort(argv[1]))
-        throw new ServerException(PORT_OUT_OF_RANGE_ERR);
-    _port = std::atoi(argv[1]);
+    if (!this->isValidPort(port))
+        throw ServerException(PORT_OUT_OF_RANGE_ERR);
+    _port = std::atoi(port.c_str());
     this->initServer();
     this->listenClients();
 }
@@ -62,32 +62,32 @@ void Server::initServer() {
     this->_socketFd = socket(
         AF_INET,      // IPv4
         SOCK_STREAM,  // Socket de flujo
-        0,            // Let system decide the best protocol (SOCK_STREAM => TCP)
+        0            // Let system decide the best protocol (SOCK_STREAM => TCP)
     );
 
     if (this->_socketFd < 0) {
-        throw ServerException(INVALID_SOCKET);
+        throw ServerException(SOCKET_EXPT);
     }
 
     // Config server address and port
     this->_serverAddr.sin_family = AF_INET;
     this->_serverAddr.sin_addr.s_addr = INADDR_ANY;
     // htons: Converts host format port to network format port.
-    this->_serverAddr.sin_port = htons(port);
+    this->_serverAddr.sin_port = htons(this->_port);
 
     // Binding the server socket
     if (bind(this->_socketFd, (struct sockaddr*)&this->_serverAddr, sizeof(this->_serverAddr)) < 0) {
-        throw ServerException(INVALID_BIND);
+        throw ServerException(BIND_EXPT);
     }
 
     // Listen to incoming connections
     if (listen(this->_socketFd, MAX_CLIENTS) < 0) {
-        throw ServerException(INVALID_LISTEN);
+        throw ServerException(LISTEN_EXPT);
     }
 
     // Configure the first element of the pollfd structure array for the server socket
-    this->fds[0].fd = this->_socketFd;
-    this->fds[0].events = POLLIN;
+    this->_fds[0].fd = this->_socketFd;
+    this->_fds[0].events = POLLIN;
 }
 
 /**
@@ -101,23 +101,23 @@ void Server::initServer() {
  *  the server can't receive a message or the server can't send a message.
  */
 void Server::listenClients() {
-    int numFds = 1;
+    int num_fds = 1;
     while (true) {
-        if (poll(this->fds, numFds, -1) == -1)
+        if (poll(this->_fds, num_fds, -1) == -1)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < numFds; i++) {
-            if (this->fds[i].revents == 0)
+        for (int i = 0; i < num_fds; i++) {
+            if (this->_fds[i].revents == 0)
                 continue;
 
-            if (this->fds[i].revents != POLLIN)
+            if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
 
-            if (this->fds[i].fd == this->_socketFd) {
-                this->handleNewConnection(numFds);
-                numFds++;
+            if (this->_fds[i].fd == this->_socketFd) {
+                this->handleNewConnection(num_fds);
+                num_fds++;
             } else {
-                this->handleExistingConnection();
+                this->handleExistingConnection(this->_fds[i].fd);
             }
         }
     }
@@ -125,13 +125,13 @@ void Server::listenClients() {
 
 /**
  * This function aims to handle a new connection.
- * It accepts a new connection and adds the new socket to the array of pollfds.
+ * It accepts a new connection and adds the new socket to the array of poll_fds.
  * 
- * @param numFds The number of file descriptors.
+ * @param num_fds The number of file descriptors.
  * 
  * @throws `ServerException` if the server can't accept a new connection.
  */
-void Server::handleNewConnection(int numFds) {
+void Server::handleNewConnection(int num_fds) {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
@@ -140,9 +140,9 @@ void Server::handleNewConnection(int numFds) {
     if (client_socket < 0)
         throw ServerException(ACCEPT_EXPT);
 
-    // Add new socket to pollfds array
-    this->fds[numFds].fd = client_socket;
-    this->fds[numFds].events = POLLIN;
+    // Add new socket to poll_fds array
+    this->_fds[num_fds].fd = client_socket;
+    this->_fds[num_fds].events = POLLIN;
 }
 
 /**
@@ -152,17 +152,17 @@ void Server::handleNewConnection(int numFds) {
  * 
  * @throws `ServerException` if the server can't receive a message or the server can't send a message.
  */
-void Server::handleExistingConnection() {
+void Server::handleExistingConnection(int fd) {
     char buffer[BUFFER_SIZE];
-    for (int i = 0; i < sizeof(buffer); i++)
+    for (size_t i = 0; i < sizeof(buffer); i++)
         buffer[i] = 0;
 
-    if (recv(this->fds[i].fd, buffer, BUFFER_SIZE, 0) < 0)
+    if (recv(fd, buffer, BUFFER_SIZE, 0) < 0)
         throw ServerException(RECV_EXPT);
 
     std::cout << "Client: " << buffer << std::endl;
 
     std::string serverMessage = "Message received";
-    if (send(this->fds[i].fd, serverMessage.c_str(), serverMessage.size(), MSG_NOSIGNAL) < 0)
+    if (send(fd, serverMessage.c_str(), serverMessage.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
 }

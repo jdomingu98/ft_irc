@@ -6,6 +6,7 @@
 # include <iostream>
 # include <string> //-> Eliminar si no se usa algo especifico de std::string
 # include <unistd.h> // close function to close sockets -> Search for alternatives
+# include <cstdlib>
 
 # include <arpa/inet.h>
 # include <netdb.h> // gethostbyname
@@ -19,8 +20,6 @@
 
 # define SUCCESS 0
 # define EXIT 1
-
-# define MAX_CLIENTS 10 // To determine
 
 # define INVALID_ARGS "[ERROR] Invalid args.\n Usage: ./ircserv <port> <password>"
 

@@ -1,6 +1,6 @@
 NAME		= ircserv
 CPP_FLAGS	= -Wall -Werror -Wextra -std=c++98 -I includes
-SRCS		= main.cpp
+SRCS		= src/Server.cpp src/main.cpp
 OBJS		= $(SRCS:.cpp=.o)
 
 port		?= 6666
