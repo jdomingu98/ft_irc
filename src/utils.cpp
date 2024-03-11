@@ -1,10 +1,15 @@
 #include "utils.hpp"
 
 std::string trim(const std::string& str) {
-    size_t first = str.find_first_not_of(' ');
-    if (std::string::npos == first) {
-        return str;
+    std::string::const_iterator it = str.begin();
+    while (it != str.end() && std::isspace(*it)) {
+        it++;
     }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
+
+    std::string::const_reverse_iterator rit = str.rbegin();
+    while (rit.base() != it && std::isspace(*rit)) {
+        rit++;
+    }
+
+    return std::string(it, rit.base());
 }
