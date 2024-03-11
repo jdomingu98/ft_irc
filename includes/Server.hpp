@@ -3,6 +3,10 @@
 
 # include "libsUtils.hpp"
 # include "ServerException.hpp"
+# include "CommandParser.hpp"
+# include "commands/ICommand.hpp"
+# include "commands/CommandException.hpp"
+# include "parser/ParserException.hpp"
 
 # define BUFFER_SIZE 1024
 # define MAX_CLIENTS 30

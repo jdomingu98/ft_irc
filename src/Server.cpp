@@ -154,15 +154,31 @@ void Server::handleNewConnection(int num_fds) {
  */
 void Server::handleExistingConnection(int fd) {
     char buffer[BUFFER_SIZE];
-    for (size_t i = 0; i < sizeof(buffer); i++)
+    for (size_t i = 0; i < BUFFER_SIZE; i++)
         buffer[i] = 0;
 
-    if (recv(fd, buffer, BUFFER_SIZE, 0) < 0)
+    int readBytes = recv(fd, buffer, BUFFER_SIZE, 0);
+    if (readBytes < 0)
         throw ServerException(RECV_EXPT);
+    buffer[readBytes] = 0;
 
-    std::cout << "Client: " << buffer << std::endl;
+    std::cout << "Client: " << buffer << "..." << std::endl;
+
+    if (buffer[0] == '\0')
+        return;
 
     std::string serverMessage = "Message received";
+    try {
+        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        command->execute();
+    } catch (CommandException& e) {
+        serverMessage = "[COMMAND] ";
+        serverMessage += e.what();
+    } catch (ParserException& e) {
+        serverMessage = "[PARSER] ";
+        serverMessage += e.what();
+    }
+    serverMessage += "\n";
     if (send(fd, serverMessage.c_str(), serverMessage.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
 }

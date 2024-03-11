@@ -1,4 +1,7 @@
-#include <string>
+#ifndef SERVER_EXCEPTION_HPP
+# define SERVER_EXCEPTION_HPP
+
+# include <string>
 
 class ServerException : public std::exception {
     private:
@@ -11,3 +14,5 @@ class ServerException : public std::exception {
             return _message.c_str();
         }
 };
+
+#endif
