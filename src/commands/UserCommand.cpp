@@ -28,9 +28,10 @@ UserCommand::~UserCommand() {}
  * Execute the command User.
  * Method inherited from ICommand
  */
-void UserCommand::execute() {
-    std::cout << "Username: " << _username << std::endl;
-    std::cout << "Hostname: " << _hostname << std::endl;  
-    std::cout << "Server name: " << _serverName << std::endl;  
-    std::cout << "Real name: " << _realName << std::endl;
+void UserCommand::execute(Server &server, int fd) {
+    User user = server.getUserByFd(fd);
+    user.setUsername(this->_username);
+    user.setHostname(this->_hostname);
+    user.setServerName(this->_serverName);
+    user.setRealName(this->_realName);
 }

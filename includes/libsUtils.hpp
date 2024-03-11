@@ -8,12 +8,12 @@
 # include <unistd.h> // close function to close sockets -> Search for alternatives
 # include <cstdlib>
 
-//# include <arpa/inet.h>
-//# include <netdb.h> // gethostbyname
-//# include <netinet/in.h>
-//# include <poll.h>
-//# include <sys/socket.h>
-//# include <sys/types.h>
+# include <arpa/inet.h>
+# include <netdb.h> // gethostbyname
+# include <netinet/in.h>
+# include <poll.h>
+# include <sys/socket.h>
+# include <sys/types.h>
 
 # include <vector>
 # include <sstream>

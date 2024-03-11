@@ -4,9 +4,10 @@
 # include "libsUtils.hpp"
 # include "ICommand.hpp"
 # include "UserCommand.hpp"
-# include "CommandException.hpp"
+# include "exceptions/CommandException.hpp"
 # include "IParser.hpp"
 # include "UserParser.hpp"
+# include "PassParser.hpp"
 
 class CommandParser {
     public:

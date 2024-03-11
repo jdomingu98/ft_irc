@@ -2,11 +2,12 @@
 # define SERVER_HPP
 
 # include "libsUtils.hpp"
-# include "ServerException.hpp"
+# include "exceptions/ServerException.hpp"
 # include "CommandParser.hpp"
 # include "commands/ICommand.hpp"
-# include "commands/CommandException.hpp"
-# include "parser/ParserException.hpp"
+# include "exceptions/CommandException.hpp"
+# include "ParserException.hpp"
+# include "User.hpp"
 
 # define BUFFER_SIZE 1024
 # define MAX_CLIENTS 30
@@ -19,6 +20,7 @@ class Server {
         int                 _socketFd;
         struct sockaddr_in  _serverAddr;
         struct pollfd       _fds[MAX_CLIENTS];
+        std::vector<User>    users;
 
         bool isValidPort(const std::string port);
         void initServer();
@@ -29,6 +31,9 @@ class Server {
     public:
         Server(const std::string port, const std::string password);
         ~Server();
+
+        bool isValidPassword(const std::string& password);
+        User &getUserByFd(int fd);
 };
 
 #endif

@@ -1,14 +1,15 @@
-#ifndef USER_PARSER_HPP
-# define USER_PARSER_HPP
+#ifndef PASS_PARSER_HPP
+# define PASS_PARSER_HPP
 
-# include "IParser.hpp"
 # include "libsUtils.hpp"
-# include "commands/UserCommand.hpp"
+# include "PassCommand.hpp"
+# include "IParser.hpp"
 # include "exceptions/ParserException.hpp"
 
-class UserParser: public IParser {
+class PassParser: public IParser {
     public:
         ICommand *parse(const std::vector<std::string>& tokens);
+
 };
 
 #endif

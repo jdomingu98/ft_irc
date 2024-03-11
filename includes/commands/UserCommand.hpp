@@ -3,6 +3,9 @@
 
 # include "libsUtils.hpp"
 # include "ICommand.hpp"
+# include "Server.hpp"
+
+class Server;
 
 class UserCommand: public ICommand {
     private:
@@ -14,7 +17,7 @@ class UserCommand: public ICommand {
     public:
         UserCommand();
         UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName, const std::string& realName);
-        void execute();
+        void execute(Server &server, int fd);
         ~UserCommand();
 };
 

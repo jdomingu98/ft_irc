@@ -11,9 +11,10 @@ ICommand* CommandParser::parse(const std::string& input) {
 IParser* CommandParser::getParser(std::string command) {
     // Add here the commands
     // Change to switch??
-    if (trim(command) == "USER") {
+    if (command == "USER")
         return new UserParser();
-    }
+    if (command == "PASS")
+        return new PassParser();
     throw CommandException("Invalid command received from client.");
 }
 
@@ -22,7 +23,7 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
     std::string token;
     std::istringstream tokenStream(command);
     while (std::getline(tokenStream, token, ' ')) {
-        tokens.push_back(token);
+        tokens.push_back(trim(token));
     }
     return tokens;
 }

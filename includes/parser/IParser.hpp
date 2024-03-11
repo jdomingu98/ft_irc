@@ -2,7 +2,9 @@
 # define I_PARSER_HPP
 
 # include "libsUtils.hpp"
-# include "commands/ICommand.hpp"
+# include "ICommand.hpp"
+
+class ICommand;
 
 class IParser {
     public:

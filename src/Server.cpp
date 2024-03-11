@@ -140,6 +140,7 @@ void Server::handleNewConnection(int num_fds) {
     if (client_socket < 0)
         throw ServerException(ACCEPT_EXPT);
 
+    this->users.push_back(User(client_socket));
     // Add new socket to poll_fds array
     this->_fds[num_fds].fd = client_socket;
     this->_fds[num_fds].events = POLLIN;
@@ -170,7 +171,7 @@ void Server::handleExistingConnection(int fd) {
     std::string serverMessage = "Message received";
     try {
         ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
-        command->execute();
+        command->execute(*this, fd);
     } catch (CommandException& e) {
         serverMessage = "[COMMAND] ";
         serverMessage += e.what();
@@ -181,4 +182,28 @@ void Server::handleExistingConnection(int fd) {
     serverMessage += "\n";
     if (send(fd, serverMessage.c_str(), serverMessage.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
+}
+
+/**
+ * This function aims to validate the password provided by the client.
+ * 
+ * @param password The password provided by the client.
+ * @return `true` if the password is valid, `false` otherwise.
+ */
+bool Server::isValidPassword(const std::string& password) {
+    return password == this->_password;
+}
+
+/**
+ * This function aims to get the user by the file descriptor.
+ * 
+ * @param fd The file descriptor of the user.
+ * @return The user with the file descriptor.
+ */
+User &Server::getUserByFd(int fd) {
+    for (size_t i = 0; i < this->users.size(); i++) {
+        if (this->users[i].getFd() == fd)
+            return this->users[i];
+    }
+    throw ServerException("USER_NOT_FOUND_ERR");
 }
