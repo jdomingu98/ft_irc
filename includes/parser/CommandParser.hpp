@@ -2,11 +2,11 @@
 # define COMMAND_PARSER_HPP
 
 # include "libsUtils.hpp"
-# include "commands/ICommand.hpp"
-# include "commands/UserCommand.hpp"
-# include "commands/CommandException.hpp"
-# include "parser/IParser.hpp"
-# include "parser/UserParser.hpp"
+# include "ICommand.hpp"
+# include "UserCommand.hpp"
+# include "CommandException.hpp"
+# include "IParser.hpp"
+# include "UserParser.hpp"
 
 class CommandParser {
     public:
