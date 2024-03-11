@@ -3,7 +3,7 @@
 ICommand *UserParser::parse(const std::vector<std::string>& tokens) {
     // User command format: USER <username> <hostname> <server name> :<real name which can contain spaces>
     if (tokens.size() < 5) {
-        throw ParserException("Invalid USER command");
+        throw ParserException("USER COMMAND: Invalid number of arguments.");
     }
     std::string username = tokens[1];
     std::string hostname = tokens[2];

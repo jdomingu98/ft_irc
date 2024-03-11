@@ -12,7 +12,7 @@ ICommand* CommandParser::parse(const std::string& input) {
 IParser* CommandParser::getParser(std::string command) {
     // Add here the commands
     std::cout << "?COMMAND: " << command << ".........";
-    if (command == "USER\r\n") {
+    if (trim(command) == "USER") {
         std::cout << "HOLA???";
         return new UserParser();
     }

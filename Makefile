@@ -1,6 +1,7 @@
 NAME		= ircserv
 CPP_FLAGS	= -Wall -Werror -Wextra -std=c++98 -I includes
 SRCS		= src/main.cpp \
+					src/utils.cpp \
 					src/Server.cpp \
 					src/CommandParser.cpp \
 					src/commands/UserCommand.cpp \
