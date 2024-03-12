@@ -18,6 +18,7 @@ class User {
 
       // Getters
       int getFd() const;
+      std::string getNickname() const;
       bool isPasswordChecked() const;
 
       // Setters
