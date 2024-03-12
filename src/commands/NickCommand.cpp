@@ -11,6 +11,9 @@ void NickCommand::execute(Server &server, int fd) {
     if (this->_nickname.empty())
         throw CommandException("NICK COMMAND: Empty nickname.");
 
+    if (this->_nickname.size() > 9)
+        throw CommandException("NICK COMMAND: Nickname is too long.");
+
     if (server.isNicknameInUse(this->_nickname))
         throw CommandException("NICK COMMAND: Nickname is already in use.");
 
