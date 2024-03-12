@@ -1,6 +1,6 @@
 #include "NickParser.hpp"
 
-ICommand *NickParser::parse(const std::vector<std::string>& tokens) {
+ACommand *NickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() != 2)
         throw ParserException("NICK COMMAND: Invalid number of arguments.");
 

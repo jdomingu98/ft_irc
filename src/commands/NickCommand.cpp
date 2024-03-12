@@ -8,6 +8,7 @@ NickCommand::NickCommand(const std::string& nickname): _nickname(nickname) {}
 NickCommand::~NickCommand() {}
 
 void NickCommand::execute(Server &server, int fd) {
+    ACommand::validatePassword(server, fd);
     if (this->_nickname.empty())
         throw CommandException("NICK COMMAND: Empty nickname.");
 

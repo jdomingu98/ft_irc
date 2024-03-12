@@ -8,7 +8,7 @@
 
 class PassParser: public IParser {
     public:
-        ICommand *parse(const std::vector<std::string>& tokens);
+        ACommand *parse(const std::vector<std::string>& tokens);
 
 };
 

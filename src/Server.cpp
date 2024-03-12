@@ -170,7 +170,7 @@ void Server::handleExistingConnection(int fd) {
 
     std::string serverMessage = "Message received";
     try {
-        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        ACommand* command = CommandParser::parse(std::string(buffer, readBytes));
         command->execute(*this, fd);
     } catch (CommandException& e) {
         serverMessage = "[COMMAND] ";

@@ -26,9 +26,10 @@ UserCommand::~UserCommand() {}
 
 /**
  * Execute the command User.
- * Method inherited from ICommand
+ * Method inherited from ACommand
  */
 void UserCommand::execute(Server &server, int fd) {
+    ACommand::validatePassword(server, fd);
     User user = server.getUserByFd(fd);
     user.setUsername(this->_username);
     user.setHostname(this->_hostname);

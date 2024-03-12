@@ -2,13 +2,13 @@
 # define I_PARSER_HPP
 
 # include "libsUtils.hpp"
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
-class ICommand;
+class ACommand;
 
 class IParser {
     public:
-        virtual ICommand *parse(const std::vector<std::string>& tokens) = 0;
+        virtual ACommand *parse(const std::vector<std::string>& tokens) = 0;
         virtual ~IParser() {}
 };
 

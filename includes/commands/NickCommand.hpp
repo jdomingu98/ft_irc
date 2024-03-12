@@ -2,12 +2,12 @@
 # define NICKCOMMAND_HPP
 
 # include "../libsUtils.hpp"
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 # include "../Server.hpp"
 
 class Server;
 
-class NickCommand : public ICommand
+class NickCommand : public ACommand
 {
    private:
       std::string _nickname;
