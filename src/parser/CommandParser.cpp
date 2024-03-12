@@ -15,6 +15,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new UserParser();
     if (command == "PASS")
         return new PassParser();
+    if(command == "NICK")
+        return new NickParser();
     throw CommandException("Invalid command received from client.");
 }
 

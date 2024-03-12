@@ -8,6 +8,7 @@
 # include "IParser.hpp"
 # include "UserParser.hpp"
 # include "PassParser.hpp"
+# include "NickParser.hpp"
 
 class CommandParser {
     public:

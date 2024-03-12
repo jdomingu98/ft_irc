@@ -11,7 +11,8 @@ class User {
         std::string _hostname;
         std::string _serverName;
         std::string _realName;
-
+        std::string _nickname;
+        
     public:
       User(int fd);
 
@@ -24,6 +25,7 @@ class User {
       void setHostname(const std::string& hostname);
       void setServerName(const std::string& serverName);
       void setRealName(const std::string& realName);
+      void setNickname(const std::string& nickname);
 
       // Operations
       void checkPassword();

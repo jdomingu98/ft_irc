@@ -207,3 +207,17 @@ User &Server::getUserByFd(int fd) {
     }
     throw ServerException("USER_NOT_FOUND_ERR");
 }
+
+/**
+ * This function aims to check if a nickname is already in use.
+ * 
+ * @param nickname The nickname to check.
+ * @return `true` if the nickname is already in use, `false` otherwise.
+ */
+bool Server::isNicknameInUse(const std::string& nickname) {
+    for (size_t i = 0; i < this->users.size(); i++) {
+        if (this->users[i].getNickname() == nickname)
+            return true;
+    }
+    return false;
+}

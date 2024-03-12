@@ -29,3 +29,7 @@ void User::setServerName(const std::string& serverName) {
 void User::setRealName(const std::string& realName) {
     this->_realName = realName;
 }
+
+void User::setNickname(const std::string& nickname){
+    this->_nickname = nickname;
+}
