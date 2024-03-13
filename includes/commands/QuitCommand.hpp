@@ -8,8 +8,11 @@
 
 class QuitCommand: public ICommand
 {
+    private:
+        std::string _msg;
     public:
         QuitCommand();
+        QuitCommand(std::string &msg);
         ~QuitCommand();
         void execute(Server &server, int fd);
 };
