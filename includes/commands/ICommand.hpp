@@ -1,9 +1,12 @@
-#ifndef A_COMMAND_HPP
-# define A_COMMAND_HPP
+#ifndef I_COMMAND_HPP
+# define I_COMMAND_HPP
 
 class Server;
 
-class ICommand{
+/**
+ * An interface that represents a command that can be executed by the server.
+ */
+class ICommand {
     public:
         virtual void execute(Server &server, int fd) = 0;
 };

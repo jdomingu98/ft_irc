@@ -1,18 +1,18 @@
-NAME		= ircserv
-CXX			= c++
-CPP_FLAGS	= -Wall -Werror -Wextra -std=c++98
+NAME	= ircserv
+CXX		= c++
+FLAGS	= -Wall -Werror -Wextra -std=c++98 #-g
+RM 		= rm -rf
+
+PORT	?= 6666
+PASS	?= 1234
 
 # =================================================================================
 
-INCLUDES_PATH	= includes
-CMD_PATH		= $(INCLUDES_PATH)/commands
-PARSER_PATH		= $(INCLUDES_PATH)/parser
-EXCEPTIONS_PATH	= $(INCLUDES_PATH)/exceptions
+INCLUDES_PATH		= includes
+INCLUDES_SUBDIRS	= commands parser exceptions
+INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
-HEADERS			= -I $(INCLUDES_PATH) \
-					-I $(CMD_PATH) \
-					-I $(PARSER_PATH) \
-					-I $(EXCEPTIONS_PATH)
+HEADERS				= $(addprefix "-I ", $(INCLUDES_DIRS))
 
 # =================================================================================
 
@@ -20,40 +20,42 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-
-CMD_FILES		= UserCommand.cpp PassCommand.cpp NickCommand.cpp QuitCommand.cpp
+CMD_PREFIXS		= I User Nick Pass Quit
+CMD_FILES		= $(addsuffix "Command", $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_FILES	= CommandParser.cpp UserParser.cpp PassParser.cpp NickParser.cpp QuitParser.cpp
+PARSER_PREFIXS	= Command User Pass Nick Quit
+PARSER_FILES	= $(addsuffix "Parser", $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= Server.cpp main.cpp utils.cpp User.cpp
-SRCS			= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
+FILES 			= main Server User utils
+
+SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
+SRCS			= $(addsuffix ".cpp", $(SRCS_PATHS))
 
 OBJS			= $(SRCS:.cpp=.o)
 
 # =================================================================================
 
-PORT	?= 6666
-PASS	?= 1234
-
 all:		$(NAME)
 
 %.o:		%.cpp
-	$(CXX) $(CPP_FLAGS) $(HEADERS) -c $< -o $@
+	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
-	$(CXX) $(CPP_FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
+	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
 clean:
-	rm -rf $(OBJS)
+	$(RM) $(OBJS)
 
 fclean:		clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
+#	$(RM) $(NAME).dSYM
 
-re: 	fclean all
+re: 		fclean all
 
-e:			re 
+e:			re
+	clear
 	./$(NAME) $(PORT) $(PASS)
 	make fclean
 

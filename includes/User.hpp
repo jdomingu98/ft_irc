@@ -3,6 +3,9 @@
 
 # include "libsUtils.hpp"
 
+/**
+ * A class that represents an user.
+ */
 class User {
     private:
         int _fd;
@@ -14,22 +17,22 @@ class User {
         std::string _nickname;
         
     public:
-      User(int fd);
+        // Constructors and destructors
+        User(int fd);
+        ~User();
 
-      // Getters
-      int getFd() const;
-      std::string getNickname() const;
-      bool isPasswordChecked() const;
+        // Getters
+        int getFd() const;
+        bool isPasswordChecked() const;
 
-      // Setters
-      void setUsername(const std::string& username);
-      void setHostname(const std::string& hostname);
-      void setServerName(const std::string& serverName);
-      void setRealName(const std::string& realName);
-      void setNickname(const std::string& nickname);
+        // Setters
+        void setUsername(const std::string& username);
+        void setHostname(const std::string& hostname);
+        void setServerName(const std::string& serverName);
+        void setRealName(const std::string& realName);
 
-      // Operations
-      void checkPassword();
+        // Operations
+        void checkPassword();
 };
 
 #endif

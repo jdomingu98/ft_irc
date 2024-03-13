@@ -1,23 +1,46 @@
 #ifndef COMMAND_PARSER_HPP
 # define COMMAND_PARSER_HPP
 
-# include "libsUtils.hpp"
 # include "ICommand.hpp"
-# include "UserCommand.hpp"
-# include "exceptions/CommandException.hpp"
 # include "IParser.hpp"
+
+# include "UserCommand.hpp"
 # include "UserParser.hpp"
 # include "PassParser.hpp"
 # include "NickParser.hpp"
 # include "QuitParser.hpp"
 
-class CommandParser {
-    public:
-        static ICommand* parse(const std::string& command, int fd, Server &server);
+# include "CommandException.hpp"
 
+# include "libsUtils.hpp"
+
+/**
+ * Enumerates the commands that the server can receive.
+ */
+enum Commands {
+    USER,
+    PASS,
+    NICK,
+    QUIT,
+    JOIN,
+    PART,
+    PRIVMSG,
+    TOPIC,
+    MODE,
+    KICK,
+    INVITE
+};
+
+/**
+ * A class that is responsible for parsing strings to commands.
+ */
+class CommandParser {
     private:
         static std::vector<std::string> tokenize(const std::string& command);
         static IParser* getParser(std::string command, int fd, Server &server);
+    
+    public:
+        static ICommand* parse(const std::string& command, int fd, Server &server);
 };
 
 #endif

@@ -3,7 +3,10 @@
 
 # include <string>
 
-class ParserException: public std::exception {
+/**
+ * An exception that is thrown when a parser fails to parse a command.
+*/
+class ParserException : public std::exception {
     private:
         std::string _message;
     public:

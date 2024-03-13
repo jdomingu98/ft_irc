@@ -2,11 +2,17 @@
 # define USER_PARSER_HPP
 
 # include "IParser.hpp"
-# include "libsUtils.hpp"
-# include "commands/UserCommand.hpp"
-# include "exceptions/ParserException.hpp"
 
-class UserParser: public IParser {
+# include "UserCommand.hpp"
+
+# include "ParserException.hpp"
+
+# include "libsUtils.hpp"
+
+/**
+ * An IParser implementation that is responsible for parsing the USER command.
+ */
+class UserParser : public IParser {
     public:
         ICommand *parse(const std::vector<std::string>& tokens);
 };

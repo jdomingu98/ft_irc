@@ -1,14 +1,19 @@
-#ifndef QUITPARSER_HPP
-# define QUITPARSER_HPP
+#ifndef QUIT_PARSER_HPP
+# define QUIT_PARSER_HPP
+
+#include "IParser.hpp"
+
+#include "QuitCommand.hpp"
+
+#include "ParserException.hpp"
 
 #include "libsUtils.hpp"
-#include "IParser.hpp"
-#include "QuitCommand.hpp"
-#include "exceptions/ParserException.hpp"
 
-
-class QuitParser : public Parser
-{
+/**
+ * A class that is responsible for parsing the QUIT command.
+ * 
+ */
+class QuitParser : public Parser {
     public:
         ICommand *parse(const std::vector<std::string>& tokens);
 };

@@ -3,6 +3,9 @@
 
 # include <string>
 
+/**
+ * An exception that is thrown when a server fails.
+ */
 class ServerException : public std::exception {
     private:
         std::string _message;

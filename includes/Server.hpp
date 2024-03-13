@@ -1,17 +1,26 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "libsUtils.hpp"
-# include "exceptions/ServerException.hpp"
-# include "parser/CommandParser.hpp"
-# include "commands/ICommand.hpp"
-# include "exceptions/CommandException.hpp"
-# include "ParserException.hpp"
+# include "ICommand.hpp"
+# include "CommandParser.hpp"
+
 # include "User.hpp"
 
-# define BUFFER_SIZE 1024
-# define MAX_CLIENTS 30
+# include "CommandException.hpp"
+# include "ServerException.hpp"
+# include "ParserException.hpp"
 
+# include "libsUtils.hpp"
+
+# define MIN_PORT 1
+# define MAX_PORT 65535
+
+# define BUFFER_SIZE 512
+# define MAX_CLIENTS 42
+
+/**
+ * A class that represents the server.
+ */
 class Server {
 
     private:
@@ -20,13 +29,14 @@ class Server {
         int                 _socketFd;
         struct sockaddr_in  _serverAddr;
         struct pollfd       _fds[MAX_CLIENTS];
-        std::vector<User>    users;
+        std::vector<User>   _users;
 
         bool isValidPort(const std::string port);
         void initServer();
         void listenClients();
         void handleNewConnection(int numFds);
         void handleExistingConnection(int fd);
+        void closeConnections();
 
     public:
         Server(const std::string port, const std::string password);
@@ -36,8 +46,8 @@ class Server {
         User &getUserByFd(int fd);
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int fd);
+        void sendMessage(int clientFd, const std::string& message);
         void removeUser(int fd);
-        
 };
 
 #endif

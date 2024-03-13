@@ -1,11 +1,11 @@
 #ifndef LIBS_UTILS_HPP
 # define LIBS_UTILS_HPP
 
-// Libraries used in the project
+/**
+ * A file that contains utility consts and libraries that are used along the project.
+*/
 
 # include <iostream>
-# include <string> //-> Eliminar si no se usa algo especifico de std::string
-# include <unistd.h> // close function to close sockets -> Search for alternatives
 # include <cstdlib>
 
 # include <arpa/inet.h>
@@ -20,12 +20,12 @@
 
 # include "utils.hpp"
 
-// Consts definition
+// =================================================================================
 
 # define SUCCESS 0
 # define EXIT 1
 
-# define INVALID_ARGS "[ERROR] Invalid args.\n Usage: ./ircserv <port> <password>"
+# define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
 
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
@@ -38,12 +38,23 @@
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define INVALID_COMMAND "[ERROR] Invalid command sent to server socket."
+# define INVALID_COMMAND "[ERROR] Invalid command sent to server socket." //???
 
-# define AUTH_COMMAND_ERR "[ERROR] Sent password, nickname and username first to authenticate."
-
+# define AUTH_ERR "[ERROR] Unauthorized.\nPlease send connection password and set your nickname and username."
 # define INVALID_PASSWORD "[ERROR] Password provided doesn't match server password."
+
 # define NOT_UQ_NICK_ERR "[ERROR] Nickname already in use."
 
+# define MISSING_PARAMS_ERR "[ERROR] Missing parameters in command."
+
+// ========================================= IRC COMMAND MESSAGE ERRORS =========================================
+
+# define ERR_NEED_MORE_PARAMS(command) (command) " :Not enough parameters"
+# define ERR_ALREADY_REGISTRED ":You may not reregister"
+
+# define ERR_NO_NICKNAME_GIVEN ":No nickname given"
+# define ERR_ERRONEUS_NICKNAME(nickname) (nickname) " :Erroneous nickname"
+# define ERR_NICKNAME_IN_USE(nickname) (nickname) " :Nickname is already in use"
+# define ERR_NICK_COLLISION(nickname) (nickname) " :Nickname collision KILL"
 
 #endif

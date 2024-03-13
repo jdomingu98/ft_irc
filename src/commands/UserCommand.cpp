@@ -1,9 +1,9 @@
-#include "commands/UserCommand.hpp"
+#include "UserCommand.hpp"
 
 /**
  * Command User default constructor
  * 
-*/
+ */
 UserCommand::UserCommand(): _username(""), _hostname(""), _serverName(""), _realName("") {}
 
 /**
@@ -13,7 +13,7 @@ UserCommand::UserCommand(): _username(""), _hostname(""), _serverName(""), _real
  * @param hostname The hostname
  * @param serverName The server name
  * @param realName The real name of the client
-*/
+ */
 UserCommand::UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName,
                             const std::string& realName) : _username(username), _hostname(hostname),
                                                             _serverName(serverName), _realName(realName) {}
@@ -25,8 +25,11 @@ UserCommand::UserCommand(const std::string& username, const std::string& hostnam
 UserCommand::~UserCommand() {}
 
 /**
- * Execute the command User.
- * Method inherited from ICommand
+ * Execute the command USER.
+ * 
+ * @param server The server where the command will be executed
+ * @param fd The socket file descriptor of the client
+ * 
  */
 void UserCommand::execute(Server &server, int fd) {
     User user = server.getUserByFd(fd);

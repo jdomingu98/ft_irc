@@ -1,24 +1,33 @@
-#ifndef NICKCOMMAND_HPP
-# define NICKCOMMAND_HPP
+#ifndef NICK_COMMAND_HPP
+# define NICK_COMMAND_HPP
 
-# include "libsUtils.hpp"
 # include "ICommand.hpp"
+
 # include "Server.hpp"
+
 # include "CommandException.hpp"
 
+# include "libsUtils.hpp"
 
-class NickCommand: public ICommand
-{
-   private:
-      std::string _nickname;
 
-      bool isValidNickname();
+# define MAX_NICKNAME_SIZE 9
+
+/**
+ * An ICommand implementation that is responsible for setting the nickname of an user.
+ * 
+*/
+class NickCommand : public ICommand {
+    private:
+        std::string _nickname;
+
+        bool isValidNickname();
 
     public:
         NickCommand();
         NickCommand(const std::string& nickname);
-        void execute(Server &server, int fd);
         ~NickCommand(); 
+
+        void execute(Server &server, int fd);
 };
 
 #endif

@@ -3,7 +3,10 @@
 
 # include <string>
 
-class CommandException: public std::exception {
+/**
+ * An exception that is thrown when a command fails to execute.
+ */
+class CommandException : public std::exception {
     private:
         std::string _message;
     public:
