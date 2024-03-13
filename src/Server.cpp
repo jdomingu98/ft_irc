@@ -225,3 +225,12 @@ bool Server::isNicknameInUse(const std::string& nickname) {
 bool Server::userHasCheckedPassword(int fd) {
     return this->getUserByFd(fd).isPasswordChecked();
 }
+
+void Server::removeUser(int fd) {
+    for (size_t i = 0; i < this->users.size(); i++) {
+        if (this->users[i].getFd() == fd) {
+            this->users.erase(this->users.begin() + i);
+            break;
+        }
+    }
+}

@@ -36,6 +36,8 @@ class Server {
         User &getUserByFd(int fd);
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int fd);
+        void removeUser(int fd);
+        
 };
 
 #endif

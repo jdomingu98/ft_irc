@@ -1,9 +1,9 @@
 #ifndef NICKCOMMAND_HPP
 # define NICKCOMMAND_HPP
 
-# include "../libsUtils.hpp"
+# include "libsUtils.hpp"
 # include "ICommand.hpp"
-# include "../Server.hpp"
+# include "Server.hpp"
 # include "CommandException.hpp"
 
 

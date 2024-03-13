@@ -21,10 +21,10 @@ CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
 
-CMD_FILES		= UserCommand.cpp PassCommand.cpp NickCommand.cpp
+CMD_FILES		= UserCommand.cpp PassCommand.cpp NickCommand.cpp QuitCommand.cpp
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_FILES	= CommandParser.cpp UserParser.cpp PassParser.cpp NickParser.cpp
+PARSER_FILES	= CommandParser.cpp UserParser.cpp PassParser.cpp NickParser.cpp QuitParser.cpp
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
 FILES 			= Server.cpp main.cpp utils.cpp User.cpp
