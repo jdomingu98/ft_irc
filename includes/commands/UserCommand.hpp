@@ -2,12 +2,11 @@
 # define USER_COMMAND_HPP
 
 # include "libsUtils.hpp"
-# include "ACommand.hpp"
+# include "ICommand.hpp"
 # include "Server.hpp"
+# include "CommandException.hpp"
 
-class Server;
-
-class UserCommand: public ACommand {
+class UserCommand: public ICommand {
     private:
         std::string _username;
         std::string _hostname;

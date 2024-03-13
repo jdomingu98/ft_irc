@@ -4,7 +4,7 @@
 # include "libsUtils.hpp"
 # include "exceptions/ServerException.hpp"
 # include "parser/CommandParser.hpp"
-# include "commands/ACommand.hpp"
+# include "commands/ICommand.hpp"
 # include "exceptions/CommandException.hpp"
 # include "ParserException.hpp"
 # include "User.hpp"
@@ -35,6 +35,7 @@ class Server {
         bool isValidPassword(const std::string& password);
         User &getUserByFd(int fd);
         bool isNicknameInUse(const std::string& nickname);
+        bool userHasCheckedPassword(int fd);
 };
 
 #endif

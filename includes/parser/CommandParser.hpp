@@ -2,7 +2,7 @@
 # define COMMAND_PARSER_HPP
 
 # include "libsUtils.hpp"
-# include "ACommand.hpp"
+# include "ICommand.hpp"
 # include "UserCommand.hpp"
 # include "exceptions/CommandException.hpp"
 # include "IParser.hpp"
@@ -12,11 +12,11 @@
 
 class CommandParser {
     public:
-        static ACommand* parse(const std::string& command);
+        static ICommand* parse(const std::string& command, int fd, Server &server);
 
     private:
         static std::vector<std::string> tokenize(const std::string& command);
-        static IParser* getParser(std::string command);
+        static IParser* getParser(std::string command, int fd, Server &server);
 };
 
 #endif

@@ -170,7 +170,7 @@ void Server::handleExistingConnection(int fd) {
 
     std::string serverMessage = "Message received";
     try {
-        ACommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        ICommand* command = CommandParser::parse(std::string(buffer, readBytes), fd, *this);
         command->execute(*this, fd);
     } catch (CommandException& e) {
         serverMessage = "[COMMAND] ";
@@ -220,4 +220,8 @@ bool Server::isNicknameInUse(const std::string& nickname) {
             return true;
     }
     return false;
+}
+
+bool Server::userHasCheckedPassword(int fd) {
+    return this->getUserByFd(fd).isPasswordChecked();
 }
