@@ -8,7 +8,7 @@ QuitCommand::QuitCommand() : _msg("") {}
 /**
  * QuitCommand message constructor.
 */
-QuitCommand::QuitCommand(std::string &msg) : _msg(msg) {}
+QuitCommand::QuitCommand(std::string msg) : _msg(msg) {}
 
 /**
  * QuitCommand destructor.
@@ -24,10 +24,8 @@ QuitCommand::~QuitCommand() {}
  * @throws `ServerException` If the message could not be sent
  */
 void QuitCommand::execute(Server &server, int clientFd) {
-
-    if (_msg.length() == 0)
-    {
-        message = user.getNickname();
+    if (_msg.length() == 0) {
+        // message = user.getNickname();
         //send message to all clients on channel and server
     }
     server.removeUser(clientFd);

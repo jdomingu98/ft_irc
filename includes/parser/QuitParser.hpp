@@ -13,7 +13,7 @@
  * A class that is responsible for parsing the QUIT command.
  * 
  */
-class QuitParser : public Parser {
+class QuitParser : public IParser {
     public:
         ICommand *parse(const std::vector<std::string>& tokens);
 };
