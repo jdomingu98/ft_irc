@@ -23,6 +23,7 @@ class User {
 
         // Getters
         int getFd() const;
+        std::string getNickname() const;
         bool isPasswordChecked() const;
 
         // Setters
@@ -30,6 +31,7 @@ class User {
         void setHostname(const std::string& hostname);
         void setServerName(const std::string& serverName);
         void setRealName(const std::string& realName);
+        void setNickname(const std::string& nickname);
 
         // Operations
         void checkPassword();

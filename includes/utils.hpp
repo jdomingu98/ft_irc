@@ -5,7 +5,7 @@
  * A utility file that contains various utility functions.
  */
 
-# include "libsUtils.hpp"
+# include <string>
 
 std::string trim(const std::string& str);
 
