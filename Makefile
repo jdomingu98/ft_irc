@@ -1,29 +1,62 @@
-NAME		= ircserv
-CPP_FLAGS	= -Wall -Werror -Wextra -std=c++98 -I includes
-SRCS		= src/Server.cpp src/main.cpp
-OBJS		= $(SRCS:.cpp=.o)
+NAME	= ircserv
+CXX		= c++
+FLAGS	= -Wall -Werror -Wextra -std=c++98 #-g
+RM 		= rm -rf
 
-port		?= 6666
-pass		?= 1234
+PORT	?= 6666
+PASS	?= 1234
+
+# =================================================================================
+
+INCLUDES_PATH		= includes
+INCLUDES_SUBDIRS	= commands parser exceptions
+INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
+
+HEADERS				= $(addprefix "-I ", $(INCLUDES_DIRS))
+
+# =================================================================================
+
+SRC_DIR		= src
+CMD_DIR		= $(SRC_DIR)/commands/
+PARSER_DIR	= $(SRC_DIR)/parser/
+
+CMD_PREFIXS		= I User Nick Pass Quit
+CMD_FILES		= $(addsuffix "Command", $(CMD_PREFIXS))
+CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
+
+PARSER_PREFIXS	= Command User Pass Nick Quit
+PARSER_FILES	= $(addsuffix "Parser", $(PARSER_PREFIXS))
+PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
+
+FILES 			= main Server User utils
+
+SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
+SRCS			= $(addsuffix ".cpp", $(SRCS_PATHS))
+
+OBJS			= $(SRCS:.cpp=.o)
+
+# =================================================================================
 
 all:		$(NAME)
 
 %.o:		%.cpp
-	c++ $(CPP_FLAGS) -c $< -o $@
+	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
-	c++ $(CPP_FLAGS) $(SRCS) -o $(NAME)
+	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
 clean:
-	rm -rf $(OBJS)
+	$(RM) $(OBJS)
 
 fclean:		clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
+#	$(RM) $(NAME).dSYM
 
-re: 	fclean all
+re: 		fclean all
 
-e:			re 
-	./$(NAME) port pass
+e:			re
+	clear
+	./$(NAME) $(PORT) $(PASS)
 	make fclean
 
 .PHONY: all clean fclean re e

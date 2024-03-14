@@ -1,0 +1,21 @@
+#ifndef PASS_PARSER_HPP
+# define PASS_PARSER_HPP
+
+# include "IParser.hpp"
+
+# include "PassCommand.hpp"
+
+# include "ParserException.hpp"
+
+# include "libsUtils.hpp"
+
+/**
+ * An IParser implementation that is responsible for parsing the PASS command.
+ */
+class PassParser : public IParser {
+    public:
+        ICommand *parse(const std::vector<std::string>& tokens);
+
+};
+
+#endif
