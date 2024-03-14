@@ -7,8 +7,6 @@
 
 #include "libsUtils.hpp"
 
-class User;
-
 class Channel {
     private:
         std::string         _name;
