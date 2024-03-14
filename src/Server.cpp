@@ -101,13 +101,13 @@ void Server::initServer() {
  *  the server can't receive a message or the server can't send a message.
  */
 void Server::listenClients() {
-    int num_fds = 1;
+    int numFds = 1;
     
     while (true) {
-        if (poll(this->_fds, num_fds, -1) == -1)
+        if (poll(this->_fds, numFds, -1) == -1)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < num_fds; i++) {
+        for (int i = 0; i < numFds; i++) {
             if (this->_fds[i].revents == 0)
                 continue;
 
@@ -115,8 +115,8 @@ void Server::listenClients() {
                 throw ServerException(REVENTS_EXPT);
 
             if (this->_fds[i].fd == this->_socketFd) {
-                this->handleNewConnection(num_fds);
-                num_fds++;
+                this->handleNewConnection(numFds);
+                numFds++;
             } else
                 this->handleExistingConnection(this->_fds[i].fd);
         }
@@ -127,11 +127,11 @@ void Server::listenClients() {
  * This function aims to handle a new connection.
  * It accepts a new connection and adds the new socket to the array of poll_fds.
  * 
- * @param num_fds The number of file descriptors.
+ * @param numFds The number of file descriptors.
  * 
  * @throws `ServerException` if the server can't accept a new connection.
  */
-void Server::handleNewConnection(int num_fds) {
+void Server::handleNewConnection(int numFds) {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
@@ -142,8 +142,8 @@ void Server::handleNewConnection(int num_fds) {
 
     this->_users.push_back(User(client_socket));
     // Add new socket to poll_fds array
-    this->_fds[num_fds].fd = client_socket;
-    this->_fds[num_fds].events = POLLIN;
+    this->_fds[numFds].fd = client_socket;
+    this->_fds[numFds].events = POLLIN;
 
     sendMessage(client_socket, "Welcome to the server! Please enter your password: ");
 }
@@ -191,15 +191,18 @@ bool Server::isValidPassword(const std::string& password) {
 /**
  * This function aims to get the user by the file descriptor.
  * 
- * @param fd The file descriptor of the user.
+ * @param clientFd The file descriptor of the user.
  * @return The user with the file descriptor.
  */
-User &Server::getUserByFd(int fd) {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getFd() == fd)
-            return this->_users[i];
-    }
-    throw ServerException("USER_NOT_FOUND_ERR");
+User &Server::getUserByFd(int clientFd) {
+    std::vector<User>::iterator it = 
+    std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
+        return user.getFd() == clientFd;
+    });
+    
+    it != this->_users.end() ? 
+        return *it : throw ServerException(USER_NOT_FOUND_ERR);
+
 }
 
 /**
@@ -209,22 +212,23 @@ User &Server::getUserByFd(int fd) {
  * @return `true` if the nickname is already in use, `false` otherwise.
  */
 bool Server::isNicknameInUse(const std::string& nickname) {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getNickname() == nickname)
-            return true;
-    }
-    return false;
+    std::vector<User>::iterator it = 
+    std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
+            return user.getNickname() == nickname;
+        });
+    
+    return it != this->_users.end();
 }
 
 /**
  * This function aims to check if the user has already checked the password.
  * 
- * @param fd The file descriptor of the user.
+ * @param clientFd The file descriptor of the user.
  * 
  * @return `true` if the user has already checked the password, `false` otherwise.
  */
-bool Server::userHasCheckedPassword(int fd) {
-    return this->getUserByFd(fd).isPasswordChecked();
+bool Server::userHasCheckedPassword(int clientFd) {
+    return this->getUserByFd(clientFd).isPasswordChecked();
 }
 
 /**
@@ -244,16 +248,67 @@ void Server::sendMessage(int clientFd, const std::string& message) {
 /**
  * This function aims to remove a user from the server.
  * 
- * @param fd The file descriptor of the user to remove.
+ * @param clientFd The file descriptor of the user to remove.
 */
-void Server::removeUser(int fd) {
-    std::vector<User>::iterator it = std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
-        return user.getFd() == fd;
-    });
+void Server::removeUser(int clientFd) {
     
+    std::vector<User>::iterator it = findUserbyFd(clientFd);
+
     if (it != this->_users.end())
     {
         close(it->getFd());
         this->_users.erase(it);
     }
+}
+
+
+/**
+ * This function aims to find a user by the file descriptor.
+ * 
+ * @param clientFd The file descriptor of the user.
+ * 
+ * @return The iterator to the user with the file descriptor.
+ */
+std::vector<User>::iterator Server::findUserbyFd(int clientFd) {
+    return std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
+        return user.getFd() == clientFd;
+    });
+}
+
+/**
+ * This function aims to add a channel to the server.
+ * 
+ * @param channel The channel to add.
+ */
+void Server::addChannel(Channel channel) {
+    std::vector<Channel>::iterator it = findChannel(channel.getName());
+    if (it != this->_channels.end())
+        throw ServerException(CHANNEL_ALREADY_ADDED_ERR);
+    this->_channels.push_back(channel);
+}
+
+/**
+ * This function aims to remove a channel from the server.
+ * 
+ * @param channelName The name of the channel to remove.
+ */
+void Server::removeChannel(std::string channelName)
+{
+    std::vector<Channel>::iterator it = findChannel(channelName);
+    if (it != this->_channels.end())
+        this->_channels.erase(it);
+}
+
+/**
+ * This function aims to find a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The iterator to the channel with the name.
+ */
+std::vector<Channel>::iterator Server::findChannel(std::string channelName)
+{
+    return std::find_if(this->_channels.begin(), this->_channels.end(), [channelName](const Channel& channel) {
+        return channel.getName() == channelName;
+    });
 }

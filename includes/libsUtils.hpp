@@ -5,18 +5,11 @@
  * A file that contains utility consts and libraries that are used along the project.
 */
 
-# include <iostream>
 # include <cstdlib>
-
-# include <arpa/inet.h>
-# include <netdb.h> // gethostbyname
-# include <netinet/in.h>
-# include <poll.h>
-# include <sys/socket.h>
-# include <sys/types.h>
-
-# include <vector>
+# include <iostream>
 # include <sstream>
+# include <algorithm>
+# include <vector>
 
 # include "utils.hpp"
 
@@ -42,6 +35,11 @@
 
 # define AUTH_ERR "[ERROR] Unauthorized.\nPlease send connection password and set your nickname and username."
 # define INVALID_PASSWORD "[ERROR] Password provided doesn't match server password."
+
+# define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
+
+# define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
+# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 
 // ========================================= IRC COMMAND ERROR MESSAGES =========================================
 
@@ -89,7 +87,5 @@
 #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
 #define ERR_U_MODE_IS(userModeString) (userModeString)
 #define ERR_U_MODE_UNKNOWN_FLAG ":Unknown MODE flag"
-
-
 
 #endif
