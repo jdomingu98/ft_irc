@@ -29,13 +29,12 @@ IParser* CommandParser::getParser(std::string command, int fd, Server &server) {
     if (command == "PASS")
         return new PassParser();
     if (!server.userHasCheckedPassword(fd))
-        throw CommandException("User has not checked password.");
+        throw NotRegisteredException(); 
     if (command == "USER")
         return new UserParser();
     if (command == "NICK")
         return new NickParser();
-    
-    throw CommandException(INVALID_COMMAND);
+    throw CommandNotFoundException();
 }
 
 /**

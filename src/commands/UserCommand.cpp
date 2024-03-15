@@ -32,6 +32,7 @@ UserCommand::~UserCommand() {}
  * 
  */
 void UserCommand::execute(Server &server, int fd) {
+    // TODO: If user is already registered, throw exception (AlreadyRegisteredException)
     User user = server.getUserByFd(fd);
     user.setUsername(this->_username);
     user.setHostname(this->_hostname);
