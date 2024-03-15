@@ -5,8 +5,6 @@
 
 # include "NickCommand.hpp"
 
-# include "ParserException.hpp"
-
 # include "libsUtils.hpp"
 
 /**
