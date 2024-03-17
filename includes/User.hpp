@@ -1,11 +1,12 @@
 #ifndef USER_HPP
 # define USER_HPP
 
+# include "libsUtils.hpp"
 # include "Channel.hpp"
 
-# include "libsUtils.hpp"
-
 # define MAX_CHANNELS 10
+
+class Channel;
 
 /**
  * A class that represents an user.

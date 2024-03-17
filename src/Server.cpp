@@ -202,9 +202,9 @@ bool Server::isValidPassword(const std::string& password) {
  */
 User &Server::getUserByFd(int clientFd) {
     std::vector<User>::iterator it = findUserByFd(clientFd);
-    it != this->_users.end() ? 
-        return *it : throw ServerException(USER_NOT_FOUND_ERR);
-
+    if (it == this->_users.end())
+        throw ServerException(USER_NOT_FOUND_ERR);
+    return *it;
 }
 
 /**

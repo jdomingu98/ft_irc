@@ -11,6 +11,8 @@
 # define NO_LIMIT -1
 # define BELL_CHAR '\a'
 
+class User;
+
 /**
  * A class that represents the channels of the server.
 */
