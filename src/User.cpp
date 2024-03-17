@@ -13,6 +13,36 @@ User::User(int fd): _fd(fd), _passwordChecked(false) {}
 User::~User() {}
 
 /**
+ * This function aims to find a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The const iterator to the channel with the name.
+ */
+std::vector<Channel>::const_iterator User::findChannel(std::string channelName) const {
+    for (size_t i = 0; i < this->_channels.size(); i++) {
+        if (this->_channels[i].getName() == channelName)
+            return this->_channels.begin() + i;
+    }
+    return this->_channels.end();
+}
+
+/**
+ * This function aims to find a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The iterator to the channel with the name.
+ */
+std::vector<Channel>::iterator User::findChannel(std::string channelName) {
+    for (size_t i = 0; i < this->_channels.size(); i++) {
+        if (this->_channels[i].getName() == channelName)
+            return this->_channels.begin() + i;
+    }
+    return this->_channels.end();
+}
+
+/**
  * This function aims to check the password of the user, setting is as `true`.
  */
 void User::checkPassword() {
@@ -21,9 +51,33 @@ void User::checkPassword() {
 
 /**
  * This function aims to check if the password is already checked.
+ * 
+ * @return `true` if the password is already checked, `false` otherwise.
  */
 bool User::isPasswordChecked() const {
     return this->_passwordChecked;
+}
+
+/**
+ * This function aims to check if the user is already in the maximum number of channels.
+ * 
+ * @return `true` if the user is already in the maximum number of channels, `false` otherwise.
+ */
+bool User::isUserInMaxChannels() const {
+    return this->_channels.size() >= MAX_CHANNELS;
+}
+
+/**
+ * This function aims to check if the user is already in a channel.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return `true` if the user is already in the channel, `false` otherwise.
+ */
+bool User::isAlreadyInChannel(std::string channelName) const {
+    
+    std::vector<Channel>::const_iterator it = findChannel(channelName);
+    return it != this->_channels.end();
 }
 
 /**
@@ -38,6 +92,7 @@ int User::getFd() const {
 /**
  * This function aims to get the username of the user.
  *
+ * @param username The username of the user.
  */
 void User::setUsername(const std::string& username) {
     this->_username = username;
@@ -46,6 +101,7 @@ void User::setUsername(const std::string& username) {
 /**
  * This function aims to get the hostname of the user.
  * 
+ * @param hostname The hostname of the user.
  */
 void User::setHostname(const std::string& hostname) {
     this->_hostname = hostname;
@@ -54,6 +110,7 @@ void User::setHostname(const std::string& hostname) {
 /**
  * This function aims to get the server name of the user.
  * 
+ * @param serverName The server name of the user.
  */
 void User::setServerName(const std::string& serverName) {
     this->_serverName = serverName;
@@ -62,6 +119,7 @@ void User::setServerName(const std::string& serverName) {
 /**
  * This function aims to get the real name of the user.
  *
+ * @param realName The real name of the user.
  */
 void User::setRealName(const std::string& realName) {
     this->_realName = realName;
@@ -82,4 +140,34 @@ std::string User::getNickname() const {
  */
 void User::setNickname(const std::string& nickname){
     this->_nickname = nickname;
+}
+
+
+/**
+ * This function aims to join a channel.
+ * 
+ * @param channel The channel to join.
+ */
+void User::joinChannel(Channel channel) {
+    if (isUserInMaxChannels())
+        //throw UserException(USER_CHANNEL_FULL_ERR);
+    if (isAlreadyInChannel(channel.getName()))
+        //throw UserException(USER_ALREADY_IN_CHANNEL_ERR);
+    // Comprobar que el canal es de solo invitación y puede entrar
+    // Comprobar que el canal tiene contraseña y la contraseña es correcta
+    // Comprobar que el canal tiene límite y no se ha alcanzado
+    this->_channels.push_back(channel);
+}
+
+/**
+ * This function aims to leave a channel.
+ * 
+ * @param channelName The name of the channel to leave.
+ */
+void User::leaveChannel(std::string channelName) {
+    std::vector<Channel>::iterator it = findChannel(channelName);
+    if (it != this->_channels.end())
+        this->_channels.erase(it);
+    else {}
+        //throw UserException(USER_CHANNEL_NOT_FOUND_ERR);
 }

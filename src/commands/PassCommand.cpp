@@ -28,9 +28,10 @@ PassCommand::~PassCommand() {}
  */
 void PassCommand::execute(Server &server, int fd) {
     std::cout << "Password: " << this->_password << std::endl;
-    
+    if (server.getUserByFd(fd).isPasswordChecked())
+        throw AlreadyRegisteredException();
     if (server.isValidPassword(this->_password))
         server.getUserByFd(fd).checkPassword();
     else 
-        throw CommandException("Invalid password");
+        throw PasswordMismatchException();
 }

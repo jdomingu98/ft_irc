@@ -28,16 +28,21 @@ NickCommand::~NickCommand() {}
  */
 void NickCommand::execute(Server &server, int fd) {
     if (this->_nickname.empty())
-        throw CommandException("NICK COMMAND: Empty nickname.");
+        throw NoNicknameGivenException();
 
     if (this->_nickname.size() > MAX_NICKNAME_SIZE)
-        throw CommandException("NICK COMMAND: Nickname is too long.");
+        throw ErroneousNicknameException(this->_nickname);
 
-    if (server.isNicknameInUse(this->_nickname))
-        throw CommandException("NICK COMMAND: Nickname is already in use.");
+    if (server.isNicknameInUse(this->_nickname)) {
+        // TODO: If user is not registered, we throw NickCollisionException
+        throw NickCollisionException(this->_nickname);
+        // TODO: If user is registered, we throw NicknameInUseException
+        // throw NicknameInUseException(_nickname);
+
+    }
 
     if (!NickCommand::isValidNickname())
-        throw CommandException("NICK COMMAND: Invalid nickname.");
+        throw ErroneousNicknameException(this->_nickname);
 
     User user = server.getUserByFd(fd);
     user.setNickname(this->_nickname);
