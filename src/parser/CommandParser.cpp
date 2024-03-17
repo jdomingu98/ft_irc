@@ -10,9 +10,14 @@
 ICommand* CommandParser::parse(const std::string& input, int fd, Server &server) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
     IParser *parser = CommandParser::getParser(tokens[0], fd, server);
-    ICommand *command = parser->parse(tokens);
-    delete parser;
-    return command;
+    try {
+        ICommand *command = parser->parse(tokens);
+        delete parser;
+        return command;
+    } catch (...) {
+        delete parser;
+        throw;
+    }
 }
 
 /**
