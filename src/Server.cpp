@@ -44,7 +44,7 @@ Server::~Server() {
 /**
  * This function aims to close all the connections.
  */
-Server::closeConnections() {
+void Server::closeConnections() {
     if (this->_socketFd != -1)
         close(this->_socketFd);
 
@@ -172,9 +172,9 @@ void Server::handleExistingConnection(int clientFd) {
         ICommand* command = CommandParser::parse(std::string(buffer, readBytes), clientFd, *this);
         command->execute(*this, clientFd);
     } catch (CommandException& e) {
-        sendMessage(clientFd, "[COMMAND] " + e.what());
+        sendMessage(clientFd, std::string("[COMMAND] ") + e.what());
     } catch (ParserException& e) {
-        sendMessage(clientFd, "[PARSER] " + e.what());
+        sendMessage(clientFd, std::string("[PARSER] ") + e.what());
     }
 }
 
@@ -250,12 +250,16 @@ void Server::sendMessage(int clientFd, const std::string& message) {
  * 
  * @param clientFd The file descriptor of the user to remove.
 */
-void Server::removeUser(int clientFd) {
-    
-    std::vector<User>::iterator it = findUserbyFd(clientFd);
+void Server::removeUser(int fd) {
+    std::vector<User>::iterator it = this->_users.begin();
+    while (it != this->_users.end()) {
+        if (it->getFd() == fd)
+            break;
+        it++;
+    }
 
-    if (it != this->_users.end())
-    {
+    
+    if (it != this->_users.end()) {
         close(it->getFd());
         this->_users.erase(it);
     }

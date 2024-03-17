@@ -35,6 +35,7 @@
 
 # define AUTH_ERR "[ERROR] Unauthorized.\nPlease send connection password and set your nickname and username."
 # define INVALID_PASSWORD "[ERROR] Password provided doesn't match server password."
+# define MISSING_PARAMS_ERR "[ERROR] Missing parameters."
 
 # define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
 
