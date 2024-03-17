@@ -6,8 +6,6 @@
 # include "Server.hpp"
 // # include "User.hpp"
 
-# include "ServerException.hpp"
-
 # include "libsUtils.hpp"
 
 /**

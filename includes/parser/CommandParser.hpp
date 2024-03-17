@@ -10,8 +10,6 @@
 # include "NickParser.hpp"
 # include "QuitParser.hpp"
 
-# include "CommandException.hpp"
-
 # include "libsUtils.hpp"
 
 /**
