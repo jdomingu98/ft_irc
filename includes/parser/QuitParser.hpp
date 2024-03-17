@@ -5,8 +5,6 @@
 
 #include "QuitCommand.hpp"
 
-#include "ParserException.hpp"
-
 #include "libsUtils.hpp"
 
 /**

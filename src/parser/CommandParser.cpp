@@ -10,9 +10,14 @@
 ICommand* CommandParser::parse(const std::string& input, int fd, Server &server) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
     IParser *parser = CommandParser::getParser(tokens[0], fd, server);
-    ICommand *command = parser->parse(tokens);
-    delete parser;
-    return command;
+    try {
+        ICommand *command = parser->parse(tokens);
+        delete parser;
+        return command;
+    } catch (...) {
+        delete parser;
+        throw;
+    }
 }
 
 /**
@@ -29,13 +34,12 @@ IParser* CommandParser::getParser(std::string command, int fd, Server &server) {
     if (command == "PASS")
         return new PassParser();
     if (!server.userHasCheckedPassword(fd))
-        throw CommandException("User has not checked password.");
+        throw NotRegisteredException(); 
     if (command == "USER")
         return new UserParser();
     if (command == "NICK")
         return new NickParser();
-    
-    throw CommandException(INVALID_COMMAND);
+    throw CommandNotFoundException();
 }
 
 /**

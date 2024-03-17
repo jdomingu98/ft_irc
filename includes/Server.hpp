@@ -13,10 +13,6 @@
 # include "Channel.hpp"
 # include "User.hpp"
 
-# include "CommandException.hpp"
-# include "ServerException.hpp"
-# include "ParserException.hpp"
-
 # include "libsUtils.hpp"
 
 # define MIN_PORT 1

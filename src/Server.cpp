@@ -171,10 +171,16 @@ void Server::handleExistingConnection(int clientFd) {
     try {
         ICommand* command = CommandParser::parse(std::string(buffer, readBytes), clientFd, *this);
         command->execute(*this, clientFd);
-    } catch (CommandException& e) {
-        sendMessage(clientFd, std::string("[COMMAND] ") + e.what());
-    } catch (ParserException& e) {
-        sendMessage(clientFd, std::string("[PARSER] ") + e.what());
+    } catch (IRCException& e) {
+        std::string clientNickname = getUserByFd(clientFd).getNickname();
+        sendMessage(clientFd,
+            std::string(":irc.ft.messenger.42.fr ")
+            + e.getErrorCode()
+            + (clientNickname.empty() ? std::string(" * ") : std::string(" " + clientNickname + " "))
+            + e.what() + std::string(".")
+        );
+    } catch (CommandNotFoundException &e) {
+        // pass
     }
 }
 

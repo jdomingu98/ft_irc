@@ -5,8 +5,6 @@
 
 # include "PassCommand.hpp"
 
-# include "ParserException.hpp"
-
 # include "libsUtils.hpp"
 
 /**

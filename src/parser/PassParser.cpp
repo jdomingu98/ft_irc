@@ -14,8 +14,8 @@
  * @return The parsed command.
  */
 ICommand* PassParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() != 2) {
-        throw ParserException(MISSING_PARAMS_ERR);
+    if (tokens.size() < 2) {
+        throw NeedMoreParamsException("PASS");
     }
     return new PassCommand(tokens[1]);
 }
