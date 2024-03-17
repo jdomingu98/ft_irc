@@ -45,7 +45,9 @@ class Server {
         void handleNewConnection(int numFds);
         void handleExistingConnection(int fd);
         void closeConnections();
-        std::vector<User>::iterator findUserbyFd(int clientFd);
+        std::vector<User>::iterator findUserByFd(int clientFd);
+        std::vector<User>::iterator findUserByNickname(std::string nickname);
+        std::vector<Channel>::iterator findChannel(std::string channelName);
 
     public:
         Server(const std::string port, const std::string password);
@@ -60,7 +62,6 @@ class Server {
 
         void addChannel(Channel channel);
         void removeChannel(std::string channelName);
-        Channel findChannel(std::string channelName);
 };
 
 #endif

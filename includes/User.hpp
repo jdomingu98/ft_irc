@@ -1,20 +1,28 @@
 #ifndef USER_HPP
 # define USER_HPP
 
+# include "Channel.hpp"
+
 # include "libsUtils.hpp"
+
+# define MAX_CHANNELS 10
 
 /**
  * A class that represents an user.
  */
 class User {
     private:
-        int _fd;
-        bool _passwordChecked;
-        std::string _username;
-        std::string _hostname;
-        std::string _serverName;
-        std::string _realName;
-        std::string _nickname;
+        int         _fd;
+        bool        _passwordChecked;
+        std::string             _username;
+        std::string             _hostname;
+        std::string             _serverName;
+        std::string             _realName;
+        std::string             _nickname;
+        std::vector<Channel>    _channels;
+
+        std::vector<Channel>::const_iterator findChannel(std::string channelName) const;
+        std::vector<Channel>::iterator findChannel(std::string channelName);
         
     public:
         // Constructors and destructors
@@ -25,6 +33,8 @@ class User {
         int getFd() const;
         std::string getNickname() const;
         bool isPasswordChecked() const;
+        bool isUserInMaxChannels() const;
+        bool isAlreadyInChannel(std::string channelName) const;
 
         // Setters
         void setUsername(const std::string& username);
@@ -35,6 +45,8 @@ class User {
 
         // Operations
         void checkPassword();
+        void joinChannel(Channel channel);
+        void leaveChannel(std::string channelName);
 };
 
 #endif

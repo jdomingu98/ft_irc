@@ -195,11 +195,7 @@ bool Server::isValidPassword(const std::string& password) {
  * @return The user with the file descriptor.
  */
 User &Server::getUserByFd(int clientFd) {
-    std::vector<User>::iterator it = 
-    std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
-        return user.getFd() == clientFd;
-    });
-    
+    std::vector<User>::iterator it = findUserByFd(clientFd);
     it != this->_users.end() ? 
         return *it : throw ServerException(USER_NOT_FOUND_ERR);
 
@@ -212,11 +208,7 @@ User &Server::getUserByFd(int clientFd) {
  * @return `true` if the nickname is already in use, `false` otherwise.
  */
 bool Server::isNicknameInUse(const std::string& nickname) {
-    std::vector<User>::iterator it = 
-    std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
-            return user.getNickname() == nickname;
-        });
-    
+    std::vector<User>::iterator it = findUserByNickname(nickname);
     return it != this->_users.end();
 }
 
@@ -251,20 +243,12 @@ void Server::sendMessage(int clientFd, const std::string& message) {
  * @param clientFd The file descriptor of the user to remove.
 */
 void Server::removeUser(int fd) {
-    std::vector<User>::iterator it = this->_users.begin();
-    while (it != this->_users.end()) {
-        if (it->getFd() == fd)
-            break;
-        it++;
-    }
-
-    
+    std::vector<User>::iterator it = findUserByFd(fd);
     if (it != this->_users.end()) {
         close(it->getFd());
         this->_users.erase(it);
     }
 }
-
 
 /**
  * This function aims to find a user by the file descriptor.
@@ -273,10 +257,42 @@ void Server::removeUser(int fd) {
  * 
  * @return The iterator to the user with the file descriptor.
  */
-std::vector<User>::iterator Server::findUserbyFd(int clientFd) {
-    return std::find_if(this->_users.begin(), this->_users.end(), [](const User& user) {
-        return user.getFd() == clientFd;
-    });
+std::vector<User>::iterator Server::findUserByFd(int clientFd) {
+    for (size_t i = 0; i < this->_users.size(); i++) {
+        if (this->_users[i].getFd() == clientFd)
+            return this->_users.begin() + i;
+    }
+    return this->_users.end();
+}
+
+/**
+ * This function aims to find a user by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return The iterator to the user with the nickname.
+ */
+std::vector<User>::iterator Server::findUserByNickname(std::string nickname) {
+    for (size_t i = 0; i < this->_users.size(); i++) {
+        if (this->_users[i].getNickname() == nickname)
+            return this->_users.begin() + i;
+    }
+    return this->_users.end();
+}
+
+/**
+ * This function aims to find a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The iterator to the channel with the name.
+ */
+std::vector<Channel>::iterator Server::findChannel(std::string channelName) {
+    for (size_t i = 0; i < this->_channels.size(); i++) {
+        if (this->_channels[i].getName() == channelName)
+            return this->_channels.begin() + i;
+    }
+    return this->_channels.end();
 }
 
 /**
@@ -296,23 +312,8 @@ void Server::addChannel(Channel channel) {
  * 
  * @param channelName The name of the channel to remove.
  */
-void Server::removeChannel(std::string channelName)
-{
+void Server::removeChannel(std::string channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     if (it != this->_channels.end())
         this->_channels.erase(it);
-}
-
-/**
- * This function aims to find a channel by the name.
- * 
- * @param channelName The name of the channel.
- * 
- * @return The iterator to the channel with the name.
- */
-std::vector<Channel>::iterator Server::findChannel(std::string channelName)
-{
-    return std::find_if(this->_channels.begin(), this->_channels.end(), [channelName](const Channel& channel) {
-        return channel.getName() == channelName;
-    });
 }
