@@ -3,14 +3,14 @@
 /**
  * NickCommand default constructor.
  */
-NickCommand::NickCommand(): _nickname("") {}
+NickCommand::NickCommand(): ICommand(false),  _nickname("") {}
 
 /**
  * NickCommand nickname constructor.
  * 
  * @param nickname The nickname
  */
-NickCommand::NickCommand(const std::string& nickname): _nickname(nickname) {}
+NickCommand::NickCommand(const std::string& nickname): ICommand(false), _nickname(nickname) {}
 
 /**
  * NickCommand destructor.
@@ -26,7 +26,7 @@ NickCommand::~NickCommand() {}
  * @throws `CommandException` If the nickname is empty, too long, already in use or invalid
  * 
  */
-void NickCommand::execute(Server &server, int fd) {
+void NickCommand::execute(Server &server, int clientFd) {
     if (this->_nickname.empty())
         throw NoNicknameGivenException();
 
@@ -40,12 +40,15 @@ void NickCommand::execute(Server &server, int fd) {
         // throw NicknameInUseException(_nickname);
 
     }
-
+    
     if (!NickCommand::isValidNickname())
         throw ErroneousNicknameException(this->_nickname);
 
-    User user = server.getUserByFd(fd);
-    user.setNickname(this->_nickname);
+    server.getUserByFd(clientFd).setNickname(this->_nickname);
+    if(server.getUserByFd(clientFd).canRegister())
+        server.attemptUserRegistration(clientFd);
+        
+
 }
 
 /**

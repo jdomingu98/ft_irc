@@ -4,7 +4,7 @@
  * Command User default constructor
  * 
  */
-UserCommand::UserCommand(): _username(""), _hostname(""), _serverName(""), _realName("") {}
+UserCommand::UserCommand(): ICommand(false), _username(""), _hostname(""), _serverName(""), _realName("") {}
 
 /**
  * Command User constructor
@@ -15,7 +15,7 @@ UserCommand::UserCommand(): _username(""), _hostname(""), _serverName(""), _real
  * @param realName The real name of the client
  */
 UserCommand::UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName,
-                            const std::string& realName) : _username(username), _hostname(hostname),
+                            const std::string& realName) : ICommand(false), _username(username), _hostname(hostname),
                                                             _serverName(serverName), _realName(realName) {}
 
 /**
@@ -31,11 +31,13 @@ UserCommand::~UserCommand() {}
  * @param fd The socket file descriptor of the client
  * 
  */
-void UserCommand::execute(Server &server, int fd) {
+void UserCommand::execute(Server &server, int clientFd) {
     // TODO: If user is already registered, throw exception (AlreadyRegisteredException)
-    User user = server.getUserByFd(fd);
+    User user = server.getUserByFd(clientFd);
     user.setUsername(this->_username);
     user.setHostname(this->_hostname);
     user.setServerName(this->_serverName);
     user.setRealName(this->_realName);
+     if(server.getUserByFd(clientFd).canRegister())
+        server.attemptUserRegistration(clientFd);
 }

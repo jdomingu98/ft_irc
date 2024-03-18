@@ -3,14 +3,14 @@
 /**
  * PassCommand default constructor.
 */
-PassCommand::PassCommand(): _password("") {}
+PassCommand::PassCommand(): ICommand(false), _password("") {}
 
 /**
  * PassCommand password constructor.
  * 
  * @param password The password
  */
-PassCommand::PassCommand(const std::string& password): _password(password) {}
+PassCommand::PassCommand(const std::string& password): ICommand(false), _password(password) {}
 
 /**
  * PassCommand destructor.
@@ -26,12 +26,11 @@ PassCommand::~PassCommand() {}
  * @throws `CommandException` If the password is invalid
  * 
  */
-void PassCommand::execute(Server &server, int fd) {
+void PassCommand::execute(Server &server, int clientFd) {
     std::cout << "Password: " << this->_password << std::endl;
-    if (server.getUserByFd(fd).isPasswordChecked())
+    if (server.getUserByFd(clientFd).isPasswordChecked())
         throw AlreadyRegisteredException();
-    if (server.isValidPassword(this->_password))
-        server.getUserByFd(fd).checkPassword();
-    else 
-        throw PasswordMismatchException();
+    if(server.getUserByFd(clientFd).isRegistered())
+        throw CommandException("User has already registered.");
+    server.getUserByFd(clientFd).setPassword(_password);
 }

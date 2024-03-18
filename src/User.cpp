@@ -142,6 +142,44 @@ void User::setNickname(const std::string& nickname){
     this->_nickname = nickname;
 }
 
+/**
+ * This function aims to set the password of the user.
+ * 
+ */
+void User::setPassword(const std::string& password) {
+    this->_password = password;
+}
+
+/**
+ * This function aims to check if the user can register.
+ * 
+ * @return `true` if the user can register, `false` otherwise.
+ */
+bool User::canRegister() {
+    return !(this->_username.empty() || this->_hostname.empty() ||
+    this->_serverName.empty() || this->_realName.empty() || this->_nickname.empty());
+}
+
+/**
+ * This function try to register the user and verify that it is the same password as on the server.
+ * 
+ * @return `true` if the user has registered, `false` otherwise.
+ */
+void User::makeRegistration(Server &server) {
+    if(!server.isValidPassword(_password))
+        throw InvalidPasswordException();
+    this->_registered = true;   
+    
+}
+
+/**
+ * This function aims to check if the user has registered.
+ * 
+ * @return `true` if the user has registered, `false` otherwise.
+ */
+bool User::isRegistered() const {
+    return this->_registered;
+}
 
 /**
  * This function aims to join a channel.

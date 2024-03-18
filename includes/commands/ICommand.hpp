@@ -7,8 +7,11 @@ class Server;
  * An interface that represents a command that can be executed by the server.
  */
 class ICommand {
+    protected:
+        bool _needValidate;
     public:
-        virtual void execute(Server &server, int fd) = 0;
+        virtual void execute(Server &server, int clientFd) = 0;
+        ICommand(bool needValidate) : _needValidate(needValidate) {};
 };
 
 #endif

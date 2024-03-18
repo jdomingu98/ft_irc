@@ -33,8 +33,6 @@ IParser* CommandParser::getParser(std::string command, int fd, Server &server) {
         return new QuitParser();
     if (command == "PASS")
         return new PassParser();
-    if (!server.userHasCheckedPassword(fd))
-        throw NotRegisteredException(); 
     if (command == "USER")
         return new UserParser();
     if (command == "NICK")

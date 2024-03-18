@@ -55,6 +55,7 @@ class Server {
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int clientFd);
         void removeUser(int clientFd);
+        bool attemptUserRegistration(int clientFd);
 
         void addChannel(Channel channel);
         void removeChannel(std::string channelName);

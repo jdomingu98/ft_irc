@@ -185,7 +185,7 @@ void Server::handleExistingConnection(int clientFd) {
 }
 
 /**
- * This function aims to validate the password provided by the client.
+ * This function validates if the user's password is the same as the server's password.
  * 
  * @param password The password provided by the client.
  * @return `true` if the password is valid, `false` otherwise.
@@ -255,6 +255,18 @@ void Server::removeUser(int fd) {
         this->_users.erase(it);
     }
 }
+
+/**
+ * This function attempt to register a user.
+ * 
+ * @param clientFd The file descriptor of the user.
+ * 
+ * @return `true` if the user is registered, `false` otherwise.
+ */
+bool Server::attemptUserRegistration(int clientFd) {
+    return this->getUserByFd(clientFd).makeRegistration(*this);
+}
+
 
 /**
  * This function aims to find a user by the file descriptor.
