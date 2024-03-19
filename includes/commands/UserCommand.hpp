@@ -20,7 +20,7 @@ class UserCommand : public ICommand {
     public:
         UserCommand();
         UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName, const std::string& realName);
-        void execute(Server &server, int fd);
+        void execute(Server &server, int clientFd);
         ~UserCommand();
 };
 

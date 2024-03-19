@@ -24,7 +24,7 @@ bool Server::isValidPort(const std::string port) {
  * 
  * @throws `ServerException` if the port is out of range.
  */
-Server::Server(const std::string port, const std::string password): _password(password) {
+Server::Server(const std::string port, const std::string password) : _password(password) {
     if (!this->isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
@@ -169,7 +169,7 @@ void Server::handleExistingConnection(int clientFd) {
         return;
 
     try {
-        ICommand* command = CommandParser::parse(std::string(buffer, readBytes), clientFd, *this);
+        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
         command->execute(*this, clientFd);
     } catch (IRCException& e) {
         std::string clientNickname = getUserByFd(clientFd).getNickname();
@@ -185,7 +185,7 @@ void Server::handleExistingConnection(int clientFd) {
 }
 
 /**
- * This function aims to validate the password provided by the client.
+ * This function validates if the user's password is the same as the server's password.
  * 
  * @param password The password provided by the client.
  * @return `true` if the password is valid, `false` otherwise.
@@ -254,6 +254,15 @@ void Server::removeUser(int fd) {
         close(it->getFd());
         this->_users.erase(it);
     }
+}
+
+/**
+ * This function attempt to register a user.
+ * 
+ * @param clientFd The file descriptor of the user.
+ */
+void Server::attemptUserRegistration(int clientFd) {
+    this->getUserByFd(clientFd).makeRegistration(*this);
 }
 
 /**

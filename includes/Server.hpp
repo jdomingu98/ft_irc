@@ -21,6 +21,9 @@
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
 
+class User;
+class Channel;
+
 /**
  * A class that represents the server.
  */
@@ -55,6 +58,7 @@ class Server {
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int clientFd);
         void removeUser(int clientFd);
+        void attemptUserRegistration(int clientFd);
 
         void addChannel(Channel channel);
         void removeChannel(std::string channelName);

@@ -5,7 +5,7 @@
  * 
  * @param fd The file descriptor of the user
  */
-User::User(int fd): _fd(fd), _passwordChecked(false) {}
+User::User(int fd) : _fd(fd), _passwordChecked(false) {}
 
 /**
  * User destructor 
@@ -91,6 +91,15 @@ int User::getFd() const {
 
 /**
  * This function aims to get the username of the user.
+ * 
+ * @return The username of the user.
+ */
+std::string User::getUsername() const {
+    return this->_username;
+}
+
+/**
+ * This function aims to set the username of the user.
  *
  * @param username The username of the user.
  */
@@ -99,7 +108,7 @@ void User::setUsername(const std::string& username) {
 }
 
 /**
- * This function aims to get the hostname of the user.
+ * This function aims to set the hostname of the user.
  * 
  * @param hostname The hostname of the user.
  */
@@ -108,7 +117,7 @@ void User::setHostname(const std::string& hostname) {
 }
 
 /**
- * This function aims to get the server name of the user.
+ * This function aims to set the server name of the user.
  * 
  * @param serverName The server name of the user.
  */
@@ -117,7 +126,7 @@ void User::setServerName(const std::string& serverName) {
 }
 
 /**
- * This function aims to get the real name of the user.
+ * This function aims to set the real name of the user.
  *
  * @param realName The real name of the user.
  */
@@ -137,11 +146,50 @@ std::string User::getNickname() const {
 /**
  * This function aims to set the nickname of the user.
  * 
+ * @param nickname The nickname of the user.
  */
-void User::setNickname(const std::string& nickname){
+void User::setNickname(const std::string& nickname) {
     this->_nickname = nickname;
 }
 
+/**
+ * This function aims to set the password of the user.
+ * 
+ * @param password The password the user wants to use.
+ */
+void User::setPassword(const std::string& password) {
+    this->_password = password;
+}
+
+/**
+ * This function aims to check if the user can register.
+ * 
+ * @return `true` if the user can register, `false` otherwise.
+ */
+bool User::canRegister() {
+    return !(this->_username.empty() || this->_hostname.empty() ||
+    this->_serverName.empty() || this->_realName.empty() || this->_nickname.empty());
+}
+
+/**
+ * This function try to register the user and verify that it is the same password as on the server.
+ * 
+ * @param server The server where the user is trying to register.
+ */
+void User::makeRegistration(Server &server) {
+    if (!server.isValidPassword(_password))
+        throw PasswordMismatchException();
+    this->_registered = true;   
+}
+
+/**
+ * This function aims to check if the user has registered.
+ * 
+ * @return `true` if the user has registered, `false` otherwise.
+ */
+bool User::isRegistered() const {
+    return this->_registered;
+}
 
 /**
  * This function aims to join a channel.
