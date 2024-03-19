@@ -35,10 +35,10 @@ enum Commands {
 class CommandParser {
     private:
         static std::vector<std::string> tokenize(const std::string& command);
-        static IParser* getParser(std::string command, int fd, Server &server);
+        static IParser* getParser(std::string command);
     
     public:
-        static ICommand* parse(const std::string& command, int fd, Server &server);
+        static ICommand* parse(const std::string& command);
 };
 
 #endif

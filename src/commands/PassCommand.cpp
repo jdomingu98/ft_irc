@@ -27,10 +27,7 @@ PassCommand::~PassCommand() {}
  * 
  */
 void PassCommand::execute(Server &server, int clientFd) {
-    std::cout << "Password: " << this->_password << std::endl;
-    if (server.getUserByFd(clientFd).isPasswordChecked())
+    if (server.getUserByFd(clientFd).isRegistered())
         throw AlreadyRegisteredException();
-    if(server.getUserByFd(clientFd).isRegistered())
-        throw CommandException("User has already registered.");
     server.getUserByFd(clientFd).setPassword(_password);
 }

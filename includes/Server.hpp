@@ -21,6 +21,9 @@
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
 
+class User;
+class Channel;
+
 /**
  * A class that represents the server.
  */

@@ -8,6 +8,7 @@
 # define MAX_CHANNELS 10
 
 class Channel;
+class Server;
 
 /**
  * A class that represents an user.
@@ -22,6 +23,7 @@ class User {
         std::string             _serverName;
         std::string             _realName;
         std::string             _nickname;
+        std::string             _password;
         std::vector<Channel>    _channels;
 
         std::vector<Channel>::const_iterator findChannel(std::string channelName) const;

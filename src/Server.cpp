@@ -169,7 +169,7 @@ void Server::handleExistingConnection(int clientFd) {
         return;
 
     try {
-        ICommand* command = CommandParser::parse(std::string(buffer, readBytes), clientFd, *this);
+        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
         command->execute(*this, clientFd);
     } catch (IRCException& e) {
         std::string clientNickname = getUserByFd(clientFd).getNickname();

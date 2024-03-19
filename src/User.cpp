@@ -169,7 +169,7 @@ bool User::canRegister() {
  */
 void User::makeRegistration(Server &server) {
     if(!server.isValidPassword(_password))
-        throw InvalidPasswordException();
+        throw PasswordMismatchException();
     this->_registered = true;   
 }
 
