@@ -16,6 +16,8 @@
 
 # include "exceptions.hpp"
 
+# include "Logger.hpp"
+
 // =================================================================================
 
 # define SUCCESS 0
