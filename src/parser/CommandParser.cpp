@@ -55,6 +55,5 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
     while (std::getline(tokenStream, token, ' ')) {
         tokens.push_back(trim(token));
     }
-    
     return tokens;
 }

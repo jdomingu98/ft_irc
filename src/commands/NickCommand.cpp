@@ -38,7 +38,6 @@ void NickCommand::execute(Server &server, int clientFd) {
         throw NickCollisionException(this->_nickname);
         // TODO: If user is registered, we throw NicknameInUseException
         // throw NicknameInUseException(_nickname);
-
     }
     
     if (!NickCommand::isValidNickname())
@@ -47,8 +46,6 @@ void NickCommand::execute(Server &server, int clientFd) {
     server.getUserByFd(clientFd).setNickname(this->_nickname);
     if(server.getUserByFd(clientFd).canRegister())
         server.attemptUserRegistration(clientFd);
-        
-
 }
 
 /**

@@ -260,13 +260,10 @@ void Server::removeUser(int fd) {
  * This function attempt to register a user.
  * 
  * @param clientFd The file descriptor of the user.
- * 
- * @return `true` if the user is registered, `false` otherwise.
  */
-bool Server::attemptUserRegistration(int clientFd) {
-    return this->getUserByFd(clientFd).makeRegistration(*this);
+void Server::attemptUserRegistration(int clientFd) {
+    this->getUserByFd(clientFd).makeRegistration(*this);
 }
-
 
 /**
  * This function aims to find a user by the file descriptor.

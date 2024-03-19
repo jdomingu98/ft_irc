@@ -16,6 +16,5 @@
 ICommand *NickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NoNicknameGivenException();
-
     return new NickCommand(tokens[1]);
 }

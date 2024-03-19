@@ -137,6 +137,7 @@ std::string User::getNickname() const {
 /**
  * This function aims to set the nickname of the user.
  * 
+ * @param nickname The nickname of the user.
  */
 void User::setNickname(const std::string& nickname){
     this->_nickname = nickname;
@@ -145,6 +146,7 @@ void User::setNickname(const std::string& nickname){
 /**
  * This function aims to set the password of the user.
  * 
+ * @param password The password the user wants to use.
  */
 void User::setPassword(const std::string& password) {
     this->_password = password;
@@ -163,13 +165,12 @@ bool User::canRegister() {
 /**
  * This function try to register the user and verify that it is the same password as on the server.
  * 
- * @return `true` if the user has registered, `false` otherwise.
+ * @param server The server where the user is trying to register.
  */
 void User::makeRegistration(Server &server) {
     if(!server.isValidPassword(_password))
         throw InvalidPasswordException();
     this->_registered = true;   
-    
 }
 
 /**
