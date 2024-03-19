@@ -36,8 +36,8 @@
 // #define RPL_INVITING(channel, nickname) (channel) " " (nickname)
 // #define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
 
-// #define ERR_NO_RECIPIENT(command) ":No recipient given " (command)
-// #define ERR_NO_TEXT_TO_SEND ":No text to send"
+#define ERR_NO_RECIPIENT(command) (":No recipient given (" + command + ")")
+#define ERR_NO_TEXT_TO_SEND ":No text to send"
 // #define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) " :Cannot send to channel"
 // #define ERR_NO_TOP_LEVEL(mask) (mask) " :No toplevel domain specified"
 // #define ERR_WILD_TOP_LEVEL(mask) (mask) " :Wildcard in toplevel domain"
@@ -119,6 +119,16 @@ class NotRegisteredException : public IRCException {
 class PasswordMismatchException : public IRCException {
     public:
         PasswordMismatchException() : IRCException("464", ":Password incorrect") {}
+};
+
+class NoRecipientGivenException : public IRCException {
+    public:
+        NoRecipientGivenException(const std::string command) : IRCException("411", ERR_NO_RECIPIENT(command)) {}
+};
+
+class NoTextToSendException : public IRCException {
+    public:
+        NoTextToSendException() : IRCException("412", ERR_NO_TEXT_TO_SEND) {}
 };
 
 #endif
