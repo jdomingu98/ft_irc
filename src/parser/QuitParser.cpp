@@ -10,7 +10,6 @@
  * 
  * @param tokens The parameters of the command.
  * 
- * @throws `ParserException` if the number of arguments is different than the expected.
  * @return The parsed command.
  */
 ICommand *QuitParser::parse(const std::vector<std::string>& tokens) {

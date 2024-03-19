@@ -5,7 +5,7 @@
  * 
  * @param fd The file descriptor of the user
  */
-User::User(int fd): _fd(fd), _passwordChecked(false) {}
+User::User(int fd) : _fd(fd), _passwordChecked(false) {}
 
 /**
  * User destructor 
@@ -91,6 +91,15 @@ int User::getFd() const {
 
 /**
  * This function aims to get the username of the user.
+ * 
+ * @return The username of the user.
+ */
+std::string User::getUsername() const {
+    return this->_username;
+}
+
+/**
+ * This function aims to set the username of the user.
  *
  * @param username The username of the user.
  */
@@ -99,7 +108,7 @@ void User::setUsername(const std::string& username) {
 }
 
 /**
- * This function aims to get the hostname of the user.
+ * This function aims to set the hostname of the user.
  * 
  * @param hostname The hostname of the user.
  */
@@ -108,7 +117,7 @@ void User::setHostname(const std::string& hostname) {
 }
 
 /**
- * This function aims to get the server name of the user.
+ * This function aims to set the server name of the user.
  * 
  * @param serverName The server name of the user.
  */
@@ -117,7 +126,7 @@ void User::setServerName(const std::string& serverName) {
 }
 
 /**
- * This function aims to get the real name of the user.
+ * This function aims to set the real name of the user.
  *
  * @param realName The real name of the user.
  */
@@ -139,7 +148,7 @@ std::string User::getNickname() const {
  * 
  * @param nickname The nickname of the user.
  */
-void User::setNickname(const std::string& nickname){
+void User::setNickname(const std::string& nickname) {
     this->_nickname = nickname;
 }
 
@@ -168,7 +177,7 @@ bool User::canRegister() {
  * @param server The server where the user is trying to register.
  */
 void User::makeRegistration(Server &server) {
-    if(!server.isValidPassword(_password))
+    if (!server.isValidPassword(_password))
         throw PasswordMismatchException();
     this->_registered = true;   
 }

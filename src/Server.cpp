@@ -24,7 +24,7 @@ bool Server::isValidPort(const std::string port) {
  * 
  * @throws `ServerException` if the port is out of range.
  */
-Server::Server(const std::string port, const std::string password): _password(password) {
+Server::Server(const std::string port, const std::string password) : _password(password) {
     if (!this->isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());

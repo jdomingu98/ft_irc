@@ -3,7 +3,7 @@
 
 # include "libsUtils.hpp"
 # include "Channel.hpp"
-#include "Server.hpp"
+# include "Server.hpp"
 
 # define MAX_CHANNELS 10
 
@@ -37,6 +37,7 @@ class User {
         // Getters
         int getFd() const;
         std::string getNickname() const;
+        std::string getUsername() const;
         bool isPasswordChecked() const;
         bool isUserInMaxChannels() const;
         bool isAlreadyInChannel(std::string channelName) const;

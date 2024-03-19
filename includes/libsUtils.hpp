@@ -14,7 +14,7 @@
 
 # include "utils.hpp"
 
-#include "exceptions.hpp"
+# include "exceptions.hpp"
 
 // =================================================================================
 

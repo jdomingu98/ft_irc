@@ -10,7 +10,7 @@
  * 
  * @param tokens The parameters of the command.
  * 
- * @throws `ParserException` if the number of arguments is different than the expected.
+ * @throws `NoNicknameGivenException` if the nickname is not specified.
  * @return The parsed command.
  */
 ICommand *NickParser::parse(const std::vector<std::string>& tokens) {
