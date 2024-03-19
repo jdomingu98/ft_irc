@@ -219,3 +219,8 @@ void User::leaveChannel(std::string channelName) {
     else {}
         //throw UserException(USER_CHANNEL_NOT_FOUND_ERR);
 }
+
+void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message) {
+    std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
+    server.sendMessage(destination.getFd(), response);
+}

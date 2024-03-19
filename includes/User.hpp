@@ -57,6 +57,7 @@ class User {
         bool canRegister();
         void joinChannel(Channel channel);
         void leaveChannel(std::string channelName);
+        void sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message);
 };
 
 #endif

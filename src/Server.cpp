@@ -218,6 +218,13 @@ bool Server::isNicknameInUse(const std::string& nickname) {
     return it != this->_users.end();
 }
 
+User &Server::getUserByNickname(const std::string &nickname) {
+    std::vector<User>::iterator it = this->findUserByNickname(nickname);
+    if (it == this->_users.end())
+        throw ServerException(USER_NOT_FOUND_ERR);
+    return *it;
+}
+
 /**
  * This function aims to check if the user has already checked the password.
  * 
@@ -237,9 +244,9 @@ bool Server::userHasCheckedPassword(int clientFd) {
  * 
  * @throws `ServerException` if the server can't send the message.
 */
-void Server::sendMessage(int clientFd, const std::string& message) {
-    //message += "\r\n";
-    if (send(clientFd, message.c_str(), message.size(), MSG_NOSIGNAL) < 0)
+void Server::sendMessage(int clientFd, const std::string& message) const {
+    std::string messageToSend = message + std::string("\r\n");
+    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
 }
 

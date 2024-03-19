@@ -1,0 +1,21 @@
+#ifndef PRIVATE_MESSAGE_COMMAND_HPP
+# define PRIVATE_MESSAGE_COMMAND_HPP
+
+# include "ICommand.hpp"
+# include "Server.hpp"
+# include "libsUtils.hpp"
+
+/**
+ * A class that represents the PRIVMSG command.
+ */
+class PrivateMessageCommand : public ICommand {
+    private:
+        std::vector<std::string> _receivers;
+        std::string _message;
+
+    public:
+        PrivateMessageCommand(std::vector<std::string> receivers, std::string message) : _receivers(receivers), _message(message) {}
+        void execute(Server &server, int fd);
+};
+
+#endif
