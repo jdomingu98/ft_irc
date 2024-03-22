@@ -8,18 +8,16 @@
  * @param message the message to parse with the following format: "PRIVMSG <receiver>[, <receiver>] :<message>"
 */
 ICommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() < 3) {
-        throw NoRecipientGivenException("PRIVMSG");
-    }
     std::vector<std::string> receivers;
     std::string message;
 
-    std::string receiver = tokens[1];
-    receivers.push_back(receiver);
-    size_t i = 2;
+    size_t i = 1;
     while (i < tokens.size() && tokens[i][0] != ':') {
         receivers.push_back(tokens[i]);
         i++;
+    }
+    if (i == 1) {
+        throw NoRecipientGivenException("PRIVMSG");
     }
     if (i == tokens.size()) {
         throw NoTextToSendException();
