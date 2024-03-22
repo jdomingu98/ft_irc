@@ -18,10 +18,12 @@ class User;
 */
 class Channel {
     private:
-        std::string         _name;
-        std::string         _password;
-        std::vector<User>   _users;
-        std::vector<User>   _operators;
+        std::string                 _name;
+        std::string                 _password;
+        std::vector<User>           _users;
+        std::vector<User>           _operators;
+        std::vector<std::string>    _inviteList;
+        std::vector<std::string>    _banList;
         std::string         _topic;
         std::string         _modes;
         int                 _limit;
@@ -30,6 +32,7 @@ class Channel {
         bool checkChannelName(std::string name) const;
         std::vector<User>::iterator findUser(std::string nickname);
         std::vector<User>::iterator findOper(std::string nickname);
+        bool isModesSet(std::string modesToCheck) const;
     
     public:
         //Constructors and destructor
@@ -38,6 +41,7 @@ class Channel {
 
         //Getters
         std::string getName() const;
+        std::string getPassword() const;
         std::vector<User> getUsers() const;
         std::vector<User> getOperators() const;
         std::vector<User> getAllUsers() const;
@@ -53,6 +57,11 @@ class Channel {
 
         //Operations
         bool checkPassword(std::string password) const;
+        bool isInviteOnly() const;
+        bool isUserInvited(std::string nickname) const;
+        bool isUserBanned(std::string nickname, std::string username, std::string hostname) const;
+        bool hasLimit() const;
+        bool isFull() const;
         void addUser(User user);
         void removeUser(std::string nickname);
         void removeOper(std::string nickname);

@@ -39,6 +39,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new NickParser();
     if (command == "PRIVMSG")
         return new PrivateMessageParser();
+    if (command == "JOIN")
+        return new JoinParser();
     throw CommandNotFoundException();
 }
 

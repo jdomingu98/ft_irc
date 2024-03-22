@@ -336,6 +336,15 @@ void Server::addChannel(Channel channel) {
 }
 
 /**
+ * This function aims to get the channels of the server.
+ * 
+ * @return The channels of the server.
+ */
+std::vector<Channel> Server::getChannels() const {
+    return this->_channels;
+}
+
+/**
  * This function aims to remove a channel from the server.
  * 
  * @param channelName The name of the channel to remove.

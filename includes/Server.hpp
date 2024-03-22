@@ -62,6 +62,7 @@ class Server {
         void attemptUserRegistration(int clientFd);
 
         void addChannel(Channel channel);
+        std::vector<Channel> getChannels() const;
         void removeChannel(std::string channelName);
 };
 
