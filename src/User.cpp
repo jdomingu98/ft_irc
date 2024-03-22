@@ -221,6 +221,7 @@ void User::leaveChannel(std::string channelName) {
 }
 
 void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message) {
+    Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
     server.sendMessage(destination.getFd(), response);
 }
