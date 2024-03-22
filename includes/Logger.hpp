@@ -9,6 +9,8 @@ class Logger {
         Logger(void);
         ~Logger(void);
 
+	static const bool _debugMode = false;
+
     public:
         static void debug(std::string message);
 };
