@@ -245,10 +245,8 @@ bool Channel::hasLimit() const {
  * @return `true` if the channel is full, `false` otherwise.
  */
 bool Channel::isFull() const {
-    return this->_users.size() + this->_operators.size() == this->_limit;
+    return (int) (this->_users.size() + this->_operators.size()) == this->_limit;
 }
-
-
 
 /**
  * This function aims to add a user to the channel.
