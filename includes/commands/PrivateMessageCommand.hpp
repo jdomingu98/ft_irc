@@ -13,8 +13,10 @@ class PrivateMessageCommand : public ICommand {
         std::vector<std::string> _receivers;
         std::string _message;
 
+        PrivateMessageCommand();
+
     public:
-        PrivateMessageCommand(std::vector<std::string> receivers, std::string message) : _receivers(receivers), _message(message) {}
+        PrivateMessageCommand(std::vector<std::string> receivers, std::string message);
         void execute(Server &server, int fd);
 };
 
