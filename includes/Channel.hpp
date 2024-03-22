@@ -26,7 +26,7 @@ class Channel {
         std::vector<std::string>    _banList;
         std::string         _topic;
         std::string         _modes;
-        int                 _limit;
+        size_t              _limit;
         bool                _passwordSet;
 
         bool checkChannelName(std::string name) const;
