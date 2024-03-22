@@ -161,11 +161,17 @@ class TooManyChannelsException : public IRCException {
         TooManyChannelsException(std::string channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
 };
 
+/**
+ * This exception is thrown when the command does not provide a client or channel to send a message.
+ */
 class NoRecipientGivenException : public IRCException {
     public:
         NoRecipientGivenException(const std::string command) : IRCException("411", ERR_NO_RECIPIENT(command)) {}
 };
 
+/**
+ * This exception is thrown when the command does not provide a text to send.
+ */
 class NoTextToSendException : public IRCException {
     public:
         NoTextToSendException() : IRCException("412", ERR_NO_TEXT_TO_SEND) {}
