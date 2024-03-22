@@ -9,6 +9,7 @@
 # include "PassParser.hpp"
 # include "NickParser.hpp"
 # include "QuitParser.hpp"
+# include "PrivateMessageParser.hpp"
 
 # include "libsUtils.hpp"
 

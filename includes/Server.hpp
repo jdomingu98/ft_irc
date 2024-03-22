@@ -52,9 +52,10 @@ class Server {
         Server(const std::string port, const std::string password);
         ~Server();
 
-        void sendMessage(int clientFd, const std::string& message);
+        void sendMessage(int clientFd, const std::string& message) const;
         bool isValidPassword(const std::string& password);
         User &getUserByFd(int clientFd);
+        User &getUserByNickname(const std::string& nickname);
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int clientFd);
         void removeUser(int clientFd);

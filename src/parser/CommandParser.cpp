@@ -37,6 +37,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new UserParser();
     if (command == "NICK")
         return new NickParser();
+    if (command == "PRIVMSG")
+        return new PrivateMessageParser();
     throw CommandNotFoundException();
 }
 
