@@ -121,11 +121,57 @@ class PasswordMismatchException : public IRCException {
         PasswordMismatchException() : IRCException("464", ":Password incorrect") {}
 };
 
+/**
+ * This exception is thrown when an user attemps to join a channel that is invite-only and it was not invited.
+ */
+class InviteOnlyChanException : public IRCException {
+    public:
+        InviteOnlyChanException(std::string channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
+};
+
+/**
+ * This exception is thrown when an user attemps to join a channel where it was banned previously.
+ */
+class BannedFromChanException : public IRCException {
+    public:
+        BannedFromChanException(std::string channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
+};
+
+/**
+ * This exception is thrown when a channel password is incorrect.
+ */
+class BadChannelKeyException : public IRCException {
+    public:
+        BadChannelKeyException(std::string channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
+};
+
+/**
+ * This exception is thrown when the channel is full
+ */
+class ChannelIsFullException : public IRCException {
+    public:
+        ChannelIsFullException(std::string channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
+};
+
+/**
+ * This exception is thrown when a user joins too many channels.
+ */
+class TooManyChannelsException : public IRCException {
+    public:
+        TooManyChannelsException(std::string channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
+};
+
+/**
+ * This exception is thrown when the command does not provide a client or channel to send a message.
+ */
 class NoRecipientGivenException : public IRCException {
     public:
         NoRecipientGivenException(const std::string command) : IRCException("411", ERR_NO_RECIPIENT(command)) {}
 };
 
+/**
+ * This exception is thrown when the command does not provide a text to send.
+ */
 class NoTextToSendException : public IRCException {
     public:
         NoTextToSendException() : IRCException("412", ERR_NO_TEXT_TO_SEND) {}

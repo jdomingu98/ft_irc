@@ -69,12 +69,34 @@ std::vector<User>::iterator Channel::findOper(std::string nickname) {
 }
 
 /**
+ * This function aims to checks if the modes of the param matchs the ones of the channel.
+ * 
+ * @param modesToCheck The modes to check.
+ */
+bool Channel::isModesSet(std::string modesToCheck) const {
+    for (size_t i = 0; i < modesToCheck.size(); i++) {
+        if (this->_modes.find(modesToCheck[i]) == std::string::npos)
+            return false;
+    }
+    return true;
+}
+
+/**
  * This function aims to get the name of the channel.
  * 
  * @return The name of the channel.
  */
 std::string Channel::getName() const{
     return this->_name;
+}
+
+/**
+ * This function aims to get the password of the channel.
+ * 
+ * @return The password of the channel.
+ */
+std::string Channel::getPassword() const{
+    return this->_password;
 }
 
 /**
@@ -174,6 +196,59 @@ bool Channel::checkPassword(std::string password) const {
 }
 
 /**
+ * This function aims to check if the channel is invite only.
+ * 
+ * @return `true` if the channel is invite only, `false` otherwise.
+ */
+bool Channel::isInviteOnly() const {
+    return isModesSet("i");
+}
+
+/**
+ * This function aims to check if the user is invited to the channel.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return `true` if the user is invited, `false` otherwise.
+ */
+bool Channel::isUserInvited(std::string nickname) const {
+    return std::find(this->_inviteList.begin(), this->_inviteList.end(), nickname) != this->_inviteList.end();
+}
+
+/**
+ * This function aims to check if the user is banned from the channel.
+ * 
+ * @param nickname The nickname of the user.
+ * @param username The username of the user.
+ * @param hostname The hostname of the user.
+ * 
+ * @return `true` if the user is banned, `false` otherwise.
+ */
+bool Channel::isUserBanned(std::string nickname, std::string username, std::string hostname) const {
+    return std::find(this->_banList.begin(), this->_banList.end(), nickname) != this->_banList.end()
+        || std::find(this->_banList.begin(), this->_banList.end(), username) != this->_banList.end()
+        || std::find(this->_banList.begin(), this->_banList.end(), hostname) != this->_banList.end();
+}
+
+/**
+ * This function aims to check if the channel has a limit of users.
+ * 
+ * @return `true` if the channel has a limit of users, `false` otherwise.
+ */
+bool Channel::hasLimit() const {
+    return this->_limit != NO_LIMIT;
+}
+
+/**
+ * This function aims to check if the channel is full.
+ * 
+ * @return `true` if the channel is full, `false` otherwise.
+ */
+bool Channel::isFull() const {
+    return (int) (this->_users.size() + this->_operators.size()) == this->_limit;
+}
+
+/**
  * This function aims to add a user to the channel.
  * 
  * @param user The user to add.
@@ -185,6 +260,17 @@ void Channel::addUser(User user) {
     if (it != this->_users.end()) {}
         //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
     this->_users.push_back(user);
+}
+
+/**
+ * This function aims to add an operator to the channel.
+ * 
+ * @param user The operator to add.
+ * 
+ * @throw `ChannelException` If the operator is already in the channel.
+ */
+void Channel::addOper(User user) {
+    this->_operators.push_back(user);
 }
 
 /**
@@ -205,7 +291,7 @@ void Channel::removeUser(std::string nickname) {
 /**
  * This function aims to add an operator to the channel.
  * 
- * @param user The operator to add.
+ * @param nickname The operator to add.
  * 
  * @throw `ChannelException` If the operator is already in the channel.
  */

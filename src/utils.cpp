@@ -20,3 +20,21 @@ std::string trim(const std::string& str) {
 
     return std::string(it, rit.base());
 }
+
+/**
+ * Splits the string by the delimiter.
+ * 
+ * @param s The string to be split.
+ * @param delim The delimiter.
+ * 
+ * @return The vector of strings.
+ */
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}

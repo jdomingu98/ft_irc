@@ -20,11 +20,11 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-CMD_PREFIXS		= User Nick Pass Quit PrivateMessage
+CMD_PREFIXS		= User Nick Pass Quit PrivateMessage Join
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage
+PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 

@@ -10,6 +10,7 @@
 # include "NickParser.hpp"
 # include "QuitParser.hpp"
 # include "PrivateMessageParser.hpp"
+# include "JoinParser.hpp"
 
 # include "libsUtils.hpp"
 
@@ -27,7 +28,8 @@ enum Commands {
     TOPIC,
     MODE,
     KICK,
-    INVITE
+    INVITE,
+    OPER
 };
 
 /**

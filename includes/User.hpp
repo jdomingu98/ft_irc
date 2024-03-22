@@ -38,6 +38,7 @@ class User {
         int getFd() const;
         std::string getNickname() const;
         std::string getUsername() const;
+        std::string getHostname() const;
         bool isPasswordChecked() const;
         bool isUserInMaxChannels() const;
         bool isAlreadyInChannel(std::string channelName) const;
@@ -55,8 +56,7 @@ class User {
         void checkPassword();
         void makeRegistration(Server &server);
         bool canRegister();
-        void joinChannel(Channel channel);
-        void leaveChannel(std::string channelName);
+        void addChannel(Channel &channel);
         void sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message);
 };
 
