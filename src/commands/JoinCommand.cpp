@@ -3,26 +3,10 @@
 /**
  * Constructs a new JoinCommand.
  * 
- * @param channels The channels to join.
- * @param keys The passwords to join the channels.
+ * @param channelMap The map of channels to be joined.
  */
-JoinCommand::JoinCommand(std::string channels, std::string keys) {
-    std::vector<std::string> channelsVec = split(channels, ',');
-    std::vector<std::string> keysVec = split(keys, ',');
-
-    for (size_t i = 0; i < channelsVec.size(); i++) {
-        if (channelsVec[i] == '' && keysVec[i] == '')
-            continue;
-        if (channelsVec[i] == '') {}
-            // throw IRCException();
-        if (i < keysVec.size() && keysVec[i] != "")
-            this->_channels[channelsVec[i]] = keysVec[i];
-        else
-            this->_channels[channelsVec[i]] = "";
-    }
-    channelsVec.clear();
-    keysVec.clear();
-}
+JoinCommand::JoinCommand(std::map<std::string, std::string> channelMap)
+    : ICommand(true), _channels(channelMap) {}
 
 /**
  * Destroys the JoinCommand.
@@ -49,65 +33,65 @@ JoinCommand::~JoinCommand() {
  * 
  */
 void JoinCommand::execute(Server &server, int clientFd) {
-    User *user = server.getUserByFd(clientFd);
+    User user = server.getUserByFd(clientFd);
     std::vector<Channel> serverChannels = server.getChannels();
     
     bool isOperator;
-    std::string nickname = user->getNickname();
-    std::string username = user->getUsername();
-    std::string hostname = user->getHostname();
+    std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
 
     std::string channelName;
     std::string channelKey;
 
-    for (std::vector<Channel>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
+    for (std::map<std::string, std::string>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
         channelName = it->first;
         channelKey = it->second;
         isOperator = false;
 
         //0. If channel[i] does not exist, create it
         if (server.findChannel(channelName) == serverChannels.end()) {
-            Channel newChannel(channelName, *user);
+            Channel newChannel(channelName, user);
             server.addChannel(newChannel);
             if (channelKey != "")
                 server.findChannel(channelName)->setPassword(channelKey);
             isOperator = true;
         }
 
-        Channel *channel = server.findChannel(channelName);
+        Channel channel = *server.findChannel(channelName);
 
         //1. Check if channel[i] is invite-only channel and if user is invited -> ERR_INVITEONLYCHAN
-        /*if (channel->isInviteOnly() && !channel->isUserInvited(nickname)) {
-            throw InviteOnlyChanException(channel->getName());
+        /*if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {
+            throw InviteOnlyChanException(channel.getName());
         }*/
 
         //2. Check if user's nick/username/hostname is banned from channel[i] -> ERR_BANNEDFROMCHAN
-        /*if (channel->isUserBanned(nickname, username, hostname)) {
-            throw BannedFromChanException(channel->getName());
+        /*if (channel.isUserBanned(nickname, username, hostname)) {
+            throw BannedFromChanException(channel.getName());
         }*/
 
         //3. Check if password is correct if channel[i] is password-protected
-        if (channel->isPasswordSet() && channel->getPassword() != channelKey) {
-            throw BadChannelKeyException(channel->getName());
+        if (channel.isPasswordSet() && channel.getPassword() != channelKey) {
+            throw BadChannelKeyException(channel.getName());
         }
 
         //4. Check if channel[i] has limit and if its full
-        if (channel->hasLimit() && channel->isFull()) {
-            throw ChannelIsFullException(channel->getName());
+        if (channel.hasLimit() && channel.isFull()) {
+            throw ChannelIsFullException(channel.getName());
         }
 
         //5. Check if user has joined max channels
-        if (user->isUserInMaxChannels()) {
-            throw TooManyChannelsException(channel->getName());
+        if (user.isUserInMaxChannels()) {
+            throw TooManyChannelsException(channel.getName());
         }
 
-        isOperator  ? channel->addOper(user)
-                    : channel->addUser(user);
+        isOperator ? channel.addOper(user)
+                   : channel.addUser(user);
         
-        user->addChannel(channel);
+        user.addChannel(channel);
 
         //6. Send JOIN message to all users in channel[i] ¿?
-        //server.sendMessage(clientFd, RPL_TOPIC(channel->getName(), channel->getTopic()));
-        //server.sendMessage(clientFd, RPL_NAMREPLY(channel->getName(), channel->getAllUsers()));
+        //server.sendMessage(clientFd, RPL_TOPIC(channel.getName(), channel.getTopic()));
+        //server.sendMessage(clientFd, RPL_NAMREPLY(channel.getName(), channel.getAllUsers()));
     }
 }

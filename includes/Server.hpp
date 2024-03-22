@@ -46,11 +46,12 @@ class Server {
         void closeConnections();
         std::vector<User>::iterator findUserByFd(int clientFd);
         std::vector<User>::iterator findUserByNickname(std::string nickname);
-        std::vector<Channel>::iterator findChannel(std::string channelName);
 
     public:
         Server(const std::string port, const std::string password);
         ~Server();
+
+        std::vector<Channel>::iterator findChannel(std::string channelName);
 
         void sendMessage(int clientFd, const std::string& message) const;
         bool isValidPassword(const std::string& password);

@@ -153,6 +153,15 @@ void User::setNickname(const std::string& nickname) {
 }
 
 /**
+ * This function aims to get the hostname of the user.
+ * 
+ * @return The hostname of the user.
+ */
+std::string User::getHostname() const {
+    return this->_hostname;
+}
+
+/**
  * This function aims to set the password of the user.
  * 
  * @param password The password the user wants to use.
@@ -192,32 +201,12 @@ bool User::isRegistered() const {
 }
 
 /**
- * This function aims to join a channel.
+ * This function aims to add a channel to the user.
  * 
- * @param channel The channel to join.
+ * @param channel The channel to be added.
  */
-void User::joinChannel(Channel channel) {
-    if (isUserInMaxChannels())
-        //throw UserException(USER_CHANNEL_FULL_ERR);
-    if (isAlreadyInChannel(channel.getName()))
-        //throw UserException(USER_ALREADY_IN_CHANNEL_ERR);
-    // Comprobar que el canal es de solo invitación y puede entrar
-    // Comprobar que el canal tiene contraseña y la contraseña es correcta
-    // Comprobar que el canal tiene límite y no se ha alcanzado
+void User::addChannel(Channel &channel) {
     this->_channels.push_back(channel);
-}
-
-/**
- * This function aims to leave a channel.
- * 
- * @param channelName The name of the channel to leave.
- */
-void User::leaveChannel(std::string channelName) {
-    std::vector<Channel>::iterator it = findChannel(channelName);
-    if (it != this->_channels.end())
-        this->_channels.erase(it);
-    else {}
-        //throw UserException(USER_CHANNEL_NOT_FOUND_ERR);
 }
 
 /**

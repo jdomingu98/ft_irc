@@ -63,6 +63,7 @@ class Channel {
         bool hasLimit() const;
         bool isFull() const;
         void addUser(User user);
+        void addOper(User user);
         void removeUser(std::string nickname);
         void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);

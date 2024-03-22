@@ -263,6 +263,17 @@ void Channel::addUser(User user) {
 }
 
 /**
+ * This function aims to add an operator to the channel.
+ * 
+ * @param user The operator to add.
+ * 
+ * @throw `ChannelException` If the operator is already in the channel.
+ */
+void Channel::addOper(User user) {
+    this->_operators.push_back(user);
+}
+
+/**
  * This function aims to remove a user from the channel.
  * 
  * @param nickname The nickname of the user to remove.
