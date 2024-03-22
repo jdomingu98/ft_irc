@@ -218,6 +218,12 @@ bool Server::isNicknameInUse(const std::string& nickname) {
     return it != this->_users.end();
 }
 
+/**
+ * This function aims to get all the user information searching by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * @return The user object with all its information.
+ */
 User &Server::getUserByNickname(const std::string &nickname) {
     std::vector<User>::iterator it = this->findUserByNickname(nickname);
     if (it == this->_users.end())

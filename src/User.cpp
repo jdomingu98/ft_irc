@@ -220,6 +220,13 @@ void User::leaveChannel(std::string channelName) {
         //throw UserException(USER_CHANNEL_NOT_FOUND_ERR);
 }
 
+/**
+ * This function aims to send a private message to a user.
+ * 
+ * @param server The server where the user is connected.
+ * @param destination The user who will receive the message.
+ * @param message The message to send.
+ */
 void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message) {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
