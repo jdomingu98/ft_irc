@@ -167,7 +167,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     if (buffer[0] == '\0')
         return;
-
+    Logger::debug("Mensaje del cliente: " + std::string(buffer, readBytes));
     try {
         ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
         command->execute(*this, clientFd);
