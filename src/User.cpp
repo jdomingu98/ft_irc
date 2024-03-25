@@ -68,13 +68,13 @@ bool User::isUserInMaxChannels() const {
 }
 
 /**
- * This function aims to check if the user is already in a channel.
+ * This function aims to check if the user is on a channel.
  * 
  * @param channelName The name of the channel.
  * 
- * @return `true` if the user is already in the channel, `false` otherwise.
+ * @return `true` if the user is on the channel, `false` otherwise.
  */
-bool User::isAlreadyInChannel(std::string channelName) const {
+bool User::isOnChannel(std::string channelName) const {
     
     std::vector<Channel>::const_iterator it = findChannel(channelName);
     return it != this->_channels.end();
@@ -105,6 +105,15 @@ std::string User::getUsername() const {
  */
 void User::setUsername(const std::string& username) {
     this->_username = username;
+}
+
+/**
+ * This function aims to get the hostname of the user.
+ * 
+ * @return The hostname of the user.
+ */
+std::string User::getHostname() const {
+    return this->_hostname;
 }
 
 /**
@@ -153,21 +162,21 @@ void User::setNickname(const std::string& nickname) {
 }
 
 /**
- * This function aims to get the hostname of the user.
- * 
- * @return The hostname of the user.
- */
-std::string User::getHostname() const {
-    return this->_hostname;
-}
-
-/**
  * This function aims to set the password of the user.
  * 
  * @param password The password the user wants to use.
  */
 void User::setPassword(const std::string& password) {
     this->_password = password;
+}
+
+/**
+ * This function aims to get the channels of the user.
+ * 
+ * @return The channels of the user.
+ */
+std::vector<Channel> getChannels() const {
+    return this->_channels;
 }
 
 /**
@@ -186,7 +195,7 @@ bool User::canRegister() {
  * @param server The server where the user is trying to register.
  */
 void User::makeRegistration(Server &server) {
-    if (!server.isValidPassword(_password))
+    if (!server.isValidPassword(this->_password))
         throw PasswordMismatchException();
     this->_registered = true;   
 }
@@ -210,13 +219,13 @@ void User::addChannel(Channel &channel) {
 }
 
 /**
- * This function aims to send a private message to a user.
+ * This function aims to send a private message to an user.
  * 
  * @param server The server where the user is connected.
  * @param destination The user who will receive the message.
  * @param message The message to send.
  */
-void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message) {
+void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string &message) {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
     server.sendMessage(destination.getFd(), response);

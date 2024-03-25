@@ -31,6 +31,7 @@ ICommand *JoinParser::parse(const std::vector<std::string>& tokens) {
         else
             channels[channelsVec[i]] = "";
     }
+
     channelsVec.clear();
     keysVec.clear();
     return new JoinCommand(channels);

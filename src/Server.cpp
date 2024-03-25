@@ -50,7 +50,7 @@ void Server::closeConnections() {
 
     for (size_t i = 0; i < this->_users.size(); i++)
         close(this->_users[i].getFd());
-    std::vector<User>().swap(_users);
+    std::vector<User>().swap(this->_users);
 }
 
 /**
