@@ -25,7 +25,7 @@ QuitCommand::~QuitCommand() {}
  * 
  */
 void QuitCommand::execute(Server &server, int clientFd) {
-    if (_msg.length() == 0) {
+    if (this->_msg.length() == 0) {
         // message = user.getNickname();
         //send message to all clients on channel and server
     }

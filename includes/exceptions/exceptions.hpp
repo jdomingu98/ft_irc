@@ -177,4 +177,20 @@ class NoTextToSendException : public IRCException {
         NoTextToSendException() : IRCException("412", ERR_NO_TEXT_TO_SEND) {}
 };
 
+/**
+ * This exception is thrown when the channel searched does not exist.
+ */
+class NoSuchChannelException : public IRCException {
+    public:
+        NoSuchChannelException(std::string channelName) : IRCException("403", channelName + " :No such channel") {}
+};
+
+/**
+ * This exception is thrown when a user is not on a channel.
+ */
+class NotOnChannelException : public IRCException {
+    public:
+        NotOnChannelException(std::string channelName) : IRCException("442", channelName + " :You're not on that channel") {}
+};
+
 #endif

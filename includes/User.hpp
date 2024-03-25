@@ -39,9 +39,10 @@ class User {
         std::string getNickname() const;
         std::string getUsername() const;
         std::string getHostname() const;
+        std::vector<Channel> getChannels() const;
         bool isPasswordChecked() const;
         bool isUserInMaxChannels() const;
-        bool isAlreadyInChannel(std::string channelName) const;
+        bool isOnChannel(std::string channelName) const;
         bool isRegistered() const;
 
         // Setters

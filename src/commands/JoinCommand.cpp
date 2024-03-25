@@ -85,8 +85,8 @@ void JoinCommand::execute(Server &server, int clientFd) {
             throw TooManyChannelsException(channel.getName());
         }
 
-        isOperator ? channel.addOper(user)
-                   : channel.addUser(user);
+        isOperator  ? channel.addOper(user)
+                    : channel.addUser(user);
         
         user.addChannel(channel);
 
