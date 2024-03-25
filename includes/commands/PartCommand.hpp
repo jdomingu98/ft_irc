@@ -4,9 +4,12 @@
 # include "ICommand.hpp"
 
 # include "Server.hpp"
+# include "Channel.hpp"
 
 # include "libsUtils.hpp"
 # include "utils.hpp"
+
+class Channel;
 
 /**
  * An ICommand implementation that is responsible for the leaving of a channel.

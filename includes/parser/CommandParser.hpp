@@ -11,6 +11,7 @@
 # include "QuitParser.hpp"
 # include "PrivateMessageParser.hpp"
 # include "JoinParser.hpp"
+# include "PartParser.hpp"
 
 # include "libsUtils.hpp"
 

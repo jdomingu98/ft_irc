@@ -175,7 +175,7 @@ void User::setPassword(const std::string& password) {
  * 
  * @return The channels of the user.
  */
-std::vector<Channel> getChannels() const {
+std::vector<Channel> User::getChannels() const {
     return this->_channels;
 }
 
@@ -185,8 +185,11 @@ std::vector<Channel> getChannels() const {
  * @return `true` if the user can register, `false` otherwise.
  */
 bool User::canRegister() {
-    return !(this->_username.empty() || this->_hostname.empty() ||
-    this->_serverName.empty() || this->_realName.empty() || this->_nickname.empty());
+    return  !(this->_username.empty()
+            || this->_hostname.empty()
+            || this->_serverName.empty()
+            || this->_realName.empty()
+            || this->_nickname.empty());
 }
 
 /**

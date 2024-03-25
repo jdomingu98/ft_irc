@@ -26,7 +26,7 @@ ICommand *PartParser::parse(const std::vector<std::string>& tokens) {
 
     for (size_t i = 0; i < channelNameList.size(); i++) {
         //Search channels
-        if (channelNameList[i]  != '#' || channelNameList[i] != '&') { //Probar que devuelve server oficial
+        if (channelNameList[i]  != "#" || channelNameList[i] != "&") { //Probar que devuelve server oficial
             //throw IRCException();
         }
 
@@ -36,7 +36,7 @@ ICommand *PartParser::parse(const std::vector<std::string>& tokens) {
 
         if (!user.isOnChannel(channelNameList[i]))
             throw NotOnChannelException(channelNameList[i]);
-            
+
         Logger::debug("User in channel. Added to PART list.");
         channels.push_back(*(server.findChannel(channelNameList[i])));
     }

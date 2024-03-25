@@ -290,24 +290,9 @@ void Channel::removeUser(std::string nickname) {
     else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
     if (this->_users.empty() && this->_operators.empty()) {
-        server.findChannel(this->_name)->erase(server.findChannel(this->_name));
+        server.getChannels()->erase(server.findChannel(this->_name));
         ~Channel();
     }
-}
-
-/**
- * This function aims to add an operator to the channel.
- * 
- * @param nickname The operator to add.
- * 
- * @throw `ChannelException` If the operator is already in the channel.
- */
-void Channel::removeOper(std::string nickname) {
-    std::vector<User>::iterator it = findOper(nickname);
-    if (it != this->_operators.end())
-        this->_operators.erase(it);
-    else {}
-        //throw ChannelException(USER_NOT_FOUND_ERR);
 }
 
 /**
