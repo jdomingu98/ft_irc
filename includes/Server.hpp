@@ -38,6 +38,10 @@ class Server {
         std::vector<User>       _users;
         std::vector<Channel>    _channels;
 
+        // Singleton Pattern
+        static Server           *_server;
+        Server(const std::string port, const std::string password);
+
         bool isValidPort(const std::string port);
         void initServer();
         void listenClients();
@@ -48,15 +52,19 @@ class Server {
         std::vector<User>::iterator findUserByNickname(std::string nickname);
 
     public:
-        Server(const std::string port, const std::string password);
         ~Server();
+        static void init(std::string port, std::string password);
+        static Server &getInstance();
 
         std::vector<Channel>::iterator findChannel(std::string channelName);
 
-        void sendMessage(int clientFd, const std::string& message) const;
-        bool isValidPassword(const std::string& password);
+        //Getters
         User &getUserByFd(int clientFd);
         User &getUserByNickname(const std::string& nickname);
+
+        //Operations
+        void sendMessage(int clientFd, const std::string& message) const;
+        bool isValidPassword(const std::string& password);
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int clientFd);
         void removeUser(int clientFd);

@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+Server *Server::_server = NULL;
+
 /**
  * This function aims to validate the port number.
  * A valid port number is between 1 and 65535.
@@ -29,7 +31,6 @@ Server::Server(const std::string port, const std::string password) : _password(p
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
     this->initServer();
-    this->listenClients();
 }
 
 /**
@@ -39,6 +40,29 @@ Server::Server(const std::string port, const std::string password) : _password(p
  */
 Server::~Server() {
     this->closeConnections();
+}
+
+/**
+ * This function aims to initialize the server.
+ * 
+ * @param port The port number to listen for incoming connections.
+ * @param password The password to authenticate the clients.
+ *
+ */
+void Server::init(std::string port, std::string password) {
+    Server::_server = new Server(port, password);
+    Server::_server->listenClients();
+}
+
+/**
+ * This function aims to get the instance of the server.
+ * 
+ * @return The instance of the server.
+ */
+Server &Server::getInstance() {
+    if (Server::_server == NULL)
+        Server::_server = new Server(DEFAULT_PORT, DEFAULT_PASS);
+    return *Server::_server;
 }
 
 /**
@@ -170,7 +194,7 @@ void Server::handleExistingConnection(int clientFd) {
     Logger::debug("Mensaje del cliente: " + std::string(buffer, readBytes));
     try {
         ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
-        command->execute(*this, clientFd);
+        command->execute(clientFd);
     } catch (IRCException& e) {
         std::string clientNickname = getUserByFd(clientFd).getNickname();
         sendMessage(clientFd,
@@ -275,7 +299,7 @@ void Server::removeUser(int fd) {
  * @param clientFd The file descriptor of the user.
  */
 void Server::attemptUserRegistration(int clientFd) {
-    this->getUserByFd(clientFd).makeRegistration(*this);
+    this->getUserByFd(clientFd).makeRegistration();
 }
 
 /**

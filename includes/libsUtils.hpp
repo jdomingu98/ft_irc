@@ -9,6 +9,7 @@
 # include <cstdlib>
 # include <iostream>
 # include <sstream>
+# include <string>
 # include <vector>
 # include <unistd.h>
 
@@ -22,6 +23,9 @@
 
 # define SUCCESS 0
 # define EXIT 1
+
+# define DEFAULT_PORT "6666"
+# define DEFAULT_PASS "1234"
 
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
 # define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
@@ -42,5 +46,8 @@
 # define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 
 #define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
+
+std::string trim(const std::string& str);
+std::vector<std::string> split(const std::string &s, char delim);
 
 #endif

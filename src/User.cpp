@@ -195,10 +195,9 @@ bool User::canRegister() {
 /**
  * This function try to register the user and verify that it is the same password as on the server.
  * 
- * @param server The server where the user is trying to register.
  */
-void User::makeRegistration(Server &server) {
-    if (!server.isValidPassword(this->_password))
+void User::makeRegistration() {
+    if (!Server::getInstance().isValidPassword(this->_password))
         throw PasswordMismatchException();
     this->_registered = true;   
 }
@@ -224,12 +223,11 @@ void User::addChannel(Channel &channel) {
 /**
  * This function aims to send a private message to an user.
  * 
- * @param server The server where the user is connected.
  * @param destination The user who will receive the message.
  * @param message The message to send.
  */
-void User::sendPrivateMessageToUser(const Server &server, const User &destination, const std::string &message) {
+void User::sendPrivateMessageToUser(const User &destination, const std::string& message) {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
-    server.sendMessage(destination.getFd(), response);
+    Server::getInstance().sendMessage(destination.getFd(), response);
 }

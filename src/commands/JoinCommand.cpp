@@ -28,11 +28,11 @@ JoinCommand::~JoinCommand() {
 /**
  * Executes the command JOIN.
  * 
- * @param server The server where the command will be executed
  * @param clientFd The socket file descriptor of the client
  * 
  */
-void JoinCommand::execute(Server &server, int clientFd) {
+void JoinCommand::execute(int clientFd) {
+    Server& server = Server::getInstance();
     User user = server.getUserByFd(clientFd);
     std::vector<Channel> serverChannels = server.getChannels();
     
