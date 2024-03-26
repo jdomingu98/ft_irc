@@ -22,10 +22,11 @@ PartCommand::~PartCommand() {
  */
 void PartCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
+    User user = server.getUserByFd(clientFd);
 
     std::vector<Channel> channelsVec;
-    std::vector<std::string> serverChannels = server.getChannels();
-    std::vector<std::string> userChannels = user.getChannels();
+    std::vector<Channel> serverChannels = server.getChannels();
+    std::vector<Channel> userChannels = user.getChannels();
 
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
@@ -42,8 +43,6 @@ void PartCommand::execute(int clientFd) {
 
     serverChannels.clear();
     userChannels.clear();
-
-    User user = server.getUserByFd(clientFd);
 
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
