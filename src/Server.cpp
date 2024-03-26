@@ -247,6 +247,8 @@ bool Server::isNicknameInUse(const std::string& nickname) {
  * 
  * @param nickname The nickname of the user.
  * @return The user object with all its information.
+ * 
+ * @throws `ServerException` if the user is not found.
  */
 User &Server::getUserByNickname(const std::string &nickname) {
     std::vector<User>::iterator it = this->findUserByNickname(nickname);
@@ -378,3 +380,31 @@ void Server::removeChannel(std::string channelName) {
     if (it != this->_channels.end())
         this->_channels.erase(it);
 }
+
+/**
+ * This function aims to get a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The channel with the name.
+ * 
+ * @throws `ServerException` if the channel is not found.
+ */
+Channel &Server::getChannelByName(std::string channelName) {
+    std::vector<Channel>::iterator it = findChannel(channelName);
+    if (it == this->_channels.end())
+        throw ServerException("CHANNEL_NOT_FOUND_ERR");
+    return *it;
+}
+
+/**
+ * This function aims to check if a channel exists.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return `true` if the channel exists, `false` otherwise.
+ */
+bool Server::channelExists(std::string channelName) {
+    return findChannel(channelName) != this->_channels.end();
+}
+

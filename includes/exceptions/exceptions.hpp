@@ -26,13 +26,13 @@
 // # define ERR_TOO_MANY_CHANNELS(channelName) (channelName) " :You have joined too many channels"
 // # define RPL_TOPIC(channel, topic) (channel) " :" (topic)
 
-// #define ERR_NOT_ON_CHANNEL(channel) (channel) " :You're not on that channel"
+#define ERR_NOT_ON_CHANNEL " :You're not on that channel"
 
 // #define RPL_NO_TOPIC(channel) (channel) " :No topic is set"
-// #define ERR_CHAN_O_PRIVS_NEEDED(channel) (channel) " :You're not channel operator"
+#define ERR_CHAN_O_PRIVS_NEEDED " :You're not channel operator"
 
-// #define ERR_NO_SUCH_NICK(nickname) (nickname) " :No such nick/channel"
-// #define ERR_USER_ON_CHANNEL(nickname, channel) (nickname) " " (channel) " :is already on channel"
+#define ERR_NO_SUCH_NICK " :No such nick/channel"
+#define ERR_USER_ON_CHANNEL " :is already on channel"
 // #define RPL_INVITING(channel, nickname) (channel) " " (nickname)
 // #define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
 
@@ -175,6 +175,39 @@ class NoRecipientGivenException : public IRCException {
 class NoTextToSendException : public IRCException {
     public:
         NoTextToSendException() : IRCException("412", ERR_NO_TEXT_TO_SEND) {}
+};
+
+/**
+ * This exception is thrown when the user or channel is not found.
+ */
+class NoSuchNickException : public IRCException {
+    public:
+        NoSuchNickException(const std::string nickname) : IRCException("401", nickname + ERR_NO_SUCH_NICK) {}
+};
+
+/**
+ * This exception is thrown when the user is not on the channel.
+ */
+class NotOnChannelException : public IRCException {
+    public:
+        NotOnChannelException(const std::string channelName) : IRCException("442", channelName + ERR_NOT_ON_CHANNEL) {}
+};
+
+/**
+ * This exception is thrown when the user invited is already on the channel.
+ */
+class UserOnChannelException : public IRCException {
+    public:
+        UserOnChannelException(const std::string nickname, const std::string channelName)
+            : IRCException("443", nickname + "" + channelName + ERR_USER_ON_CHANNEL) {}
+};
+
+/**
+ * This exception is thrown when the user needs to be an operator to perform the action.
+ */
+class ChanOPrivsNeededException : public IRCException {
+    public:
+        ChanOPrivsNeededException(const std::string channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
 };
 
 #endif

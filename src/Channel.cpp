@@ -216,6 +216,19 @@ bool Channel::isUserInvited(std::string nickname) const {
 }
 
 /**
+ * This function aims to invite a user to the channel.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @throw `ChannelException` If the user is already invited.
+ * 
+ */
+void Channel::inviteUser(std::string nickname) {
+    if (!isUserInvited(nickname))
+        this->_inviteList.push_back(nickname);
+}
+
+/**
  * This function aims to check if the user is banned from the channel.
  * 
  * @param nickname The nickname of the user.
@@ -289,6 +302,17 @@ void Channel::removeUser(std::string nickname) {
 }
 
 /**
+ * This function tells if a user is in the channel.
+ * 
+ * @param nickname The nickname of the user to check.
+ * 
+ * @return `true` if the user is in the channel, `false` otherwise.
+ */
+bool Channel::isUserInChannel(std::string nickname) {
+    return findUser(nickname) != this->_users.end();
+}
+
+/**
  * This function aims to add an operator to the channel.
  * 
  * @param nickname The operator to add.
@@ -339,4 +363,15 @@ void Channel::makeOperAnUser(std::string nickname) {
     }
     else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
+}
+
+/**
+ * This function aims to check if a user is an operator of the channel.
+ * 
+ * @param nickname The nickname of the user to check.
+ * 
+ * @return `true` if the user is an operator, `false` otherwise.
+ */
+bool Channel::isOper(std::string nickname) {
+    return findOper(nickname) != this->_operators.end();
 }

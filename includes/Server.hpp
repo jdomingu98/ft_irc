@@ -48,31 +48,37 @@ class Server {
         void handleNewConnection(int numFds);
         void handleExistingConnection(int fd);
         void closeConnections();
+
+        // User operations
         std::vector<User>::iterator findUserByFd(int clientFd);
         std::vector<User>::iterator findUserByNickname(std::string nickname);
+
+        // Channel operations
+        std::vector<Channel>::iterator findChannel(std::string channelName);
 
     public:
         ~Server();
         static void init(std::string port, std::string password);
         static Server &getInstance();
 
-        std::vector<Channel>::iterator findChannel(std::string channelName);
-
-        //Getters
+        // User
         User &getUserByFd(int clientFd);
         User &getUserByNickname(const std::string& nickname);
-
-        //Operations
-        void sendMessage(int clientFd, const std::string& message) const;
-        bool isValidPassword(const std::string& password);
         bool isNicknameInUse(const std::string& nickname);
         bool userHasCheckedPassword(int clientFd);
         void removeUser(int clientFd);
         void attemptUserRegistration(int clientFd);
 
-        void addChannel(Channel channel);
+        // Channel
         std::vector<Channel> getChannels() const;
+        Channel &getChannelByName(std::string channelName);
+        bool channelExists(std::string channelName);
+        void addChannel(Channel channel);
         void removeChannel(std::string channelName);
+
+        // Other Operations
+        void sendMessage(int clientFd, const std::string& message) const;
+        bool isValidPassword(const std::string& password);
 };
 
 #endif
