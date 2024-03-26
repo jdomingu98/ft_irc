@@ -12,7 +12,7 @@ INCLUDES_PATH		= includes
 INCLUDES_SUBDIRS	= commands parser exceptions
 INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
-HEADERS				= $(addprefix "-I ", $(INCLUDES_DIRS))
+HEADERS				= $(addprefix -I, $(INCLUDES_DIRS))
 
 # =================================================================================
 
@@ -20,18 +20,18 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-CMD_PREFIXS		= I User Nick Pass Quit
-CMD_FILES		= $(addsuffix "Command", $(CMD_PREFIXS))
+CMD_PREFIXS		= User Nick Pass Quit PrivateMessage Join
+CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_PREFIXS	= Command User Pass Nick Quit
-PARSER_FILES	= $(addsuffix "Parser", $(PARSER_PREFIXS))
+PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join
+PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= main Server User utils
+FILES 			= main Server User Channel utils Logger
 
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
-SRCS			= $(addsuffix ".cpp", $(SRCS_PATHS))
+SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))
 
 OBJS			= $(SRCS:.cpp=.o)
 

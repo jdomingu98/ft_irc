@@ -10,12 +10,11 @@
  * 
  * @param tokens The parameters of the command.
  * 
- * @throws `ParserException` if the number of arguments is different than the expected.
+ * @throws `NoNicknameGivenException` if the nickname is not specified.
  * @return The parsed command.
  */
 ICommand *NickParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() != 2)
-        throw ParserException(MISSING_PARAMS_ERR);
-
+    if (tokens.size() < 2)
+        throw NoNicknameGivenException();
     return new NickCommand(tokens[1]);
 }

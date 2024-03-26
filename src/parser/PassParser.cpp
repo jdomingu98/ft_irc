@@ -10,12 +10,11 @@
  * 
  * @param tokens The parameters of the command.
  * 
- * @throws `ParserException` if the number of arguments is different than the expected.
+ * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
  * @return The parsed command.
  */
 ICommand* PassParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() != 2) {
-        throw ParserException(MISSING_PARAMS_ERR);
-    }
+    if (tokens.size() < 2)
+        throw NeedMoreParamsException("PASS");
     return new PassCommand(tokens[1]);
 }

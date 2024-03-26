@@ -10,12 +10,11 @@
  * 
  * @param tokens The parameters of the command.
  * 
- * @throws `ParserException` if the number of arguments is different than the expected.
  * @return The parsed command.
  */
 ICommand *QuitParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() > 2)
-        throw ParserException("QUIT COMMAND: Invalid number of arguments.");
+    // TODO: fix bug: if the message contains spaces, it will be split into multiple tokens.
+    // The message should be the concatenation of all the tokens after the command.
     if (tokens.size() == 2)
         return new QuitCommand(tokens[1]);
     return new QuitCommand();

@@ -3,14 +3,14 @@
 /**
  * NickCommand default constructor.
  */
-NickCommand::NickCommand(): _nickname("") {}
+NickCommand::NickCommand() : ICommand(false),  _nickname("") {}
 
 /**
  * NickCommand nickname constructor.
  * 
  * @param nickname The nickname
  */
-NickCommand::NickCommand(const std::string& nickname): _nickname(nickname) {}
+NickCommand::NickCommand(const std::string& nickname) : ICommand(false), _nickname(nickname) {}
 
 /**
  * NickCommand destructor.
@@ -21,26 +21,35 @@ NickCommand::~NickCommand() {}
  * Execute the command NICK.
  * 
  * @param server The server where the command will be executed
- * @param fd The socket file descriptor of the client
+ * @param clientFd The socket file descriptor of the client
  * 
- * @throws `CommandException` If the nickname is empty, too long, already in use or invalid
+ * @throws `NoNicknameGivenException` If the nickname is empty
+ * @throws `ErroneousNicknameException` If the nickname is too long or invalid
+ * @throws `NickCollisionException` If the nickname is already in use and the user is not registered
+ * @throws `NicknameInUseException` If the nickname is already in use and the user is registered
  * 
  */
-void NickCommand::execute(Server &server, int fd) {
+void NickCommand::execute(Server &server, int clientFd) {
     if (this->_nickname.empty())
-        throw CommandException("NICK COMMAND: Empty nickname.");
+        throw NoNicknameGivenException();
 
     if (this->_nickname.size() > MAX_NICKNAME_SIZE)
-        throw CommandException("NICK COMMAND: Nickname is too long.");
+        throw ErroneousNicknameException(this->_nickname);
 
-    if (server.isNicknameInUse(this->_nickname))
-        throw CommandException("NICK COMMAND: Nickname is already in use.");
+    User &user = server.getUserByFd(clientFd);
+
+    if (server.isNicknameInUse(this->_nickname)) {
+        user.isRegistered()
+            ? throw NicknameInUseException(this->_nickname)
+            : throw NickCollisionException(this->_nickname);
+    }
 
     if (!NickCommand::isValidNickname())
-        throw CommandException("NICK COMMAND: Invalid nickname.");
+        throw ErroneousNicknameException(this->_nickname);
 
-    User user = server.getUserByFd(fd);
     user.setNickname(this->_nickname);
+    if (user.canRegister())
+        server.attemptUserRegistration(clientFd);
 }
 
 /**

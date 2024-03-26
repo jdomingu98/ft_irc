@@ -5,8 +5,6 @@
 
 # include "Server.hpp"
 
-# include "CommandException.hpp"
-
 # include "libsUtils.hpp"
 
 
@@ -27,7 +25,7 @@ class NickCommand : public ICommand {
         NickCommand(const std::string& nickname);
         ~NickCommand(); 
 
-        void execute(Server &server, int fd);
+        void execute(Server &server, int clientFd);
 };
 
 #endif

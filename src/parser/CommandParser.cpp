@@ -7,12 +7,17 @@
  * 
  * @return The parsed command.
  */
-ICommand* CommandParser::parse(const std::string& input, int fd, Server &server) {
+ICommand* CommandParser::parse(const std::string& input) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
-    IParser *parser = CommandParser::getParser(tokens[0], fd, server);
-    ICommand *command = parser->parse(tokens);
-    delete parser;
-    return command;
+    IParser *parser = CommandParser::getParser(tokens[0]);
+    try {
+        ICommand *command = parser->parse(tokens);
+        delete parser;
+        return command;
+    } catch (...) {
+        delete parser;
+        throw;
+    }
 }
 
 /**
@@ -20,22 +25,23 @@ ICommand* CommandParser::parse(const std::string& input, int fd, Server &server)
  * 
  * @param command The command to parse
  * 
- * @throws `CommandException` if the command is invalid
+ * @throws `CommandNotFoundException` if the command is invalid
  * @return The parser for the command
  */
-IParser* CommandParser::getParser(std::string command, int fd, Server &server) {
+IParser* CommandParser::getParser(std::string command) {
     if (command == "QUIT")
         return new QuitParser();
     if (command == "PASS")
         return new PassParser();
-    if (!server.userHasCheckedPassword(fd))
-        throw CommandException("NICK COMMAND: User has not checked password.");
     if (command == "USER")
         return new UserParser();
     if (command == "NICK")
         return new NickParser();
-    
-    throw CommandException(INVALID_COMMAND);
+    if (command == "PRIVMSG")
+        return new PrivateMessageParser();
+    if (command == "JOIN")
+        return new JoinParser();
+    throw CommandNotFoundException();
 }
 
 /**
@@ -53,6 +59,5 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
     while (std::getline(tokenStream, token, ' ')) {
         tokens.push_back(trim(token));
     }
-    
     return tokens;
 }

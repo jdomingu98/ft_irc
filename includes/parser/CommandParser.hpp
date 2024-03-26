@@ -9,8 +9,8 @@
 # include "PassParser.hpp"
 # include "NickParser.hpp"
 # include "QuitParser.hpp"
-
-# include "CommandException.hpp"
+# include "PrivateMessageParser.hpp"
+# include "JoinParser.hpp"
 
 # include "libsUtils.hpp"
 
@@ -28,7 +28,8 @@ enum Commands {
     TOPIC,
     MODE,
     KICK,
-    INVITE
+    INVITE,
+    OPER
 };
 
 /**
@@ -37,10 +38,10 @@ enum Commands {
 class CommandParser {
     private:
         static std::vector<std::string> tokenize(const std::string& command);
-        static IParser* getParser(std::string command, int fd, Server &server);
+        static IParser* getParser(std::string command);
     
     public:
-        static ICommand* parse(const std::string& command, int fd, Server &server);
+        static ICommand* parse(const std::string& command);
 };
 
 #endif

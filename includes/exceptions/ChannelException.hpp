@@ -1,17 +1,17 @@
-#ifndef COMMAND_EXCEPTION_HPP
-# define COMMAND_EXCEPTION_HPP
+#ifndef CHANNEL_EXCEPTION_HPP
+# define CHANNEL_EXCEPTION_HPP
 
 # include <string>
 
 /**
  * An exception that is thrown when a command fails to execute.
  */
-class CommandException : public std::exception {
+class ChannelException : public std::exception {
     private:
         std::string _message;
     public:
-        CommandException(const std::string& msg) : _message(msg) {}
-        ~CommandException() throw() {}
+        ChannelException(const std::string& msg) : _message(msg) {}
+        ~ChannelException() throw() {}
 
         virtual const char* what() const throw() {
             return _message.c_str();
