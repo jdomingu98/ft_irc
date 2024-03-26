@@ -20,11 +20,11 @@ QuitCommand::~QuitCommand() {}
 /**
  * Execute the command QUIT.
  * 
- * @param server The server where the command will be executed
  * @param clientFd The socket file descriptor of the client
  * 
  */
-void QuitCommand::execute(Server &server, int clientFd) {
+void QuitCommand::execute(int clientFd) {
+    Server& server = Server::getInstance();
     if (_msg.length() == 0) {
         // message = user.getNickname();
         //send message to all clients on channel and server

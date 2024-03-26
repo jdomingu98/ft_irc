@@ -42,6 +42,26 @@ Server::~Server() {
 }
 
 /**
+ * This function aims to initialize the server.
+ * 
+ * @param port The port number to listen for incoming connections.
+ * @param password The password to authenticate the clients.
+ *
+*/
+void Server::init(std::string port, std::string password) {
+    _server = new Server(port, password);
+}
+
+/**
+ * This function aims to get the instance of the server.
+ * 
+ * @return The instance of the server.
+ */
+Server *Server::getInstance() const {
+    return _server;
+}
+
+/**
  * This function aims to close all the connections.
  */
 void Server::closeConnections() {

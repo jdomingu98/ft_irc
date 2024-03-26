@@ -8,11 +8,10 @@
 # include <cstdlib>
 # include <iostream>
 # include <sstream>
+# include <string>
 # include <algorithm>
 # include <vector>
 # include <unistd.h>
-
-# include "utils.hpp"
 
 # include "exceptions.hpp"
 
@@ -37,13 +36,10 @@
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define INVALID_COMMAND "[ERROR] Invalid command sent to server socket." //???
-
-# define AUTH_ERR "[ERROR] Unauthorized.\nPlease send connection password and set your nickname and username."
-# define INVALID_PASSWORD "[ERROR] Password provided doesn't match server password."
-
 # define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
-
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
-# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
+
+std::string trim(const std::string& str);
+std::vector<std::string> split(const std::string &s, char delim);
+
 #endif

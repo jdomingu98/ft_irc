@@ -54,10 +54,10 @@ class User {
 
         // Operations
         void checkPassword();
-        void makeRegistration(Server &server);
+        void makeRegistration();
         bool canRegister();
         void addChannel(Channel &channel);
-        void sendPrivateMessageToUser(const Server &server, const User &destination, const std::string& message);
+        void sendPrivateMessageToUser(const User &destination, const std::string& message);
 };
 
 #endif

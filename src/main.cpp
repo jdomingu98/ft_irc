@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     try {
         std::string port = std::string(argv[1]);
         std::string password = std::string(argv[2]);
-        Server server(port, password);
+        Server::init(port, password);
     } catch (ServerException& e) {
         std::cerr << e.what() << std::endl;
     }
