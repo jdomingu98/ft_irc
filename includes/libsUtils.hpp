@@ -22,6 +22,9 @@
 # define SUCCESS 0
 # define EXIT 1
 
+# define DEFAULT_PORT "6666"
+# define DEFAULT_PASS "1234"
+
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
 # define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
 

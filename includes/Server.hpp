@@ -38,8 +38,8 @@ class Server {
         std::vector<User>       _users;
         std::vector<Channel>    _channels;
 
-        static const Server     *_server;
-
+        // Singleton Pattern
+        static Server           *_server;
         Server(const std::string port, const std::string password);
 
         bool isValidPort(const std::string port);
@@ -54,7 +54,7 @@ class Server {
     public:
         ~Server();
         static void init(std::string port, std::string password);
-        static Server *getInstance() const;
+        static Server &getInstance();
 
         std::vector<Channel>::iterator findChannel(std::string channelName);
 

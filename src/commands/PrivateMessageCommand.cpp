@@ -24,11 +24,11 @@ void PrivateMessageCommand::execute(int clientFd) {
     for (size_t i = 0; i < this->_receivers.size(); i++) {
         try {
             User destinationUser = server.getUserByNickname(this->_receivers[i]);
-            sender.sendPrivateMessageToUser(server, destinationUser, this->_message);
+            sender.sendPrivateMessageToUser(destinationUser, this->_message);
         } catch (const ServerException &e) {
           // Uno de los usuarios no existe, deberiamos de cortar la ejecucion del comando?
           // throw NoSuchNickException(receiver);
-            server.sendMessage(fd, e.what());
+            server.sendMessage(clientFd, e.what());
         }
     }
 }
