@@ -54,6 +54,21 @@ std::vector<User>::iterator Channel::findUser(std::string nickname) {
 }
 
 /**
+ * This function aims to find a user by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return The iterator to the user with the nickname.
+ */
+std::vector<User>::const_iterator Channel::findUser(std::string nickname) const {
+    for (size_t i = 0; i < this->_users.size(); i++) {
+        if (this->_users[i].getNickname() == nickname)
+            return this->_users.begin() + i;
+    }
+    return this->_users.end();
+}
+
+/**
  * This function aims to find a oper by the nickname.
  * 
  * @param nickname The nickname of the user.
@@ -61,6 +76,21 @@ std::vector<User>::iterator Channel::findUser(std::string nickname) {
  * @return The iterator to the user with the nickname.
  */
 std::vector<User>::iterator Channel::findOper(std::string nickname) {
+    for (size_t i = 0; i < this->_operators.size(); i++) {
+        if (this->_operators[i].getNickname() == nickname)
+            return this->_operators.begin() + i;
+    }
+    return this->_operators.end();
+}
+
+/**
+ * This function aims to find a oper by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return The iterator to the user with the nickname.
+ */
+std::vector<User>::const_iterator Channel::findOper(std::string nickname) const {
     for (size_t i = 0; i < this->_operators.size(); i++) {
         if (this->_operators[i].getNickname() == nickname)
             return this->_operators.begin() + i;
@@ -308,7 +338,7 @@ void Channel::removeUser(std::string nickname) {
  * 
  * @return `true` if the user is in the channel, `false` otherwise.
  */
-bool Channel::isUserInChannel(std::string nickname) {
+bool Channel::isUserInChannel(std::string nickname) const {
     return findUser(nickname) != this->_users.end();
 }
 
@@ -372,6 +402,6 @@ void Channel::makeOperAnUser(std::string nickname) {
  * 
  * @return `true` if the user is an operator, `false` otherwise.
  */
-bool Channel::isOper(std::string nickname) {
+bool Channel::isOper(std::string nickname) const {
     return findOper(nickname) != this->_operators.end();
 }
