@@ -18,7 +18,7 @@ class PartCommand : public ICommand {
         std::vector<std::string> _channels;
 
     public:
-        PartCommand(std::vector<Channel> channels);
+        PartCommand(std::vector<std::string> channels);
         ~PartCommand();
 
         void execute(int clientFd);
