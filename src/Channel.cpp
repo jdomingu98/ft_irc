@@ -281,6 +281,7 @@ void Channel::addOper(User user) {
  * @throw `ChannelException` If the user is not found in the channel.
  */
 void Channel::removeUser(std::string nickname) {
+    Server& server = Server::getInstance();
     std::vector<User>::iterator itUser = findUser(nickname);
     std::vector<User>::iterator itOper = findOper('@' + nickname);
     if (itUser != this->_users.end())

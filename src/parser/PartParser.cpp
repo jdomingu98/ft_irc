@@ -19,30 +19,14 @@ ICommand *PartParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("PART");
 
-    std::vector<std::string> channelNameList = split(tokens[1], ',');
-    std::vector<Channel> channels;
-    std::vector<std::string> serverChannels = server.getChannels();
-    std::vector<std::string> userChannels = user.getChannels();
+    std::vector<std::string> channels = split(tokens[1], ',');
 
-    for (size_t i = 0; i < channelNameList.size(); i++) {
+    for (size_t i = 0; i < channels.size(); i++) {
         //Search channels
-        if (channelNameList[i]  != "#" || channelNameList[i] != "&") { //Probar que devuelve server oficial
+        if (channels[i]  != "#" || channels[i] != "&") { //Probar que devuelve server oficial
             //throw IRCException();
         }
-
-        //Comprobar qué se valida primero
-        if (server.findChannel(channelNameList[i]) == serverChannels.end())
-            throw NoSuchChannelException(channelNameList[i]);
-
-        if (!user.isOnChannel(channelNameList[i]))
-            throw NotOnChannelException(channelNameList[i]);
-
-        Logger::debug("User in channel. Added to PART list.");
-        channels.push_back(*(server.findChannel(channelNameList[i])));
     }
-
-    serverChannels.clear();
-    userChannels.clear();
 
     return new PartCommand(channels);
 }

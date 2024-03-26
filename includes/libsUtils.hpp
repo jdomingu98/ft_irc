@@ -17,8 +17,6 @@
 
 # include "exceptions.hpp"
 
-# include "utils.hpp"
-
 // =================================================================================
 
 # define SUCCESS 0
@@ -45,7 +43,7 @@
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 # define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 
-#define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
+# define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
 
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);

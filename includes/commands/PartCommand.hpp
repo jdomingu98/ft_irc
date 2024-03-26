@@ -4,10 +4,8 @@
 # include "ICommand.hpp"
 
 # include "Server.hpp"
-# include "Channel.hpp"
 
 # include "libsUtils.hpp"
-# include "utils.hpp"
 
 class Channel;
 
@@ -17,13 +15,13 @@ class Channel;
  */
 class PartCommand : public ICommand {
     private:
-        std::vector<Channel> _channels;
+        std::vector<std::string> _channels;
 
     public:
         PartCommand(std::vector<Channel> channels);
         ~PartCommand();
 
-        void execute(Server &server, int clientFd);
+        void execute(int clientFd);
 };
 
 #endif

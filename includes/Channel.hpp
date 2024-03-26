@@ -1,13 +1,15 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-# include "User.hpp"
+# include "Server.hpp"
 
 # include "libsUtils.hpp"
 
 # define MAX_CHANNEL_NAME_LENGTH 20
 # define NO_LIMIT -1
 # define BELL_CHAR '\a'
+
+class Server;
 
 class User;
 
