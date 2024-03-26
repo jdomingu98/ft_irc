@@ -291,7 +291,7 @@ void Channel::removeUser(std::string nickname) {
         //throw ChannelException(USER_NOT_FOUND_ERR);
     if (this->_users.empty() && this->_operators.empty()) {
         server.getChannels()->erase(server.findChannel(this->_name));
-        ~Channel();
+        this->~Channel();
     }
 }
 
