@@ -3,8 +3,6 @@
 
 # include "User.hpp"
 
-# include "ChannelException.hpp"
-
 # include "libsUtils.hpp"
 
 # define MAX_CHANNEL_NAME_LENGTH 20
