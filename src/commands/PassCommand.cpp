@@ -20,13 +20,12 @@ PassCommand::~PassCommand() {}
 /**
  * Execute the command PASS.
  * 
- * @param server The server where the command will be executed
- * @param fd The socket file descriptor of the client
+ * @param clientFd The socket file descriptor of the client
  * 
  * @throws `AlreadyRegisteredException` If the user is already registered
- * 
  */
-void PassCommand::execute(Server &server, int clientFd) {
+void PassCommand::execute(int clientFd) {
+    Server& server = Server::getInstance();
     if (server.getUserByFd(clientFd).isRegistered())
         throw AlreadyRegisteredException();
     server.getUserByFd(clientFd).setPassword(_password);

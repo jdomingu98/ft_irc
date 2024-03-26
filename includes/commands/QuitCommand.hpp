@@ -19,7 +19,7 @@ class QuitCommand : public ICommand {
         QuitCommand(std::string msg);
         ~QuitCommand();
 
-        void execute(Server &server, int clientFd);
+        void execute(int clientFd);
 };
 
 #endif
