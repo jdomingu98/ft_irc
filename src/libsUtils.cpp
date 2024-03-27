@@ -60,6 +60,5 @@ std::string join(const std::vector<std::string> &msg) {
     for (++it; it != msg.end(); ++it) {
         joined += " " + *it;
     }
-    std::cout << joined << std::endl;
     return joined;
 }
