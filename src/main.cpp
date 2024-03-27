@@ -2,6 +2,10 @@
 
 #include "libsUtils.hpp"
 
+User unused_function() {
+    return User(0);
+}
+
 /**
  * The main function.
  * B================D----3
