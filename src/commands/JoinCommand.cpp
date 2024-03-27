@@ -32,8 +32,8 @@ JoinCommand::~JoinCommand() {
  * 
  */
 void JoinCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User user = server.getUserByFd(clientFd);
+    Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
     std::vector<Channel> serverChannels = server.getChannels();
     
     bool isOperator;
