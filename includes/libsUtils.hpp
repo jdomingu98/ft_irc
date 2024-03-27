@@ -44,5 +44,6 @@
 
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);
+std::string join(const std::vector<std::string> &msg);
 
 #endif

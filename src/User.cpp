@@ -219,3 +219,31 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
+
+/**
+ * This function aims to check if the user is an operator of a channel.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return `true` if the user is an operator of the channel, `false` otherwise.
+ */
+bool User::isUserAnOper(std::string channelName) const {
+    std::vector<Channel>::const_iterator it = findChannel(channelName);
+    if (it != this->_channels.end())
+        return it->findOperUser(this->_nickname);
+    return false;
+}
+
+/**
+ * This function aims to find and get a channel by the name.
+ * 
+ * @param channelName The name of the channel.
+ * 
+ * @return The pointer to the channel with the name.
+ */
+Channel User::findAndGetChannel(std::string channelName) {
+    std::vector<Channel>::iterator it = findChannel(channelName);
+    if (it != this->_channels.end())
+        return *it;
+    return Channel("", *this);
+}

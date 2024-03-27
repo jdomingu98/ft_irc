@@ -66,6 +66,7 @@ class Channel {
         void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
+        bool findOperUser(std::string nickname) const;
 };
 
 #endif

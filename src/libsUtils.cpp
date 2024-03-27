@@ -38,3 +38,28 @@ std::vector<std::string> split(const std::string &s, char delim) {
     }
     return elems;
 }
+
+/**
+ * Joins the vector of strings.
+ * 
+ * @param msg The vector of strings.
+ * 
+ * @return The joined string.
+ */
+std::string join(const std::vector<std::string> &msg) {
+    std::vector<std::string>::const_iterator it = msg.begin();
+
+    while (it != msg.end() && it->find(":") == std::string::npos) {
+        ++it;
+    }
+
+    if (it == msg.end() || it + 1 == msg.end()) {
+        return "";
+    }
+    std::string joined = it->substr(it->find(":") + 1);
+    for (++it; it != msg.end(); ++it) {
+        joined += " " + *it;
+    }
+    std::cout << joined << std::endl;
+    return joined;
+}

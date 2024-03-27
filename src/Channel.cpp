@@ -340,3 +340,19 @@ void Channel::makeOperAnUser(std::string nickname) {
     else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
 }
+
+/**
+ * This function aims to find an operator user by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return `true` if the user is an operator, `false` otherwise.
+ */
+bool Channel::findOperUser(std::string nickname) const
+{    
+    for (size_t i = 0; i < this->_operators.size(); i++) {
+        if (this->_operators[i].getNickname() == nickname)
+            return true;
+    }
+    return false;
+}
