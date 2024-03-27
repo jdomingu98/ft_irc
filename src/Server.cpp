@@ -9,7 +9,7 @@ Server *Server::_server = NULL;
  * @param port The port number to validate.
  * @return `true` if the port is valid, `false` otherwise.
  */
-bool Server::isValidPort(const std::string port) const {
+bool Server::isValidPort(const std::string &port) const {
     for (size_t i = 0; i < port.length(); i++) {
         if (!std::isdigit(port[i]))
             return false;
@@ -214,7 +214,7 @@ void Server::handleExistingConnection(int clientFd) {
  * @param password The password provided by the client.
  * @return `true` if the password is valid, `false` otherwise.
  */
-bool Server::isValidPassword(const std::string& password) const {
+bool Server::isValidPassword(const std::string &password) const {
     return password == this->_password;
 }
 
@@ -343,7 +343,7 @@ std::vector<User>::const_iterator Server::findUserByFd(int clientFd) const {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Server::findUserByNickname(std::string nickname) {
+std::vector<User>::iterator Server::findUserByNickname(const std::string &nickname) {
     for (size_t i = 0; i < this->_users.size(); i++) {
         if (this->_users[i].getNickname() == nickname)
             return this->_users.begin() + i;
@@ -358,7 +358,7 @@ std::vector<User>::iterator Server::findUserByNickname(std::string nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Server::findUserByNickname(std::string nickname) const {
+std::vector<User>::const_iterator Server::findUserByNickname(const std::string &nickname) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
         if (this->_users[i].getNickname() == nickname)
             return this->_users.begin() + i;
@@ -373,7 +373,7 @@ std::vector<User>::const_iterator Server::findUserByNickname(std::string nicknam
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::iterator Server::findChannel(std::string channelName) {
+std::vector<Channel>::iterator Server::findChannel(const std::string &channelName) {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;
@@ -388,7 +388,7 @@ std::vector<Channel>::iterator Server::findChannel(std::string channelName) {
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::const_iterator Server::findChannel(std::string channelName) const {
+std::vector<Channel>::const_iterator Server::findChannel(const std::string &channelName) const {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;
@@ -437,7 +437,7 @@ void Server::removeChannel(std::string channelName) {
  * 
  * @throws `ServerException` if the channel is not found.
  */
-Channel &Server::getChannelByName(std::string channelName) {
+Channel &Server::getChannelByName(const std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     if (it == this->_channels.end())
         throw ServerException("CHANNEL_NOT_FOUND_ERR");
@@ -451,7 +451,7 @@ Channel &Server::getChannelByName(std::string channelName) {
  * 
  * @return `true` if the channel exists, `false` otherwise.
  */
-bool Server::channelExists(std::string channelName) const {
+bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
 }
 

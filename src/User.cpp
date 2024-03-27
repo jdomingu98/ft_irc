@@ -19,7 +19,7 @@ User::~User() {}
  * 
  * @return The const iterator to the channel with the name.
  */
-std::vector<Channel>::const_iterator User::findChannel(std::string channelName) const {
+std::vector<Channel>::const_iterator User::findChannel(const std::string &channelName) const {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;
@@ -34,7 +34,7 @@ std::vector<Channel>::const_iterator User::findChannel(std::string channelName) 
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::iterator User::findChannel(std::string channelName) {
+std::vector<Channel>::iterator User::findChannel(const std::string &channelName) {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;

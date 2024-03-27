@@ -28,10 +28,10 @@ class Channel {
         bool                _passwordSet;
 
         // Iterators
-        std::vector<User>::iterator         findUser(std::string nickname);
-        std::vector<User>::const_iterator   findUser(std::string nickname) const;
-        std::vector<User>::iterator         findOper(std::string nickname);
-        std::vector<User>::const_iterator   findOper(std::string nickname) const;
+        std::vector<User>::iterator         findUser(const std::string &nickname);
+        std::vector<User>::const_iterator   findUser(const std::string &nickname) const;
+        std::vector<User>::iterator         findOper(const std::string &nickname);
+        std::vector<User>::const_iterator   findOper(const std::string &nickname) const;
 
         // Other Operations
         bool checkChannelName(std::string name) const;
@@ -62,17 +62,17 @@ class Channel {
         void addUser(User user);
         void removeUser(std::string nickname);
         bool isUserBanned(std::string nickname, std::string username, std::string hostname) const;
-        bool isUserInChannel(std::string nickname) const;
+        bool isUserInChannel(const std::string &nickname) const;
 
         // Oper
         void addOper(User user);
         void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
-        bool isOper(std::string nickname) const;
+        bool isOper(const std::string &nickname) const;
 
         // Invite
-        void inviteUser(std::string nickname);
+        void inviteUser(const std::string &nickname);
         bool isUserInvited(std::string nickname) const;
         bool isInviteOnly() const;
 

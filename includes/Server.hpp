@@ -43,7 +43,7 @@ class Server {
         Server(const std::string port, const std::string password);
 
         // Server logic
-        bool isValidPort(const std::string port) const;
+        bool isValidPort(const std::string &port) const;
         void initServer();
         void listenClients();
         void handleNewConnection(int numFds);
@@ -53,12 +53,12 @@ class Server {
         // User Iterators
         std::vector<User>::iterator findUserByFd(int clientFd);
         std::vector<User>::const_iterator findUserByFd(int clientFd) const;
-        std::vector<User>::iterator findUserByNickname(std::string nickname);
-        std::vector<User>::const_iterator findUserByNickname(std::string nickname) const;
+        std::vector<User>::iterator findUserByNickname(const std::string &nickname);
+        std::vector<User>::const_iterator findUserByNickname(const std::string &nickname) const;
 
         // Channel Iterators
-        std::vector<Channel>::iterator findChannel(std::string channelName);
-        std::vector<Channel>::const_iterator findChannel(std::string channelName) const;
+        std::vector<Channel>::iterator findChannel(const std::string &channelName);
+        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
 
     public:
         ~Server();
@@ -77,8 +77,8 @@ class Server {
 
         // Channel
         std::vector<Channel> getChannels() const;
-        Channel &getChannelByName(std::string channelName);
-        bool    channelExists(std::string channelName) const;
+        Channel &getChannelByName(const std::string &channelName);
+        bool    channelExists(const std::string &channelName) const;
         void    addChannel(Channel channel);
         void    removeChannel(std::string channelName);
 

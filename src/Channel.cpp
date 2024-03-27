@@ -45,7 +45,7 @@ bool Channel::checkChannelName(std::string name) const {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findUser(std::string nickname) {
+std::vector<User>::iterator Channel::findUser(const std::string &nickname) {
     for (size_t i = 0; i < this->_users.size(); i++) {
         if (this->_users[i].getNickname() == nickname)
             return this->_users.begin() + i;
@@ -60,7 +60,7 @@ std::vector<User>::iterator Channel::findUser(std::string nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Channel::findUser(std::string nickname) const {
+std::vector<User>::const_iterator Channel::findUser(const std::string &nickname) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
         if (this->_users[i].getNickname() == nickname)
             return this->_users.begin() + i;
@@ -75,7 +75,7 @@ std::vector<User>::const_iterator Channel::findUser(std::string nickname) const 
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findOper(std::string nickname) {
+std::vector<User>::iterator Channel::findOper(const std::string &nickname) {
     for (size_t i = 0; i < this->_operators.size(); i++) {
         if (this->_operators[i].getNickname() == nickname)
             return this->_operators.begin() + i;
@@ -90,7 +90,7 @@ std::vector<User>::iterator Channel::findOper(std::string nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Channel::findOper(std::string nickname) const {
+std::vector<User>::const_iterator Channel::findOper(const std::string &nickname) const {
     for (size_t i = 0; i < this->_operators.size(); i++) {
         if (this->_operators[i].getNickname() == nickname)
             return this->_operators.begin() + i;
@@ -253,7 +253,7 @@ bool Channel::isUserInvited(std::string nickname) const {
  * @throw `ChannelException` If the user is already invited.
  * 
  */
-void Channel::inviteUser(std::string nickname) {
+void Channel::inviteUser(const std::string &nickname) {
     if (!isUserInvited(nickname))
         this->_inviteList.push_back(nickname);
 }
@@ -338,7 +338,7 @@ void Channel::removeUser(std::string nickname) {
  * 
  * @return `true` if the user is in the channel, `false` otherwise.
  */
-bool Channel::isUserInChannel(std::string nickname) const {
+bool Channel::isUserInChannel(const std::string &nickname) const {
     return findUser(nickname) != this->_users.end();
 }
 
@@ -402,6 +402,6 @@ void Channel::makeOperAnUser(std::string nickname) {
  * 
  * @return `true` if the user is an operator, `false` otherwise.
  */
-bool Channel::isOper(std::string nickname) const {
+bool Channel::isOper(const std::string &nickname) const {
     return findOper(nickname) != this->_operators.end();
 }

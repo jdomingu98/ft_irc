@@ -26,18 +26,18 @@
 // # define ERR_TOO_MANY_CHANNELS(channelName) (channelName) " :You have joined too many channels"
 // # define RPL_TOPIC(channel, topic) (channel) " :" (topic)
 
-#define ERR_NOT_ON_CHANNEL " :You're not on that channel"
+# define ERR_NOT_ON_CHANNEL " :You're not on that channel"
 
 // #define RPL_NO_TOPIC(channel) (channel) " :No topic is set"
-#define ERR_CHAN_O_PRIVS_NEEDED " :You're not channel operator"
+# define ERR_CHAN_O_PRIVS_NEEDED " :You're not channel operator"
 
-#define ERR_NO_SUCH_NICK " :No such nick/channel"
-#define ERR_USER_ON_CHANNEL " :is already on channel"
+# define ERR_NO_SUCH_NICK " :No such nick/channel"
+# define ERR_USER_ON_CHANNEL " :is already on channel"
 // #define RPL_INVITING(channel, nickname) (channel) " " (nickname)
 // #define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
 
-#define ERR_NO_RECIPIENT(command) (":No recipient given (" + command + ")")
-#define ERR_NO_TEXT_TO_SEND ":No text to send"
+# define ERR_NO_RECIPIENT(command) (":No recipient given (" + command + ")")
+# define ERR_NO_TEXT_TO_SEND ":No text to send"
 // #define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) " :Cannot send to channel"
 // #define ERR_NO_TOP_LEVEL(mask) (mask) " :No toplevel domain specified"
 // #define ERR_WILD_TOP_LEVEL(mask) (mask) " :Wildcard in toplevel domain"
@@ -68,7 +68,7 @@ class AlreadyRegisteredException : public IRCException {
  */
 class ErroneousNicknameException : public IRCException {
     public:
-        ErroneousNicknameException(const std::string nickname) : IRCException("432", nickname + ERR_ERRONEOUS_NICKNAME) {}
+        ErroneousNicknameException(const std::string &nickname) : IRCException("432", nickname + ERR_ERRONEOUS_NICKNAME) {}
 };
 
 /**
@@ -76,7 +76,7 @@ class ErroneousNicknameException : public IRCException {
  */
 class NeedMoreParamsException : public IRCException {
     public:
-        NeedMoreParamsException(const std::string command) : IRCException("461", command + ERR_NEED_MORE_PARAMS) {}
+        NeedMoreParamsException(const std::string &command) : IRCException("461", command + ERR_NEED_MORE_PARAMS) {}
 };
 
 /**
@@ -85,7 +85,7 @@ class NeedMoreParamsException : public IRCException {
  */
 class NickCollisionException : public IRCException {
     public:
-        NickCollisionException(const std::string nickname) : IRCException("436", nickname + ERR_NICK_COLLISION) {}
+        NickCollisionException(const std::string &nickname) : IRCException("436", nickname + ERR_NICK_COLLISION) {}
 };
 
 /**
@@ -94,7 +94,7 @@ class NickCollisionException : public IRCException {
  */
 class NicknameInUseException : public IRCException {
     public:
-        NicknameInUseException(const std::string nickname) : IRCException("433", nickname + ERR_NICKNAME_IN_USE) {}
+        NicknameInUseException(const std::string &nickname) : IRCException("433", nickname + ERR_NICKNAME_IN_USE) {}
 };
 
 /**
@@ -126,7 +126,7 @@ class PasswordMismatchException : public IRCException {
  */
 class InviteOnlyChanException : public IRCException {
     public:
-        InviteOnlyChanException(std::string channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
+        InviteOnlyChanException(std::string &channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
 };
 
 /**
@@ -134,7 +134,7 @@ class InviteOnlyChanException : public IRCException {
  */
 class BannedFromChanException : public IRCException {
     public:
-        BannedFromChanException(std::string channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
+        BannedFromChanException(std::string &channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
 };
 
 /**
@@ -142,7 +142,7 @@ class BannedFromChanException : public IRCException {
  */
 class BadChannelKeyException : public IRCException {
     public:
-        BadChannelKeyException(std::string channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
+        BadChannelKeyException(std::string &channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
 };
 
 /**
@@ -150,7 +150,7 @@ class BadChannelKeyException : public IRCException {
  */
 class ChannelIsFullException : public IRCException {
     public:
-        ChannelIsFullException(std::string channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
+        ChannelIsFullException(std::string &channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
 };
 
 /**
@@ -158,7 +158,7 @@ class ChannelIsFullException : public IRCException {
  */
 class TooManyChannelsException : public IRCException {
     public:
-        TooManyChannelsException(std::string channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
+        TooManyChannelsException(std::string &channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
 };
 
 /**
@@ -166,7 +166,7 @@ class TooManyChannelsException : public IRCException {
  */
 class NoRecipientGivenException : public IRCException {
     public:
-        NoRecipientGivenException(const std::string command) : IRCException("411", ERR_NO_RECIPIENT(command)) {}
+        NoRecipientGivenException(const std::string &command) : IRCException("411", ERR_NO_RECIPIENT(command)) {}
 };
 
 /**
@@ -182,7 +182,7 @@ class NoTextToSendException : public IRCException {
  */
 class NoSuchNickException : public IRCException {
     public:
-        NoSuchNickException(const std::string nickname) : IRCException("401", nickname + ERR_NO_SUCH_NICK) {}
+        NoSuchNickException(const std::string &nickname) : IRCException("401", nickname + ERR_NO_SUCH_NICK) {}
 };
 
 /**
@@ -190,7 +190,7 @@ class NoSuchNickException : public IRCException {
  */
 class NotOnChannelException : public IRCException {
     public:
-        NotOnChannelException(const std::string channelName) : IRCException("442", channelName + ERR_NOT_ON_CHANNEL) {}
+        NotOnChannelException(const std::string &channelName) : IRCException("442", channelName + ERR_NOT_ON_CHANNEL) {}
 };
 
 /**
@@ -198,7 +198,7 @@ class NotOnChannelException : public IRCException {
  */
 class UserOnChannelException : public IRCException {
     public:
-        UserOnChannelException(const std::string nickname, const std::string channelName)
+        UserOnChannelException(const std::string &nickname, const std::string &channelName)
             : IRCException("443", nickname + "" + channelName + ERR_USER_ON_CHANNEL) {}
 };
 
@@ -207,7 +207,7 @@ class UserOnChannelException : public IRCException {
  */
 class ChanOPrivsNeededException : public IRCException {
     public:
-        ChanOPrivsNeededException(const std::string channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
+        ChanOPrivsNeededException(const std::string &channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
 };
 
 #endif

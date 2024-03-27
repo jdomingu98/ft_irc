@@ -26,8 +26,8 @@ class User {
         std::vector<Channel>    _channels;
 
         // Iterators
-        std::vector<Channel>::const_iterator findChannel(std::string channelName) const;
-        std::vector<Channel>::iterator findChannel(std::string channelName);
+        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
+        std::vector<Channel>::iterator findChannel(const std::string &channelName);
         
     public:
         User(int fd);
