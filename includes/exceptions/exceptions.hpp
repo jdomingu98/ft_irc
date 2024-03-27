@@ -126,7 +126,7 @@ class PasswordMismatchException : public IRCException {
  */
 class InviteOnlyChanException : public IRCException {
     public:
-        InviteOnlyChanException(std::string &channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
+        InviteOnlyChanException(const std::string &channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
 };
 
 /**
@@ -134,7 +134,7 @@ class InviteOnlyChanException : public IRCException {
  */
 class BannedFromChanException : public IRCException {
     public:
-        BannedFromChanException(std::string &channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
+        BannedFromChanException(const std::string &channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
 };
 
 /**
@@ -142,7 +142,7 @@ class BannedFromChanException : public IRCException {
  */
 class BadChannelKeyException : public IRCException {
     public:
-        BadChannelKeyException(std::string &channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
+        BadChannelKeyException(const std::string &channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
 };
 
 /**
@@ -150,7 +150,7 @@ class BadChannelKeyException : public IRCException {
  */
 class ChannelIsFullException : public IRCException {
     public:
-        ChannelIsFullException(std::string &channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
+        ChannelIsFullException(const std::string &channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
 };
 
 /**
@@ -158,7 +158,7 @@ class ChannelIsFullException : public IRCException {
  */
 class TooManyChannelsException : public IRCException {
     public:
-        TooManyChannelsException(std::string &channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
+        TooManyChannelsException(const std::string &channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
 };
 
 /**
