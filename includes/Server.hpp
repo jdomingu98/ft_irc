@@ -56,9 +56,6 @@ class Server {
         std::vector<User>::iterator findUserByNickname(const std::string &nickname);
         std::vector<User>::const_iterator findUserByNickname(const std::string &nickname) const;
 
-        // Channel Iterators
-        std::vector<Channel>::iterator findChannel(const std::string &channelName);
-        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
 
     public:
         ~Server();
@@ -85,6 +82,10 @@ class Server {
         // Other Operations
         void    sendMessage(int clientFd, const std::string& message) const;
         bool    isValidPassword(const std::string& password) const;
+
+        // Channel Iterators
+        std::vector<Channel>::iterator findChannel(const std::string &channelName);
+        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
 };
 
 #endif

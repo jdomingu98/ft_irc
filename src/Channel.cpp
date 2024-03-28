@@ -9,7 +9,6 @@ Channel::Channel(std::string name, User user) : _password(""), _topic(""), _mode
     if (!checkChannelName(name)) {}
         //throw ChannelException(INVALID_CHANNEL_NAME_ERR);
     this->_name = name;
-    user.setNickname("@" + user.getNickname());
     this->_operators.push_back(user);
 }
 
@@ -116,7 +115,7 @@ bool Channel::isModesSet(std::string modesToCheck) const {
  * 
  * @return The name of the channel.
  */
-std::string Channel::getName() const{
+std::string Channel::getName() const {
     return this->_name;
 }
 
@@ -125,7 +124,7 @@ std::string Channel::getName() const{
  * 
  * @return The password of the channel.
  */
-std::string Channel::getPassword() const{
+std::string Channel::getPassword() const {
     return this->_password;
 }
 
@@ -134,7 +133,7 @@ std::string Channel::getPassword() const{
  * 
  * @return The users of the channel.
  */
-std::vector<User> Channel::getUsers() const{
+std::vector<User> Channel::getUsers() const {
     return this->_users;
 }
 
@@ -143,7 +142,7 @@ std::vector<User> Channel::getUsers() const{
  * 
  * @return The operators of the channel.
  */
-std::vector<User> Channel::getOperators() const{
+std::vector<User> Channel::getOperators() const {
     return this->_operators;
 }
 
@@ -152,7 +151,7 @@ std::vector<User> Channel::getOperators() const{
  * 
  * @return All the users of the channel.
  */
-std::vector<User> Channel::getAllUsers() const{
+std::vector<User> Channel::getAllUsers() const {
     std::vector<User> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
     return allUsers;
@@ -313,6 +312,9 @@ void Channel::addUser(User user) {
  * @throw `ChannelException` If the operator is already in the channel.
  */
 void Channel::addOper(User user) {
+    std::vector<User>::iterator it = findOper(user.getNickname());
+    if (it != this->_operators.end()) {}
+        //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
     this->_operators.push_back(user);
 }
 
@@ -324,11 +326,19 @@ void Channel::addOper(User user) {
  * @throw `ChannelException` If the user is not found in the channel.
  */
 void Channel::removeUser(std::string nickname) {
-    std::vector<User>::iterator it = findUser(nickname);
-    if (it != this->_users.end())
-        this->_users.erase(it);
+    Server& server = Server::getInstance();
+    std::vector<User>::iterator itUser = findUser(nickname);
+    std::vector<User>::iterator itOper = findOper(nickname);
+    if (itUser != this->_users.end())
+        this->_users.erase(itUser);
+    else if (itOper != this->_operators.end())
+        this->_operators.erase(itOper);
     else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
+    if (this->_users.empty() && this->_operators.empty()) {
+        server.getChannels().erase(server.findChannel(this->_name));
+        this->~Channel();
+    }
 }
 
 /**
@@ -339,22 +349,7 @@ void Channel::removeUser(std::string nickname) {
  * @return `true` if the user is in the channel, `false` otherwise.
  */
 bool Channel::isUserInChannel(const std::string &nickname) const {
-    return findUser(nickname) != this->_users.end();
-}
-
-/**
- * This function aims to add an operator to the channel.
- * 
- * @param nickname The operator to add.
- * 
- * @throw `ChannelException` If the operator is already in the channel.
- */
-void Channel::removeOper(std::string nickname) {
-    std::vector<User>::iterator it = findOper(nickname);
-    if (it != this->_operators.end())
-        this->_operators.erase(it);
-    else {}
-        //throw ChannelException(USER_NOT_FOUND_ERR);
+    return findOper(nickname) != this->_operators.end() || findUser(nickname) != this->_users.end();
 }
 
 /**
@@ -366,13 +361,10 @@ void Channel::removeOper(std::string nickname) {
  */
 void Channel::makeUserAnOper(std::string nickname) {
     std::vector<User>::iterator it = findUser(nickname);
-    if (it != this->_users.end())
-    {
-        it->setNickname("@" + it->getNickname());
+    if (it != this->_users.end()) {
         this->_operators.push_back(*it);
         this->_users.erase(it);
-    }
-    else {}
+    } else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
 }
 
@@ -385,13 +377,11 @@ void Channel::makeUserAnOper(std::string nickname) {
  */
 void Channel::makeOperAnUser(std::string nickname) {
     std::vector<User>::iterator it = findOper(nickname);
-    if (it != this->_operators.end())
-    {
+    if (it != this->_operators.end()) {
         it->setNickname(it->getNickname().substr(1));
         this->_users.push_back(*it);
         this->_operators.erase(it);
-    }
-    else {}
+    } else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
 }
 

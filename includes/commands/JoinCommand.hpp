@@ -18,7 +18,7 @@ class JoinCommand : public ICommand {
         std::map<std::string, std::string> _channels; //key: channelName, value: channelPassword
 
     public:
-        JoinCommand(std::map<std::string, std::string> _channels);
+        JoinCommand(std::map<std::string, std::string> channelMap);
         ~JoinCommand();
 
         void execute(int clientFd);

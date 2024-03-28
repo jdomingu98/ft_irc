@@ -210,4 +210,12 @@ class ChanOPrivsNeededException : public IRCException {
         ChanOPrivsNeededException(const std::string &channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
 };
 
+/**
+ * This exception is thrown when the channel searched does not exist.
+ */
+class NoSuchChannelException : public IRCException {
+    public:
+        NoSuchChannelException(const std::string &channelName) : IRCException("403", channelName + " :No such channel") {}
+};
+
 #endif

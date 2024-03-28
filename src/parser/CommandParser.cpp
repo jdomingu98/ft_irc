@@ -43,6 +43,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new JoinParser();
     if (command == "INVITE")
         return new InviteParser();
+    if (command == "PART")
+        return new PartParser();
     throw CommandNotFoundException();
 }
 

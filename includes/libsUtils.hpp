@@ -5,17 +5,17 @@
  * A file that contains utility consts and libraries that are used along the project.
 */
 
+# include <algorithm>
 # include <cstdlib>
 # include <iostream>
 # include <sstream>
 # include <string>
-# include <algorithm>
 # include <vector>
 # include <unistd.h>
 
-# include "exceptions.hpp"
-
 # include "Logger.hpp"
+
+# include "exceptions.hpp"
 
 // =================================================================================
 
@@ -41,6 +41,9 @@
 
 # define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
+# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
+
+# define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
 
 # define INVITE_CMD_RESPONSE(nickname, channelName) nickname + " " + channelName
 

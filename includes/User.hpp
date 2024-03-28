@@ -39,7 +39,7 @@ class User {
         std::string getUsername() const;
         std::string getHostname() const;
         bool isUserInMaxChannels() const;
-        bool isAlreadyInChannel(std::string channelName) const;
+        bool isOnChannel(std::string channelName) const;
         bool isRegistered() const;
 
         // Setters
