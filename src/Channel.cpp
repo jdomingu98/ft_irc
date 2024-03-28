@@ -285,7 +285,7 @@ void Channel::addOper(User user) {
 void Channel::removeUser(std::string nickname) {
     Server& server = Server::getInstance();
     std::vector<User>::iterator itUser = findUser(nickname);
-    std::vector<User>::iterator itOper = findOper('@' + nickname);
+    std::vector<User>::iterator itOper = findOper(nickname);
     if (itUser != this->_users.end())
         this->_users.erase(itUser);
     else if (itOper != this->_operators.end())

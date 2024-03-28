@@ -21,40 +21,38 @@ PartCommand::~PartCommand() {
  * 
  */
 void PartCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User user = server.getUserByFd(clientFd);
+    Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
+    
+    std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
 
-    std::vector<Channel> channelsVec;
     std::vector<Channel> serverChannels = server.getChannels();
     std::vector<Channel> userChannels = user.getChannels();
 
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
+        
+        std::vector<Channel>::iterator it = server.findChannel(this->_channels[i]);
+        
         //Comprobar qué se valida primero
-        if (server.findChannel(this->_channels[i]) == serverChannels.end())
+        if (it == serverChannels.end())
             throw NoSuchChannelException(this->_channels[i]);
-
+	
         if (!user.isOnChannel(this->_channels[i]))
             throw NotOnChannelException(this->_channels[i]);
 
         Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
-        channelsVec.push_back(*(server.findChannel(this->_channels[i])));
-    }
-
-    serverChannels.clear();
-    userChannels.clear();
-
-    std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
-
-    for (size_t i = 0; i < channelsVec.size(); i++) {
-        channelsVec[i].removeUser(nickname);
-        std::vector<User> users = channelsVec[i].getUsers();
+        it->removeUser(nickname);
+        std::vector<User> users = it->getUsers();
+        std::cout << "Users size: " << users.size() << std::endl;
         for (size_t j = 0; j < users.size(); j++) {
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channelsVec[i].getName()));
+            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, it->getName()));
         }
         users.clear();
     }
+    serverChannels.clear();
+    userChannels.clear();
 }
