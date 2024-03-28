@@ -15,9 +15,8 @@ class Server;
  */
 class User {
     private:
-        int         _fd;
-        bool        _passwordChecked;
-        bool        _registered;
+        int                     _fd;
+        bool                    _registered;
         std::string             _username;
         std::string             _hostname;
         std::string             _serverName;
@@ -26,11 +25,11 @@ class User {
         std::string             _password;
         std::vector<Channel>    _channels;
 
-        std::vector<Channel>::const_iterator findChannel(std::string channelName) const;
-        std::vector<Channel>::iterator findChannel(std::string channelName);
+        // Iterators
+        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
+        std::vector<Channel>::iterator findChannel(const std::string &channelName);
         
     public:
-        // Constructors and destructors
         User(int fd);
         ~User();
 
@@ -39,7 +38,6 @@ class User {
         std::string getNickname() const;
         std::string getUsername() const;
         std::string getHostname() const;
-        bool isPasswordChecked() const;
         bool isUserInMaxChannels() const;
         bool isAlreadyInChannel(std::string channelName) const;
         bool isRegistered() const;
@@ -54,11 +52,10 @@ class User {
         void setPassword(const std::string& password);
 
         // Operations
-        void checkPassword();
         void makeRegistration();
-        bool canRegister();
+        bool canRegister() const;
         void addChannel(Channel &channel);
-        void sendPrivateMessageToUser(const User &destination, const std::string& message);
+        void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
         bool isUserAnOper(std::string channelName) const;
 };
 

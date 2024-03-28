@@ -43,37 +43,49 @@ class Server {
         static Server           *_server;
         Server(const std::string port, const std::string password);
 
-        bool isValidPort(const std::string port);
+        // Server logic
+        bool isValidPort(const std::string &port) const;
         void initServer();
         void listenClients();
         void handleNewConnection(int numFds);
         void handleExistingConnection(int fd);
         void closeConnections();
+
+        // User Iterators
         std::vector<User>::iterator findUserByFd(int clientFd);
-        std::vector<User>::iterator findUserByNickname(std::string nickname);
+        std::vector<User>::const_iterator findUserByFd(int clientFd) const;
+        std::vector<User>::iterator findUserByNickname(const std::string &nickname);
+        std::vector<User>::const_iterator findUserByNickname(const std::string &nickname) const;
+
+        // Channel Iterators
+        std::vector<Channel>::iterator findChannel(const std::string &channelName);
+        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
 
     public:
         ~Server();
+
+        // Singleton Pattern
         static void init(std::string port, std::string password);
         static Server &getInstance();
 
-        std::vector<Channel>::iterator findChannel(std::string channelName);
+        // User
+        User        &getUserByFd(int clientFd);
+        const User  &getUserByFd(int clientFd) const;
+        User        &getUserByNickname(const std::string& nickname);
+        bool        isNicknameInUse(const std::string& nickname) const;
+        void        removeUser(int clientFd);
+        void        attemptUserRegistration(int clientFd);
 
-        //Getters
-        User &getUserByFd(int clientFd);
-        User &getUserByNickname(const std::string& nickname);
-
-        //Operations
-        void sendMessage(int clientFd, const std::string& message) const;
-        bool isValidPassword(const std::string& password);
-        bool isNicknameInUse(const std::string& nickname);
-        bool userHasCheckedPassword(int clientFd);
-        void removeUser(int clientFd);
-        void attemptUserRegistration(int clientFd);
-
-        void addChannel(Channel channel);
+        // Channel
         std::vector<Channel> getChannels() const;
-        void removeChannel(std::string channelName);
+        Channel &getChannelByName(const std::string &channelName);
+        bool    channelExists(const std::string &channelName) const;
+        void    addChannel(Channel channel);
+        void    removeChannel(std::string channelName);
+
+        // Other Operations
+        void    sendMessage(int clientFd, const std::string& message) const;
+        bool    isValidPassword(const std::string& password) const;
 };
 
 #endif

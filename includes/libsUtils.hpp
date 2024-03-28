@@ -42,6 +42,8 @@
 # define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 
+# define INVITE_CMD_RESPONSE(nickname, channelName) nickname + " " + channelName
+
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);
 std::string join(const std::vector<std::string> &msg);
