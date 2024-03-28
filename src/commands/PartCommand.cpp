@@ -29,7 +29,6 @@ void PartCommand::execute(int clientFd) {
     std::string hostname = user.getHostname();
 
     std::vector<Channel> serverChannels = server.getChannels();
-    std::vector<Channel> userChannels = user.getChannels();
 
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
@@ -45,7 +44,7 @@ void PartCommand::execute(int clientFd) {
 
         Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
         it->removeUser(nickname);
-        std::vector<User> users = it->getUsers();
+        std::vector<User> users = it->getAllUsers();
         std::cout << "Users size: " << users.size() << std::endl;
         for (size_t j = 0; j < users.size(); j++) {
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
@@ -54,5 +53,4 @@ void PartCommand::execute(int clientFd) {
         users.clear();
     }
     serverChannels.clear();
-    userChannels.clear();
 }

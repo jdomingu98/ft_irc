@@ -115,7 +115,7 @@ bool Channel::isModesSet(std::string modesToCheck) const {
  * 
  * @return The name of the channel.
  */
-std::string Channel::getName() const{
+std::string Channel::getName() const {
     return this->_name;
 }
 
@@ -124,7 +124,7 @@ std::string Channel::getName() const{
  * 
  * @return The password of the channel.
  */
-std::string Channel::getPassword() const{
+std::string Channel::getPassword() const {
     return this->_password;
 }
 
@@ -133,7 +133,7 @@ std::string Channel::getPassword() const{
  * 
  * @return The users of the channel.
  */
-std::vector<User> Channel::getUsers() const{
+std::vector<User> Channel::getUsers() const {
     return this->_users;
 }
 
@@ -142,7 +142,7 @@ std::vector<User> Channel::getUsers() const{
  * 
  * @return The operators of the channel.
  */
-std::vector<User> Channel::getOperators() const{
+std::vector<User> Channel::getOperators() const {
     return this->_operators;
 }
 
@@ -151,7 +151,7 @@ std::vector<User> Channel::getOperators() const{
  * 
  * @return All the users of the channel.
  */
-std::vector<User> Channel::getAllUsers() const{
+std::vector<User> Channel::getAllUsers() const {
     std::vector<User> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
     return allUsers;
@@ -349,7 +349,7 @@ void Channel::removeUser(std::string nickname) {
  * @return `true` if the user is in the channel, `false` otherwise.
  */
 bool Channel::isUserInChannel(const std::string &nickname) const {
-    return findUser(nickname) != this->_users.end();
+    return findOper(nickname) != this->_operators.end() || findUser(nickname) != this->_users.end();
 }
 
 /**

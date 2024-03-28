@@ -154,14 +154,6 @@ void User::setPassword(const std::string& password) {
     this->_password = password;
 }
 
-/**
- * This function aims to get the channels of the user.
- * 
- * @return The channels of the user.
- */
-std::vector<Channel> User::getChannels() const {
-    return this->_channels;
-}
 
 /**
  * This function aims to check if the user can register.
