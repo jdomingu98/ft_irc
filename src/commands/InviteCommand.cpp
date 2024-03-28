@@ -42,5 +42,5 @@ void InviteCommand::execute(int clientFd) {
     if (channel.getModes() == "i" && !channel.isOper(me.getNickname()))
         throw ChanOPrivsNeededException(this->_channelName);
     channel.inviteUser(this->_nickname);
-    server.sendMessage(clientFd, this->_nickname + " " + this->_channelName);
+    server.sendMessage(clientFd, INVITE_CMD_RESPONSE(this->_nickname, this->_channelName));
 }

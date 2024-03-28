@@ -259,9 +259,10 @@ bool Server::isNicknameInUse(const std::string& nickname) const {
  * This function aims to get all the user information searching by the nickname.
  * 
  * @param nickname The nickname of the user.
- * @return The user object with all its information.
  * 
  * @throws `ServerException` if the user is not found.
+ * 
+ * @return The user object with all its information.
  */
 User &Server::getUserByNickname(const std::string &nickname) {
     std::vector<User>::iterator it = this->findUserByNickname(nickname);
@@ -433,9 +434,9 @@ void Server::removeChannel(std::string channelName) {
  * 
  * @param channelName The name of the channel.
  * 
- * @return The channel with the name.
- * 
  * @throws `ServerException` if the channel is not found.
+ * 
+ * @return The channel with the name.
  */
 Channel &Server::getChannelByName(const std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
