@@ -10,7 +10,7 @@ class ICommand {
     protected:
         bool _needValidate;
     public:
-        virtual void execute(Server &server, int clientFd) = 0;
+        virtual void execute(int clientFd) = 0;
         ICommand(bool needValidate) : _needValidate(needValidate) {};
 };
 

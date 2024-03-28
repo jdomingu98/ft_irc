@@ -20,15 +20,15 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-CMD_PREFIXS		= User Nick Pass Quit PrivateMessage Join Part
+CMD_PREFIXS		= User Nick Pass Quit PrivateMessage Join Part Invite
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part
+PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= main Server User Channel utils Logger
+FILES 			= main Server User Channel libsUtils Logger
 
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
 SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))

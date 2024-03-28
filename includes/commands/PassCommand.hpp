@@ -19,7 +19,7 @@ class PassCommand : public ICommand {
         PassCommand(const std::string& password);
         ~PassCommand();
 
-        void execute(Server &server, int clientFd);
+        void execute(int clientFd);
 };
 
 #endif

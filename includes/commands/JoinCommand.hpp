@@ -8,7 +8,6 @@
 # include "Server.hpp"
 
 # include "libsUtils.hpp"
-# include "utils.hpp"
 
 /**
  * An ICommand implementation that is responsible for the binding and creation of a channel.
@@ -22,7 +21,7 @@ class JoinCommand : public ICommand {
         JoinCommand(std::map<std::string, std::string> channelMap);
         ~JoinCommand();
 
-        void execute(Server &server, int fd);
+        void execute(int clientFd);
 };
 
 #endif

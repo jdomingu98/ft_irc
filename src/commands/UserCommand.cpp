@@ -27,20 +27,19 @@ UserCommand::~UserCommand() {}
 /**
  * Execute the command USER.
  * 
- * @param server The server where the command will be executed
  * @param clientFd The socket file descriptor of the client
  * 
  * @throws `AlreadyRegisteredException` If the user has already used the USER command
- * 
  */
-void UserCommand::execute(Server &server, int clientFd) {
-    User user = server.getUserByFd(clientFd);
+void UserCommand::execute(int clientFd) {
+    Server& server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
     if (!user.getUsername().empty())
         throw AlreadyRegisteredException();
     user.setUsername(this->_username);
     user.setHostname(this->_hostname);
     user.setServerName(this->_serverName);
     user.setRealName(this->_realName);
-     if (server.getUserByFd(clientFd).canRegister())
+     if (user.canRegister())
         server.attemptUserRegistration(clientFd);
 }

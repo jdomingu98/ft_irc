@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "libsUtils.hpp"
 
 /**
  * Trims the string. Removes the leading and trailing whitespaces.

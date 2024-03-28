@@ -6,7 +6,8 @@
 # include "Server.hpp"
 
 # include "libsUtils.hpp"
-# include "utils.hpp"
+
+class Channel;
 
 /**
  * An ICommand implementation that is responsible for the leaving of a channel.
@@ -14,13 +15,13 @@
  */
 class PartCommand : public ICommand {
     private:
-        std::vector<Channel> _channels;
+        std::vector<std::string> _channels;
 
     public:
-        PartCommand(std::vector<Channel> channels);
+        PartCommand(std::vector<std::string> channels);
         ~PartCommand();
 
-        void execute(Server &server, int clientFd);
+        void execute(int clientFd);
 };
 
 #endif

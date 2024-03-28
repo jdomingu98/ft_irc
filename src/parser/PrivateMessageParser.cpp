@@ -1,12 +1,19 @@
 #include "PrivateMessageParser.hpp"
 
 /**
- * Parses the private message command.
+ * Parses the PRIVMSG command.
  * 
- * @param server the server
- * @param fd the file descriptor
- * @param message the message to parse with the following format: "PRIVMSG <receiver>[, <receiver>] :<message>"
-*/
+ * The format of the PRIVMSG command is as follows:
+ * 
+ * Command: PRIVMSG
+ * Parameters: <receiver>{,<receiver>} <text to be sent>
+ * 
+ * @param tokens The parameters of the command.
+ * 
+ * @throws `NoRecipientGivenException` if no recipient is given.
+ * @throws `NoTextToSendException` if no text is given.
+ * @return The parsed command.
+ */
 ICommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> receivers;
     std::string message;

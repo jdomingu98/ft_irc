@@ -17,7 +17,7 @@ class PrivateMessageCommand : public ICommand {
 
     public:
         PrivateMessageCommand(std::vector<std::string> receivers, std::string message);
-        void execute(Server &server, int fd);
+        void execute(int clientFd);
 };
 
 #endif

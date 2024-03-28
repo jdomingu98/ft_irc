@@ -20,7 +20,6 @@ NickCommand::~NickCommand() {}
 /**
  * Execute the command NICK.
  * 
- * @param server The server where the command will be executed
  * @param clientFd The socket file descriptor of the client
  * 
  * @throws `NoNicknameGivenException` If the nickname is empty
@@ -29,7 +28,8 @@ NickCommand::~NickCommand() {}
  * @throws `NicknameInUseException` If the nickname is already in use and the user is registered
  * 
  */
-void NickCommand::execute(Server &server, int clientFd) {
+void NickCommand::execute(int clientFd) {
+    Server& server = Server::getInstance();
     if (this->_nickname.empty())
         throw NoNicknameGivenException();
 
