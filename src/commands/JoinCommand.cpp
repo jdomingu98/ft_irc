@@ -34,7 +34,6 @@ JoinCommand::~JoinCommand() {
 void JoinCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
     User user = server.getUserByFd(clientFd);
-    std::vector<Channel> serverChannels = server.getChannels();
     
     bool isOperator;
     std::string nickname = user.getNickname();
@@ -50,15 +49,15 @@ void JoinCommand::execute(int clientFd) {
         isOperator = false;
 
         //0. If channel[i] does not exist, create it
-        if (server.findChannel(channelName) == serverChannels.end()) {
+        if (!server.channelExists(channelName)) {
             Channel newChannel(channelName, user);
             server.addChannel(newChannel);
             if (channelKey != "")
-                server.findChannel(channelName)->setPassword(channelKey);
+                server.getChannelByName(channelName).setPassword(channelKey);
             isOperator = true;
         }
 
-        Channel channel = *server.findChannel(channelName);
+        Channel channel = server.getChannelByName(channelName);
 
         //1. Check if channel[i] is invite-only channel and if user is invited -> ERR_INVITEONLYCHAN
         /*if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {

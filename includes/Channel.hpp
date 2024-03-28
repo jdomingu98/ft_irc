@@ -27,45 +27,59 @@ class Channel {
         int                 _limit;
         bool                _passwordSet;
 
+        // Iterators
+        std::vector<User>::iterator         findUser(const std::string &nickname);
+        std::vector<User>::const_iterator   findUser(const std::string &nickname) const;
+        std::vector<User>::iterator         findOper(const std::string &nickname);
+        std::vector<User>::const_iterator   findOper(const std::string &nickname) const;
+
+        // Other Operations
         bool checkChannelName(std::string name) const;
-        std::vector<User>::iterator findUser(std::string nickname);
-        std::vector<User>::iterator findOper(std::string nickname);
         bool isModesSet(std::string modesToCheck) const;
-    
+
     public:
-        //Constructors and destructor
+        // Constructors and destructor
         Channel(std::string name, User user);
         ~Channel();
 
-        //Getters
-        std::string getName() const;
-        std::string getPassword() const;
-        std::vector<User> getUsers() const;
-        std::vector<User> getOperators() const;
-        std::vector<User> getAllUsers() const;
-        std::string getTopic() const;
-        std::string getModes() const;
-        bool isPasswordSet() const;
+        // Getters
+        std::string         getName() const;
+        std::string         getPassword() const;
+        std::vector<User>   getUsers() const;
+        std::vector<User>   getOperators() const;
+        std::vector<User>   getAllUsers() const;
+        std::string         getTopic() const;
+        std::string         getModes() const;
+        bool                isPasswordSet() const;
 
 
-        //Setters
+        // Setters
         void setPassword(std::string password);
         void setTopic(std::string topic);
         void changeMode(std::string modes);
 
-        //Operations
-        bool checkPassword(std::string password) const;
-        bool isInviteOnly() const;
-        bool isUserInvited(std::string nickname) const;
-        bool isUserBanned(std::string nickname, std::string username, std::string hostname) const;
-        bool hasLimit() const;
-        bool isFull() const;
+        // User
         void addUser(User user);
-        void addOper(User user);
         void removeUser(std::string nickname);
+        bool isUserBanned(std::string nickname, std::string username, std::string hostname) const;
+        bool isUserInChannel(const std::string &nickname) const;
+
+        // Oper
+        void addOper(User user);
         void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
+        bool isOper(const std::string &nickname) const;
+
+        // Invite
+        void inviteUser(const std::string &nickname);
+        bool isUserInvited(std::string nickname) const;
+        bool isInviteOnly() const;
+
+        // Other Operations
+        bool checkPassword(std::string password) const;
+        bool hasLimit() const;
+        bool isFull() const;
 };
 
 #endif
