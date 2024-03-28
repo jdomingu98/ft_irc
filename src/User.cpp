@@ -5,7 +5,7 @@
  * 
  * @param fd The file descriptor of the user
  */
-User::User(int fd) : _fd(fd), _passwordChecked(false) {}
+User::User(int fd) : _fd(fd) {}
 
 /**
  * User destructor 
@@ -19,7 +19,7 @@ User::~User() {}
  * 
  * @return The const iterator to the channel with the name.
  */
-std::vector<Channel>::const_iterator User::findChannel(std::string channelName) const {
+std::vector<Channel>::const_iterator User::findChannel(const std::string &channelName) const {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;
@@ -34,28 +34,12 @@ std::vector<Channel>::const_iterator User::findChannel(std::string channelName) 
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::iterator User::findChannel(std::string channelName) {
+std::vector<Channel>::iterator User::findChannel(const std::string &channelName) {
     for (size_t i = 0; i < this->_channels.size(); i++) {
         if (this->_channels[i].getName() == channelName)
             return this->_channels.begin() + i;
     }
     return this->_channels.end();
-}
-
-/**
- * This function aims to check the password of the user, setting is as `true`.
- */
-void User::checkPassword() {
-    this->_passwordChecked = true;
-}
-
-/**
- * This function aims to check if the password is already checked.
- * 
- * @return `true` if the password is already checked, `false` otherwise.
- */
-bool User::isPasswordChecked() const {
-    return this->_passwordChecked;
 }
 
 /**
@@ -184,7 +168,7 @@ std::vector<Channel> User::getChannels() const {
  * 
  * @return `true` if the user can register, `false` otherwise.
  */
-bool User::canRegister() {
+bool User::canRegister() const {
     return  !(this->_username.empty()
             || this->_hostname.empty()
             || this->_serverName.empty()
@@ -226,7 +210,7 @@ void User::addChannel(Channel &channel) {
  * @param destination The user who will receive the message.
  * @param message The message to send.
  */
-void User::sendPrivateMessageToUser(const User &destination, const std::string& message) {
+void User::sendPrivateMessageToUser(const User &destination, const std::string& message) const {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
     Server::getInstance().sendMessage(destination.getFd(), response);

@@ -44,7 +44,22 @@ bool Channel::checkChannelName(std::string name) const {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findUser(std::string nickname) {
+std::vector<User>::iterator Channel::findUser(const std::string &nickname) {
+    for (size_t i = 0; i < this->_users.size(); i++) {
+        if (this->_users[i].getNickname() == nickname)
+            return this->_users.begin() + i;
+    }
+    return this->_users.end();
+}
+
+/**
+ * This function aims to find a user by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return The iterator to the user with the nickname.
+ */
+std::vector<User>::const_iterator Channel::findUser(const std::string &nickname) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
         if (this->_users[i].getNickname() == nickname)
             return this->_users.begin() + i;
@@ -59,7 +74,22 @@ std::vector<User>::iterator Channel::findUser(std::string nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findOper(std::string nickname) {
+std::vector<User>::iterator Channel::findOper(const std::string &nickname) {
+    for (size_t i = 0; i < this->_operators.size(); i++) {
+        if (this->_operators[i].getNickname() == nickname)
+            return this->_operators.begin() + i;
+    }
+    return this->_operators.end();
+}
+
+/**
+ * This function aims to find a oper by the nickname.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @return The iterator to the user with the nickname.
+ */
+std::vector<User>::const_iterator Channel::findOper(const std::string &nickname) const {
     for (size_t i = 0; i < this->_operators.size(); i++) {
         if (this->_operators[i].getNickname() == nickname)
             return this->_operators.begin() + i;
@@ -215,6 +245,19 @@ bool Channel::isUserInvited(std::string nickname) const {
 }
 
 /**
+ * This function aims to invite a user to the channel.
+ * 
+ * @param nickname The nickname of the user.
+ * 
+ * @throw `ChannelException` If the user is already invited.
+ * 
+ */
+void Channel::inviteUser(const std::string &nickname) {
+    if (!isUserInvited(nickname))
+        this->_inviteList.push_back(nickname);
+}
+
+/**
  * This function aims to check if the user is banned from the channel.
  * 
  * @param nickname The nickname of the user.
@@ -299,6 +342,17 @@ void Channel::removeUser(std::string nickname) {
 }
 
 /**
+ * This function tells if a user is in the channel.
+ * 
+ * @param nickname The nickname of the user to check.
+ * 
+ * @return `true` if the user is in the channel, `false` otherwise.
+ */
+bool Channel::isUserInChannel(const std::string &nickname) const {
+    return findUser(nickname) != this->_users.end();
+}
+
+/**
  * This function aims to make a user an operator of the channel.
  * 
  * @param nickname The nickname of the user to make an operator.
@@ -329,4 +383,15 @@ void Channel::makeOperAnUser(std::string nickname) {
         this->_operators.erase(it);
     } else {}
         //throw ChannelException(USER_NOT_FOUND_ERR);
+}
+
+/**
+ * This function aims to check if a user is an operator of the channel.
+ * 
+ * @param nickname The nickname of the user to check.
+ * 
+ * @return `true` if the user is an operator, `false` otherwise.
+ */
+bool Channel::isOper(const std::string &nickname) const {
+    return findOper(nickname) != this->_operators.end();
 }

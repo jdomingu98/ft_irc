@@ -41,6 +41,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new PrivateMessageParser();
     if (command == "JOIN")
         return new JoinParser();
+    if (command == "INVITE")
+        return new InviteParser();
     if (command == "PART")
         return new PartParser();
     throw CommandNotFoundException();

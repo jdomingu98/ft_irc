@@ -12,6 +12,7 @@
 # include "PrivateMessageParser.hpp"
 # include "JoinParser.hpp"
 # include "PartParser.hpp"
+# include "InviteParser.hpp"
 
 # include "libsUtils.hpp"
 

@@ -45,6 +45,8 @@
 
 # define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
 
+# define INVITE_CMD_RESPONSE(nickname, channelName) nickname + " " + channelName
+
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);
 
