@@ -17,6 +17,10 @@ class JoinCommand : public ICommand {
     private:
         std::map<std::string, std::string> _channels; //key: channelName, value: channelPassword
 
+        std::string rplNamReply(std::string const &channelName,
+                                std::vector<User> const &opers,
+                                std::vector<User> const &users) const;
+
     public:
         JoinCommand(std::map<std::string, std::string> channelMap);
         ~JoinCommand();
