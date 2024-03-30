@@ -15,6 +15,15 @@ JoinCommand::~JoinCommand() {
     this->_channels.clear();
 }
 
+/**
+ * Returns the RPL_NAMREPLY message.
+ * 
+ * @param channelName The name of the channel
+ * @param opers The vector of operators in the channel
+ * @param users The vector of users in the channel
+ * 
+ * @return The RPL_NAMREPLY message
+ */
 std::string JoinCommand::rplNamReply(std::string const &channelName, std::vector<User> const &opers, std::vector<User> const &users) const {
     std::string msg = channelName + " :@" + opers[0].getNickname();
 
