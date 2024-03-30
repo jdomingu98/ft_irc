@@ -396,18 +396,16 @@ void Channel::makeOperAnUser(std::string nickname) {
 }
 
 /**
- * This function aims to find an operator user by the nickname.
+ * This function aims to check if a user is an operator of the channel.
  * 
- * @param nickname The nickname of the user.
+ * @param nickname The nickname of the user to check.
  * 
  * @return `true` if the user is an operator, `false` otherwise.
  */
-bool Channel::findOperUser(std::string nickname) const
+bool Channel::isOperUser(std::string const &nickname) const
 {    
-    for (size_t i = 0; i < this->_operators.size(); i++) {
-        if (this->_operators[i].getNickname() == nickname)
-            return true;
-    }
+    if(findOper(nickname) != this->_operators.end())
+        return true;
     return false;
 }
 /**

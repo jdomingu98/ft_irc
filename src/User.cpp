@@ -214,20 +214,20 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
 bool User::isUserAnOper(std::string channelName) const {
     std::vector<Channel>::const_iterator it = findChannel(channelName);
     if (it != this->_channels.end())
-        return it->findOperUser(this->_nickname);
+        return it->isOperUser(this->_nickname);
     return false;
 }
 
 /**
- * This function aims to find and get a channel by the name.
+ * This function aims to get a channel by the name.
  * 
  * @param channelName The name of the channel.
  * 
- * @return The pointer to the channel with the name.
+ * @return The channel with the name.
  */
-Channel User::findAndGetChannel(std::string channelName) {
+Channel *User::getChannelByName(std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     if (it != this->_channels.end())
-        return *it;
-    return Channel("", *this);
+        return &(*it);
+    return NULL;
 }

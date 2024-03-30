@@ -51,7 +51,7 @@ class Channel {
         std::string         getTopic() const;
         std::string         getModes() const;
         bool                isPasswordSet() const;
-
+        bool                isOperUser(std::string const &nickname) const;
 
         // Setters
         void setPassword(std::string password);
@@ -69,7 +69,6 @@ class Channel {
         void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
-        bool findOperUser(std::string nickname) const;
         bool isOper(const std::string &nickname) const;
 
         // Invite

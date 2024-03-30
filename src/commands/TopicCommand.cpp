@@ -29,18 +29,22 @@ TopicCommand::~TopicCommand() {}
  */
 void TopicCommand::execute(int clientFd) {
     User user = Server::getInstance().getUserByFd(clientFd);
-    Channel channel = user.findAndGetChannel(this->_channelName);
+    Channel *channel = user.getChannelByName(this->_channelName);
+    
+    if (channel == NULL)
+        throw ServerException("You're not on that channel");
 
-    if(_topic.empty()){
+    if (_topic.empty()){
         //TODO: Send the topic to the user
     }
     else {
-        if(channel.getName() == _channelName && user.isUserAnOper(_channelName)){
-            channel.setTopic(_topic);
+        if (channel->getName() == _channelName && user.isUserAnOper(_channelName)){
+            channel->setTopic(_topic);
             //TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
         }
         else {
             //TODO: You're not channel operator"
         }
     }
+    //TODO: set/remove with cmd MODE (flag +t)
 }

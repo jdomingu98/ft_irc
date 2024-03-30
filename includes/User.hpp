@@ -41,7 +41,7 @@ class User {
         bool isUserInMaxChannels() const;
         bool isAlreadyInChannel(std::string channelName) const;
         bool isRegistered() const;
-        Channel findAndGetChannel(std::string channelName);
+        Channel *getChannelByName(std::string &channelName);
 
         // Setters
         void setUsername(const std::string& username);
