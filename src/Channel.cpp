@@ -5,7 +5,8 @@
  * 
  * @param name The name of the channel.
  */
-Channel::Channel(std::string name, User user) : _password(""), _topic(""), _modes(""), _limit(NO_LIMIT), _passwordSet(false) {
+Channel::Channel(std::string name, User user)
+    : _password(""), _topic(""), _limit(NO_LIMIT), _inviteOnly(false), _passwordSet(false) {
     if (!checkChannelName(name)) {}
         //throw ChannelException(INVALID_CHANNEL_NAME_ERR);
     this->_name = name;
@@ -98,19 +99,6 @@ std::vector<User>::const_iterator Channel::findOper(const std::string &nickname)
 }
 
 /**
- * This function aims to checks if the modes of the param matchs the ones of the channel.
- * 
- * @param modesToCheck The modes to check.
- */
-bool Channel::isModesSet(std::string modesToCheck) const {
-    for (size_t i = 0; i < modesToCheck.size(); i++) {
-        if (this->_modes.find(modesToCheck[i]) == std::string::npos)
-            return false;
-    }
-    return true;
-}
-
-/**
  * This function aims to get the name of the channel.
  * 
  * @return The name of the channel.
@@ -167,15 +155,6 @@ std::string Channel::getTopic() const {
 }
 
 /**
- * This function aims to get the mode of the channel.
- * 
- * @return The mode of the channel.
- */
-std::string Channel::getModes() const{
-    return this->_modes;
-}
-
-/**
  * This function aims to get if the password is set.
  * 
  * @return `true` if the password is set, `false` otherwise.
@@ -190,9 +169,17 @@ bool Channel::isPasswordSet() const {
  * @param password The password of the channel.
  * 
  */
-void Channel::setPassword(std::string password) {
+void Channel::setPassword(const std::string &password) {
     this->_password = password;
     this->_passwordSet = true;
+}
+
+/**
+ * This function aims to unset the password of the channel.
+*/
+void Channel::unsetPassword() {
+    this->_password = "";
+    this->_passwordSet = false;
 }
 
 /**
@@ -205,15 +192,6 @@ void Channel::setTopic(std::string topic) {
 }
 
 /**
- * This function aims to set the mode of the channel.
- * 
- * @param modes The mode of the channel.
- */
-void Channel::changeMode(std::string modes) {
-    this->_modes = modes;
-}
-
-/**
  * This function aims to set the password of the channel.
  * 
  * @param password The password of the channel.
@@ -222,15 +200,6 @@ void Channel::changeMode(std::string modes) {
  * */
 bool Channel::checkPassword(std::string password) const {
     return this->_password == password;
-}
-
-/**
- * This function aims to check if the channel is invite only.
- * 
- * @return `true` if the channel is invite only, `false` otherwise.
- */
-bool Channel::isInviteOnly() const {
-    return isModesSet("i");
 }
 
 /**
@@ -394,4 +363,36 @@ void Channel::makeOperAnUser(std::string nickname) {
  */
 bool Channel::isOper(const std::string &nickname) const {
     return findOper(nickname) != this->_operators.end();
+}
+
+/**
+ * This function aims to check if the channel is invite-only.
+ * 
+ * @return `true` if the channel is invite-only, `false` otherwise.
+ */
+bool Channel::isInviteOnly() const {
+    return this->_inviteOnly;
+}
+
+/**
+ * This function aims to set the channel as invite-only.
+ */
+void Channel::setInviteOnly(bool inviteOnly) {
+    this->_inviteOnly = inviteOnly;
+}
+
+/**
+ * This function aims to check if the channel is topic-protected.
+ * 
+ * @return `true` if the channel is topic-protected, `false` otherwise.
+ */
+bool Channel::isTopicProtected() const {
+    return this->_topicProtected;
+}
+
+/**
+ * This function aims to set the channel as topic-protected.
+ */
+void Channel::setTopicProtected(bool topicProtected) {
+    this->_topicProtected = topicProtected;
 }

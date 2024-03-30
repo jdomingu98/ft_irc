@@ -38,8 +38,7 @@
 // #define ERR_TOO_MANY_TARGETS(target)  (target)" :Duplicate recipients. No message delivered"
 
 // #define ERR_KEYSET(channel) (channel) " :Channel key already set"
-
-// #define ERR_UNKOWN_MODE (modeChar) (modeChar) " :is unknown mode char to me"
+# define ERR_UNKOWN_MODE(modeChar) (modeChar + " :is unknown mode char to me")
 // #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
 // #define ERR_U_MODE_IS(userModeString) (userModeString)
 // #define ERR_U_MODE_UNKNOWN_FLAG ":Unknown MODE flag"
@@ -208,6 +207,14 @@ class ChanOPrivsNeededException : public IRCException {
 class NoSuchChannelException : public IRCException {
     public:
         NoSuchChannelException(const std::string &channelName) : IRCException("403", channelName + " :No such channel") {}
+};
+
+/**
+ * This exception is thrown when the specified channel mode does not exist.
+ */
+class UnknownModeException : public IRCException {
+    public:
+        UnknownModeException(char modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
 };
 
 #endif

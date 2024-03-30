@@ -23,11 +23,13 @@ class Channel {
         std::vector<User>           _users;
         std::vector<User>           _operators;
         std::vector<std::string>    _inviteList;
-        std::vector<std::string>    _banList;
-        std::string         _topic;
-        std::string         _modes;
-        int                 _limit;
-        bool                _passwordSet;
+        std::string                 _topic;
+        int                         _limit;
+        bool                        _passwordSet;
+
+        // modes
+        bool    _inviteOnly;
+        bool    _topicProtected;
 
         // Iterators
         std::vector<User>::iterator         findUser(const std::string &nickname);
@@ -37,7 +39,6 @@ class Channel {
 
         // Other Operations
         bool checkChannelName(std::string name) const;
-        bool isModesSet(std::string modesToCheck) const;
 
     public:
         // Constructors and destructor
@@ -51,14 +52,10 @@ class Channel {
         std::vector<User>   getOperators() const;
         std::vector<User>   getAllUsers() const;
         std::string         getTopic() const;
-        std::string         getModes() const;
         bool                isPasswordSet() const;
 
-
         // Setters
-        void setPassword(std::string password);
         void setTopic(std::string topic);
-        void changeMode(std::string modes);
 
         // User
         void addUser(User user);
@@ -75,10 +72,20 @@ class Channel {
         // Invite
         void inviteUser(const std::string &nickname);
         bool isUserInvited(std::string nickname) const;
-        bool isInviteOnly() const;
 
-        // Other Operations
+        // Modes
+        bool isInviteOnly() const;
+        void setInviteOnly(bool inviteOnly);
+        bool isTopicProtected() const;
+        void setTopicProtected(bool topicProtected);
+
+        // Password
+        void setPassword(const std::string &password);
         bool checkPassword(std::string password) const;
+        void unsetPassword();
+
+        // Limit
+        void setLimit(int limit);
         bool hasLimit() const;
         bool isFull() const;
 };
