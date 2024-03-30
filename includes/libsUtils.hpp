@@ -45,8 +45,8 @@
 
 //RPL_XXX -> Reply messages (Command Response)
 
-# define RPL_TOPIC(channel, topic) (channel) " :" (topic)
-# define RPL_NO_TOPIC(channel) (channel) " :No topic is set"
+# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
+# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
 // # define RPL_INVITING(channel, nickname) (channel) " " (nickname)
 // # define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) " " (mode) " " (modeParams)
