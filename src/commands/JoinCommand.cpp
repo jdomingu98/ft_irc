@@ -122,7 +122,10 @@ void JoinCommand::execute(int clientFd) {
         user.addChannel(channel);
 
         //5. Send JOIN message to all users in channel[i]
-        server.sendMessage(clientFd, RPL_TOPIC(channel.getName(), channel.getTopic()));
+        std::string topic = channel.getTopic();
+        const std::string message = topic == "" ? RPL_NO_TOPIC(channel.getName())
+                                                : RPL_TOPIC(channel.getName(), topic);
+        server.sendMessage(clientFd, message);
         server.sendMessage(clientFd, rplNamReply(channel.getName(), channel.getOperators(), channel.getUsers()));
     }
 }

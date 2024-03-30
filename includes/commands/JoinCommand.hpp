@@ -9,6 +9,8 @@
 
 # include "libsUtils.hpp"
 
+class User;
+
 /**
  * An ICommand implementation that is responsible for the binding and creation of a channel.
  * 
