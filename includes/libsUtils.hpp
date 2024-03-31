@@ -39,7 +39,6 @@
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
 # define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 
@@ -47,9 +46,9 @@
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
-# define RPL_INVITING(channel, nickname) (channel) " " (nickname)
-// # define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
-// # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) " " (mode) " " (modeParams)
+# define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
+// # define RPL_AWAY(nickname, awayMessage) (nickname) + " :" + (awayMessage)
+// # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
 
 # define PART_MSG(nickname, username, hostname, channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) ":" + nickname + "!" + username + "@" + hostname + " KICK " + channelName + " " + kickedUser + " :" + comment

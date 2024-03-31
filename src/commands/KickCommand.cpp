@@ -39,9 +39,6 @@ void KickCommand::execute(int clientFd) {
         if (!_channels[i].isOper(nickname))
             throw new ChanOPrivsNeededException(channelName);
         
-        if (!server.getUserByNickname(kickedUser))
-            throw new NoSuchNickException(kickedUser);
-        
         if (!_channels[i].isUserInChannel(kickedUser))
             throw new UserNotInChannelException(kickedUser, channelName);
 
@@ -51,13 +48,13 @@ void KickCommand::execute(int clientFd) {
         std::vector<User> channelUsers = _channels[i].getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
         for (size_t i = 0; i < channelUsers.size(); i++)
-            server.sendResponse(channelUsers[i].getFd(), KICK_MSG(nickname,
+            server.sendMessage(channelUsers[i].getFd(), KICK_MSG(nickname,
                                                                     user.getUsername(),
                                                                     user.getHostname(),
                                                                     channelName,
                                                                     kickedUser,
                                                                     comment));
         channelUsers.clear();
-        _channels[i].removeUser(_users[i]);
+        _channels[i].removeUser(kickedUser);
     }
 }
