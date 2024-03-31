@@ -11,8 +11,6 @@
  * @param tokens The parameters of the command.
  * 
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
- * @throws `NoSuchChannelException` if the channel does not exist.
- * @throws `NotOnChannelException` if the user is not on the channel.
  * @return The parsed command.
  */
 ICommand *PartParser::parse(const std::vector<std::string>& tokens) {

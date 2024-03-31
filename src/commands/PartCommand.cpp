@@ -19,6 +19,9 @@ PartCommand::~PartCommand() {
  * 
  * @param clientFd The socket file descriptor of the client
  * 
+ * @throws `NoSuchChannelException` if the channel does not exist.
+ * @throws `NotOnChannelException` if the user is not on the channel.
+ * 
  */
 void PartCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
