@@ -434,14 +434,14 @@ void Server::removeChannel(std::string channelName) {
  * 
  * @param channelName The name of the channel.
  * 
- * @throws `ServerException` if the channel is not found.
+ * @throws `NoSuchChannelException` if the channel is not found.
  * 
  * @return The channel with the name.
  */
 Channel &Server::getChannelByName(const std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     if (it == this->_channels.end())
-        throw ServerException("CHANNEL_NOT_FOUND_ERR");
+        throw NoSuchChannelException();
     return *it;
 }
 

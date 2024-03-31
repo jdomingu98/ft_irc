@@ -4,10 +4,12 @@
  * Channel name and User constructor.
  * 
  * @param name The name of the channel.
+ * 
+ * @throws `BadChannelMaskException` If the channel name is invalid.
  */
-Channel::Channel(std::string name, User user) : _password(""), _topic(""), _modes(""), _limit(NO_LIMIT), _passwordSet(false) {
-    if (!checkChannelName(name)) {}
-        //throw ChannelException(INVALID_CHANNEL_NAME_ERR);
+Channel::Channel(std::string name, User user) : _password(NONE), _topic(NONE), _modes(NONE), _limit(NO_LIMIT), _passwordSet(false) {
+    if (!checkChannelName(name))
+        throw BadChannelMaskException(name);
     this->_name = name;
     this->_operators.push_back(user);
 }
