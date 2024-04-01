@@ -47,6 +47,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new PartParser();
     if (command == "KICK")
         return new KickParser();
+    if (command == "MODE")
+        return new ModeParser();
     throw CommandNotFoundException();
 }
 
