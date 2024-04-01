@@ -31,13 +31,13 @@ void TopicCommand::execute(int clientFd) {
     User user = Server::getInstance().getUserByFd(clientFd);
     Channel *channel = user.getChannelByName(this->_channelName);
     
+    std::cout << channel->getName() << std::endl;
+    std::cout << _channelName << std::endl;
     if (channel == NULL)
         throw ServerException("You're not on that channel");
 
-    if (_topic.empty()){
-        //TODO: Send the topic to the user
-    }
-    else if (channel->getName() == _channelName && user.isUserAnOper(_channelName)){
+     if (channel->getName() == _channelName){
+            // user.isUserAnOper(_channelName))
             channel->setTopic(_topic);
             std::cout << "estoy aqui" << std::endl;
             //TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
@@ -45,6 +45,9 @@ void TopicCommand::execute(int clientFd) {
         else {
             //TODO: You're not channel operator"
         }
+    if (_topic.empty()){
+        //TODO: Send the topic to the user
+        std::cout << "estoy empty" << std::endl;
+    }
     //TODO: set/remove with cmd MODE (flag +t)
-    std::cout << "Topic command executed" << std::endl;
 }
