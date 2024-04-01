@@ -11,6 +11,7 @@
  * @param tokens The parameters of the command.
  * 
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
+ * @throws `BadChannelMaskException` if the channel mask is invalid.
  * @return The parsed command.
  */
 ICommand *JoinParser::parse(const std::vector<std::string>& tokens) {
@@ -25,16 +26,16 @@ ICommand *JoinParser::parse(const std::vector<std::string>& tokens) {
         keysVec = split(tokens[2], ',');
 
     for (size_t i = 0; i < channelsVec.size(); i++) {
-
+        if (!channelsVec[i].empty() && (channelsVec[i][0] != '#' && channelsVec[i][0] != '&'))
+            throw BadChannelMaskException(channelsVec[i]);
+        
         if (tokens.size() != 2) {
-            if (channelsVec[i] == "" && keysVec[i] == "")
+            if (channelsVec[i].empty() && keysVec[i].empty())
                 continue;
-            if (channelsVec[i] == "" || (channelsVec[i][0] != '#' && channelsVec[i][0] != '&')) {}
-                // throw IRCException();
-            channels[channelsVec[i]] = (i < keysVec.size() && keysVec[i] != "") ? keysVec[i] : "";
-        }  else if (channelsVec[i] != "" && (channelsVec[i][0] != '#' && channelsVec[i][0] != '&')) {}
-            // throw IRCException();
-        else if (channelsVec[i] != "")
+            if (channelsVec[i].empty()) {}
+                // throw IRCException(); 
+            channels[channelsVec[i]] = (i < keysVec.size() && !keysVec[i].empty()) ? keysVec[i] : "";
+        } else if (!channelsVec[i].empty())
             channels[channelsVec[i]] = "";
     }
 

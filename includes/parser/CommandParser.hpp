@@ -14,6 +14,7 @@
 # include "PartParser.hpp"
 # include "InviteParser.hpp"
 # include "ModeParser.hpp"
+# include "KickParser.hpp"
 
 # include "libsUtils.hpp"
 

@@ -169,7 +169,7 @@ void Server::handleNewConnection(int numFds) {
     this->_fds[numFds].fd = client_socket;
     this->_fds[numFds].events = POLLIN;
 
-    sendMessage(client_socket, "Welcome to the server! Please enter your password: ");
+    this->sendMessage(client_socket, "Welcome to the server! Please enter your password: ");
 }
 
 /**
@@ -197,8 +197,8 @@ void Server::handleExistingConnection(int clientFd) {
         command->execute(clientFd);
     } catch (IRCException& e) {
         std::string clientNickname = getUserByFd(clientFd).getNickname();
-        sendMessage(clientFd,
-            std::string(":irc.ft.messenger.42.fr ")
+        this->sendMessage(clientFd,
+            std::string(":irc.ft_messenger.net ")
             + e.getErrorCode()
             + (clientNickname.empty() ? std::string(" * ") : std::string(" " + clientNickname + " "))
             + e.what() + std::string(".")
@@ -225,10 +225,7 @@ bool Server::isValidPassword(const std::string &password) const {
  * @return The user with the file descriptor.
  */
 User &Server::getUserByFd(int clientFd) {
-    std::vector<User>::iterator it = findUserByFd(clientFd);
-    if (it == this->_users.end())
-        throw ServerException(USER_NOT_FOUND_ERR);
-    return *it;
+    return *findUserByFd(clientFd);
 }
 
 /**
@@ -238,10 +235,7 @@ User &Server::getUserByFd(int clientFd) {
  * @return The user with the file descriptor.
  */
 const User &Server::getUserByFd(int clientFd) const {
-    std::vector<User>::const_iterator it = findUserByFd(clientFd);
-    if (it == this->_users.end())
-        throw ServerException(USER_NOT_FOUND_ERR);
-    return *it;
+    return *findUserByFd(clientFd);
 }
 
 /**
@@ -260,14 +254,14 @@ bool Server::isNicknameInUse(const std::string& nickname) const {
  * 
  * @param nickname The nickname of the user.
  * 
- * @throws `ServerException` if the user is not found.
+ * @throws `NoSuchNickException` if the user is not found.
  * 
  * @return The user object with all its information.
  */
 User &Server::getUserByNickname(const std::string &nickname) {
     std::vector<User>::iterator it = this->findUserByNickname(nickname);
     if (it == this->_users.end())
-        throw ServerException(USER_NOT_FOUND_ERR);
+        throw NoSuchNickException(nickname);
     return *it;
 }
 
@@ -434,14 +428,14 @@ void Server::removeChannel(std::string channelName) {
  * 
  * @param channelName The name of the channel.
  * 
- * @throws `ServerException` if the channel is not found.
+ * @throws `NoSuchChannelException` if the channel is not found.
  * 
  * @return The channel with the name.
  */
 Channel &Server::getChannelByName(const std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     if (it == this->_channels.end())
-        throw ServerException("CHANNEL_NOT_FOUND_ERR");
+        throw NoSuchChannelException(channelName);
     return *it;
 }
 

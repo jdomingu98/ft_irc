@@ -6,6 +6,7 @@
 # include "libsUtils.hpp"
 
 # define MAX_CHANNEL_NAME_LENGTH 20
+# define NONE ""
 # define NO_LIMIT -1
 # define BELL_CHAR '\a'
 
