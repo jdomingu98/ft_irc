@@ -37,14 +37,14 @@ void TopicCommand::execute(int clientFd) {
     if (_topic.empty()){
         //TODO: Send the topic to the user
     }
-    else {
-        if (channel->getName() == _channelName && user.isUserAnOper(_channelName)){
+    else if (channel->getName() == _channelName && user.isUserAnOper(_channelName)){
             channel->setTopic(_topic);
+            std::cout << "estoy aqui" << std::endl;
             //TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
         }
         else {
             //TODO: You're not channel operator"
         }
-    }
     //TODO: set/remove with cmd MODE (flag +t)
+    std::cout << "Topic command executed" << std::endl;
 }
