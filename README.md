@@ -24,7 +24,7 @@ To correctly run this project on your computer, you need to have installed:
 
 ## Install the project
 
-Once you have fullfilled the requeriments, you are ready to start intalling the project on your system.\
+Once you have fullfilled the requeriments, you are ready to start installing the project on your system.\
 To install it, you have to run the following command in a terminal:
 
 ```
@@ -69,7 +69,6 @@ Where `<port>` is the port where the server will listen for new connections and 
 | MODE | Set or remove options (or modes) from a given target. Our channels modes: i,t,k,o,l |
 | INVITE| Invite a user to a invite-only channel. |
 | KICK | Request the forced removal of a user from a channel. |
-| OPER | Used by a normal user to obtain operator privileges.  |
 | TOPIC | Change or view the topic of the given channel. |
 | PRIVMSG | Send private messages between users, as well as to send messages to channels. |
 | QUIT | Terminates a client’s connection to the server. |

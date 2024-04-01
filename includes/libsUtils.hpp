@@ -5,17 +5,17 @@
  * A file that contains utility consts and libraries that are used along the project.
 */
 
+# include <algorithm>
 # include <cstdlib>
 # include <iostream>
 # include <sstream>
 # include <string>
-# include <algorithm>
 # include <vector>
 # include <unistd.h>
 
-# include "exceptions.hpp"
-
 # include "Logger.hpp"
+
+# include "exceptions.hpp"
 
 // =================================================================================
 
@@ -41,6 +41,19 @@
 
 # define USER_NOT_FOUND_ERR "[ERROR] User not found in list."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
+# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
+
+//RPL_XXX -> Reply messages (Command Response)
+
+# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
+# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
+// # define RPL_INVITING(channel, nickname) (channel) " " (nickname)
+// # define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
+// # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) " " (mode) " " (modeParams)
+// # define RPL_BAN_LIST (channe, banId) (channel) " " (banId)
+// # define RPL_END_OF_BAN_LIST(channel)  (channel) " :End of channel ban list"
+
+# define PART_MSG(nickname,username,hostname,channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
 
 # define INVITE_CMD_RESPONSE(nickname, channelName) nickname + " " + channelName
 

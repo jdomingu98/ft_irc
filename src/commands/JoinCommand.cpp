@@ -15,6 +15,29 @@ JoinCommand::~JoinCommand() {
     this->_channels.clear();
 }
 
+/**
+ * Returns the RPL_NAMREPLY message.
+ * 
+ * @param channelName The name of the channel
+ * @param opers The vector of operators in the channel
+ * @param users The vector of users in the channel
+ * 
+ * @return The RPL_NAMREPLY message
+ */
+std::string JoinCommand::rplNamReply(std::string const &channelName, std::vector<User> const &opers, std::vector<User> const &users) const {
+    std::string msg = channelName + " :@" + opers[0].getNickname();
+
+    for (size_t i = 1; i < opers.size(); i++) {
+        msg += " @" + users[i].getNickname();
+    }
+
+    for (size_t i = 0; i < users.size(); i++) {
+        msg += " +" + users[i].getNickname();
+    }
+
+    return msg;
+}
+
 /** ----------------TESTING-------------
  * JOIN (#/&)channel password -> joins channel with password if it's correct
  * JOIN #c1,#c2 password -> password for c1, none for c2
@@ -32,13 +55,13 @@ JoinCommand::~JoinCommand() {
  * 
  */
 void JoinCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User user = server.getUserByFd(clientFd);
+    Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
     
-    bool isOperator;
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
+    Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
     std::string channelKey;
@@ -46,51 +69,72 @@ void JoinCommand::execute(int clientFd) {
     for (std::map<std::string, std::string>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
         channelName = it->first;
         channelKey = it->second;
-        isOperator = false;
+        Logger::debug("JOINING CHANNEL: " + channelName);
+        Logger::debug("WITH KEY: " + channelKey);
 
         //0. If channel[i] does not exist, create it
         if (!server.channelExists(channelName)) {
+            Logger::debug("CHANNEL DOES NOT EXIST");
             Channel newChannel(channelName, user);
             server.addChannel(newChannel);
             if (channelKey != "")
                 server.getChannelByName(channelName).setPassword(channelKey);
-            isOperator = true;
         }
 
-        Channel channel = server.getChannelByName(channelName);
+        Logger::debug("CHANNEL NOW EXISTS");
+        Channel &channel = server.getChannelByName(channelName);
+        Logger::debug("CHANNEL NAME: " + channel.getName());
 
         //1. Check if channel[i] is invite-only channel and if user is invited -> ERR_INVITEONLYCHAN
         /*if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {
             throw InviteOnlyChanException(channel.getName());
         }*/
 
-        //2. Check if user's nick/username/hostname is banned from channel[i] -> ERR_BANNEDFROMCHAN
-        /*if (channel.isUserBanned(nickname, username, hostname)) {
-            throw BannedFromChanException(channel.getName());
-        }*/
-
-        //3. Check if password is correct if channel[i] is password-protected
+        //2. Check if password is correct if channel[i] is password-protected
         if (channel.isPasswordSet() && channel.getPassword() != channelKey) {
             throw BadChannelKeyException(channel.getName());
         }
 
-        //4. Check if channel[i] has limit and if its full
+        //3. Check if channel[i] has limit and if its full
         if (channel.hasLimit() && channel.isFull()) {
             throw ChannelIsFullException(channel.getName());
         }
 
-        //5. Check if user has joined max channels
+        //4. Check if user has joined max channels
         if (user.isUserInMaxChannels()) {
             throw TooManyChannelsException(channel.getName());
         }
+        Logger::debug("... PRE SAVE");
+        Logger::debug("OPERATORS:");
+        for (std::vector<User>::iterator it = channel.getOperators().begin(); it != channel.getOperators().end(); it++) {
+            Logger::debug(it->getNickname());
+        }
+        Logger::debug("USERS:");
+        std::vector<User> users = channel.getUsers();
+        for (size_t i = 0; i < users.size(); i++) {
+            Logger::debug(users[i].getNickname());
+        }
 
-        isOperator ? channel.addOper(user)
-                   : channel.addUser(user);
+        if (!channel.isUserInChannel(nickname))
+            channel.addUser(user);
+        Logger::debug("--- POST SAVE");
+        Logger::debug("OPERATORS:");
+        for (std::vector<User>::iterator it = channel.getOperators().begin(); it != channel.getOperators().end(); it++) {
+            Logger::debug(it->getNickname());
+        }
+        Logger::debug("USERS:");
+        users = channel.getUsers();
+        for (size_t i = 0; i < users.size(); i++) {
+            Logger::debug(users[i].getNickname());
+        }
         
         user.addChannel(channel);
 
-        //6. Send JOIN message to all users in channel[i] ¿?
-        //server.sendMessage(clientFd, RPL_TOPIC(channel.getName(), channel.getTopic()));
-        //server.sendMessage(clientFd, RPL_NAMREPLY(channel.getName(), channel.getAllUsers()));
+        //5. Send JOIN message to all users in channel[i]
+        std::string topic = channel.getTopic();
+        const std::string message = topic == "" ? RPL_NO_TOPIC(channel.getName())
+                                                : RPL_TOPIC(channel.getName(), topic);
+        server.sendMessage(clientFd, message);
+        server.sendMessage(clientFd, rplNamReply(channel.getName(), channel.getOperators(), channel.getUsers()));
     }
 }

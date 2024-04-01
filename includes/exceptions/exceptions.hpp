@@ -7,8 +7,6 @@
 
 // ========================================= IRC COMMAND ERROR MESSAGES =========================================
 
-//RPL_XXX -> Reply messages (Command Response)
-
 # define ERR_NEED_MORE_PARAMS " :Not enough parameters"
 # define ERR_ALREADY_REGISTERED ":You may not reregister"
 
@@ -24,17 +22,13 @@
 // // # define ERR_BAD_CHAN_MASK ""
 // # define ERR_NO_SUCH_CHANNEL(channelName) (channelName) " :No such channel"
 // # define ERR_TOO_MANY_CHANNELS(channelName) (channelName) " :You have joined too many channels"
-// # define RPL_TOPIC(channel, topic) (channel) " :" (topic)
 
 # define ERR_NOT_ON_CHANNEL " :You're not on that channel"
 
-// #define RPL_NO_TOPIC(channel) (channel) " :No topic is set"
 # define ERR_CHAN_O_PRIVS_NEEDED " :You're not channel operator"
 
 # define ERR_NO_SUCH_NICK " :No such nick/channel"
 # define ERR_USER_ON_CHANNEL " :is already on channel"
-// #define RPL_INVITING(channel, nickname) (channel) " " (nickname)
-// #define RPL_AWAY(nickname, awayMessage) (nickname) " :" (awayMessage)
 
 # define ERR_NO_RECIPIENT(command) (":No recipient given (" + command + ")")
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
@@ -43,10 +37,8 @@
 // #define ERR_WILD_TOP_LEVEL(mask) (mask) " :Wildcard in toplevel domain"
 // #define ERR_TOO_MANY_TARGETS(target)  (target)" :Duplicate recipients. No message delivered"
 
-// #define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) " " (mode) " " (modeParams)
 // #define ERR_KEYSET(channel) (channel) " :Channel key already set"
-// #define RPL_BAN_LIST (channe, banId) (channel) " " (banId)
-// #define RPL_END_OF_BAN_LIST(channel)  (channel) " :End of channel ban list"
+
 // #define ERR_UNKOWN_MODE (modeChar) (modeChar) " :is unknown mode char to me"
 // #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
 // #define ERR_U_MODE_IS(userModeString) (userModeString)
@@ -208,6 +200,14 @@ class UserOnChannelException : public IRCException {
 class ChanOPrivsNeededException : public IRCException {
     public:
         ChanOPrivsNeededException(const std::string &channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
+};
+
+/**
+ * This exception is thrown when the channel searched does not exist.
+ */
+class NoSuchChannelException : public IRCException {
+    public:
+        NoSuchChannelException(const std::string &channelName) : IRCException("403", channelName + " :No such channel") {}
 };
 
 #endif

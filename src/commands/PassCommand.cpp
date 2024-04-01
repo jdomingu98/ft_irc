@@ -28,5 +28,5 @@ void PassCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
     if (server.getUserByFd(clientFd).isRegistered())
         throw AlreadyRegisteredException();
-    server.getUserByFd(clientFd).setPassword(_password);
+    server.getUserByFd(clientFd).setPassword(this->_password);
 }

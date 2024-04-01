@@ -1,13 +1,15 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-# include "User.hpp"
+# include "Server.hpp"
 
 # include "libsUtils.hpp"
 
 # define MAX_CHANNEL_NAME_LENGTH 20
 # define NO_LIMIT -1
 # define BELL_CHAR '\a'
+
+class Server;
 
 class User;
 
@@ -66,7 +68,6 @@ class Channel {
 
         // Oper
         void addOper(User user);
-        void removeOper(std::string nickname);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
         bool isOper(const std::string &nickname) const;

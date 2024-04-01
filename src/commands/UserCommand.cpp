@@ -33,7 +33,7 @@ UserCommand::~UserCommand() {}
  */
 void UserCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
-    User user = server.getUserByFd(clientFd);
+    User &user = server.getUserByFd(clientFd);
     if (!user.getUsername().empty())
         throw AlreadyRegisteredException();
     user.setUsername(this->_username);
