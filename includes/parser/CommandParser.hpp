@@ -13,6 +13,7 @@
 # include "JoinParser.hpp"
 # include "PartParser.hpp"
 # include "InviteParser.hpp"
+# include "ModeParser.hpp"
 
 # include "libsUtils.hpp"
 

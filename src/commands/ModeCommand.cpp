@@ -14,19 +14,19 @@ void ModeCommand::execute(int clientFd) {
 
     for (size_t i = 0; i < _modes.size(); i++) {
         switch (_modes[i]) {
-            case Mode::INVITE_ONLY:
+            case INVITE_ONLY:
                 ModeCommand::inviteOnly();
                 break;
-            case Mode::TOPIC_PROTECTED:
+            case TOPIC_PROTECTED:
                 ModeCommand::topicProtected();
                 break;
-            case Mode::CHANNEL_KEY:
+            case CHANNEL_KEY:
                 ModeCommand::channelKey();
                 break;
-            case Mode::CHANNEL_OPERATOR:
+            case CHANNEL_OPERATOR:
                 ModeCommand::channelOperator();
                 break;
-            case Mode::USER_LIMIT:
+            case USER_LIMIT:
                 ModeCommand::userLimit();
                 break;
             default:
@@ -70,6 +70,6 @@ void ModeCommand::channelOperator() {
 
 void ModeCommand::userLimit() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
-    int numUsers = _plus ? std::stoi(_modeParams) : NO_LIMIT;
+    int numUsers = _plus ? std::atoi(_modeParams.c_str()) : NO_LIMIT;
     channel.setLimit(numUsers);
 }

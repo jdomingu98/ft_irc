@@ -42,7 +42,7 @@ class Channel {
 
     public:
         // Constructors and destructor
-        Channel(std::string name, User user);
+        Channel(const std::string &name, const User &user);
         ~Channel();
 
         // Getters
@@ -60,7 +60,6 @@ class Channel {
         // User
         void addUser(User user);
         void removeUser(std::string nickname);
-        bool isUserBanned(std::string nickname, std::string username, std::string hostname) const;
         bool isUserInChannel(const std::string &nickname) const;
 
         // Oper

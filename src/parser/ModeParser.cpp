@@ -11,7 +11,7 @@ ICommand *ModeParser::parse(const std::vector<std::string>& tokens) {
 
     std::vector<Mode> modes;
     for (size_t i = 0; i < modesStr.size(); i++) {
-        if (i == 0 && modesStr[i] == '+' || modesStr[i] == '-')
+        if ((i == 0 && modesStr[i] == '+') || modesStr[i] == '-')
             continue;
         if (modesStr[i] == 'i')
             modes.push_back(INVITE_ONLY);

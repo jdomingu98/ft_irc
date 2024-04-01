@@ -5,8 +5,8 @@
  * 
  * @param name The name of the channel.
  */
-Channel::Channel(std::string name, User user)
-    : _password(""), _topic(""), _limit(NO_LIMIT), _inviteOnly(false), _passwordSet(false) {
+Channel::Channel(const std::string &name, const User &user)
+    : _password(""), _topic(""), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {
     if (!checkChannelName(name)) {}
         //throw ChannelException(INVALID_CHANNEL_NAME_ERR);
     this->_name = name;
@@ -227,18 +227,13 @@ void Channel::inviteUser(const std::string &nickname) {
 }
 
 /**
- * This function aims to check if the user is banned from the channel.
+ * This function aims to set the limit of users in the channel.
  * 
- * @param nickname The nickname of the user.
- * @param username The username of the user.
- * @param hostname The hostname of the user.
+ * @param limit The limit of users.
  * 
- * @return `true` if the user is banned, `false` otherwise.
  */
-bool Channel::isUserBanned(std::string nickname, std::string username, std::string hostname) const {
-    return std::find(this->_banList.begin(), this->_banList.end(), nickname) != this->_banList.end()
-        || std::find(this->_banList.begin(), this->_banList.end(), username) != this->_banList.end()
-        || std::find(this->_banList.begin(), this->_banList.end(), hostname) != this->_banList.end();
+void Channel::setLimit(int limit) {
+    this->_limit = limit;
 }
 
 /**
