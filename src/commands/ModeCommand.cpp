@@ -1,10 +1,29 @@
 #include "ModeCommand.hpp"
 
+/**
+ * Construct a new ModeCommand.
+ * 
+ * @param plus Whether the mode is positive (+t, +o, ...) or negative (-t, -o, ...)
+ * @param channel The channel to set the mode
+ * @param modes The modes to set
+ * @param modeParams The parameters of the mode
+ * 
+ */
 ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, const std::string& modeParams)
   : ICommand(true), _plus(plus), _channel(channel), _modes(modes), _modeParams(modeParams) {}
 
+/**
+ * Destroy the ModeCommand.
+ */
 ModeCommand::~ModeCommand() {}
 
+/**
+ * Execute the MODE command.
+ * 
+ * @param clientFd The socket file descriptor of the client
+ * 
+ * @throws `NotOnChannelException` if the user is not on the channel
+ */
 void ModeCommand::execute(int clientFd) {
     Server server = Server::getInstance();
     User me = server.getUserByFd(clientFd);
@@ -42,14 +61,29 @@ void ModeCommand::execute(int clientFd) {
     }
 }
 
+/**
+ * Execute the invite only option of the MODE command.
+ * 
+ * Sets the channel as invite-only mode.
+ */
 void ModeCommand::inviteOnly() {
   Server::getInstance().getChannelByName(_channel).setInviteOnly(_plus);
 }
 
+/**
+ * Execute the topic option of the MODE command.
+ * 
+ * Sets the topic of the channel.
+ */
 void ModeCommand::topicProtected() {
   Server::getInstance().getChannelByName(_channel).setTopicProtected(_plus);
 }
 
+/**
+ * Execute the key option of the MODE command.
+ * 
+ * Sets the password of the channel.
+ */
 void ModeCommand::channelKey() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
     if (_plus)
@@ -58,16 +92,26 @@ void ModeCommand::channelKey() {
         channel.unsetPassword();
 }
 
+/**
+ * Execute the operator option of the MODE command.
+ * 
+ * Sets the user as an operator of the channel.
+ */
 void ModeCommand::channelOperator() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
     if (!channel.isUserInChannel(_modeParams)) {}
-        // Throw something
+        // throw NotOnChannelException(_channel);
     if (_plus)
         channel.makeUserAnOper(_modeParams);
     else
         channel.makeOperAnUser(_modeParams);
 }
 
+/**
+ * Execute the limit option of the MODE command.
+ * 
+ * Sets the limit of users in the channel.
+ */
 void ModeCommand::userLimit() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
     int numUsers = _plus ? std::atoi(_modeParams.c_str()) : NO_LIMIT;

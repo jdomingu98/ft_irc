@@ -1,5 +1,21 @@
 #include "ModeParser.hpp"
 
+/**
+ * Parses the MODE command.
+ * 
+ * The format of the MODE command is as follows:
+ * 
+ * Command: MODE
+ * 
+ * Parameters: <channel> {[+|-]|i|t|k|o|l} [<params>]
+ * 
+ * @param tokens The tokens to parse.
+ * 
+ * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
+ * @throws `UnknownModeException` if the mode is invalid.
+ * @return The parsed command.
+ *
+ */
 ICommand *ModeParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("MODE");
