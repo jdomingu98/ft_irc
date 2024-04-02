@@ -4,10 +4,13 @@
  * Channel name and User constructor.
  * 
  * @param name The name of the channel.
+ * 
+ * @throws `BadChannelMaskException` If the channel name is invalid.
  */
-Channel::Channel(std::string name, User user) : _password(""), _topic(""), _modes(""), _limit(NO_LIMIT), _passwordSet(false) {
-    if (!checkChannelName(name)) {}
-        //throw ChannelException(INVALID_CHANNEL_NAME_ERR);
+Channel::Channel(const std::string &name, const User &user)
+    : _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {
+    if (!checkChannelName(name))
+        throw BadChannelMaskException(name);
     this->_name = name;
     this->_operators.push_back(user);
 }
@@ -98,19 +101,6 @@ std::vector<User>::const_iterator Channel::findOper(const std::string &nickname)
 }
 
 /**
- * This function aims to checks if the modes of the param matchs the ones of the channel.
- * 
- * @param modesToCheck The modes to check.
- */
-bool Channel::isModesSet(std::string modesToCheck) const {
-    for (size_t i = 0; i < modesToCheck.size(); i++) {
-        if (this->_modes.find(modesToCheck[i]) == std::string::npos)
-            return false;
-    }
-    return true;
-}
-
-/**
  * This function aims to get the name of the channel.
  * 
  * @return The name of the channel.
@@ -167,15 +157,6 @@ std::string Channel::getTopic() const {
 }
 
 /**
- * This function aims to get the mode of the channel.
- * 
- * @return The mode of the channel.
- */
-std::string Channel::getModes() const{
-    return this->_modes;
-}
-
-/**
  * This function aims to get if the password is set.
  * 
  * @return `true` if the password is set, `false` otherwise.
@@ -190,9 +171,17 @@ bool Channel::isPasswordSet() const {
  * @param password The password of the channel.
  * 
  */
-void Channel::setPassword(std::string password) {
+void Channel::setPassword(const std::string &password) {
     this->_password = password;
     this->_passwordSet = true;
+}
+
+/**
+ * This function aims to unset the password of the channel.
+*/
+void Channel::unsetPassword() {
+    this->_password = "";
+    this->_passwordSet = false;
 }
 
 /**
@@ -205,15 +194,6 @@ void Channel::setTopic(std::string topic) {
 }
 
 /**
- * This function aims to set the mode of the channel.
- * 
- * @param modes The mode of the channel.
- */
-void Channel::changeMode(std::string modes) {
-    this->_modes = modes;
-}
-
-/**
  * This function aims to set the password of the channel.
  * 
  * @param password The password of the channel.
@@ -222,15 +202,6 @@ void Channel::changeMode(std::string modes) {
  * */
 bool Channel::checkPassword(std::string password) const {
     return this->_password == password;
-}
-
-/**
- * This function aims to check if the channel is invite only.
- * 
- * @return `true` if the channel is invite only, `false` otherwise.
- */
-bool Channel::isInviteOnly() const {
-    return isModesSet("i");
 }
 
 /**
@@ -258,18 +229,13 @@ void Channel::inviteUser(const std::string &nickname) {
 }
 
 /**
- * This function aims to check if the user is banned from the channel.
+ * This function aims to set the limit of users in the channel.
  * 
- * @param nickname The nickname of the user.
- * @param username The username of the user.
- * @param hostname The hostname of the user.
+ * @param limit The limit of users.
  * 
- * @return `true` if the user is banned, `false` otherwise.
  */
-bool Channel::isUserBanned(std::string nickname, std::string username, std::string hostname) const {
-    return std::find(this->_banList.begin(), this->_banList.end(), nickname) != this->_banList.end()
-        || std::find(this->_banList.begin(), this->_banList.end(), username) != this->_banList.end()
-        || std::find(this->_banList.begin(), this->_banList.end(), hostname) != this->_banList.end();
+void Channel::setLimit(int limit) {
+    this->_limit = limit;
 }
 
 /**
@@ -323,7 +289,7 @@ void Channel::addOper(User user) {
  * 
  * @param nickname The nickname of the user to remove.
  * 
- * @throw `ChannelException` If the user is not found in the channel.
+ * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
 void Channel::removeUser(std::string nickname) {
     Server& server = Server::getInstance();
@@ -333,8 +299,8 @@ void Channel::removeUser(std::string nickname) {
         this->_users.erase(itUser);
     else if (itOper != this->_operators.end())
         this->_operators.erase(itOper);
-    else {}
-        //throw ChannelException(USER_NOT_FOUND_ERR);
+    else
+        throw UserNotInChannelException(nickname, this->_name);
     if (this->_users.empty() && this->_operators.empty()) {
         server.getChannels().erase(server.findChannel(this->_name));
         this->~Channel();
@@ -357,15 +323,15 @@ bool Channel::isUserInChannel(const std::string &nickname) const {
  * 
  * @param nickname The nickname of the user to make an operator.
  * 
- * @throw `ChannelException` If the user is not found in the channel.
+ * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
 void Channel::makeUserAnOper(std::string nickname) {
     std::vector<User>::iterator it = findUser(nickname);
     if (it != this->_users.end()) {
         this->_operators.push_back(*it);
         this->_users.erase(it);
-    } else {}
-        //throw ChannelException(USER_NOT_FOUND_ERR);
+    } else
+        throw UserNotInChannelException(nickname, this->_name);
 }
 
 /**
@@ -373,7 +339,7 @@ void Channel::makeUserAnOper(std::string nickname) {
  * 
  * @param nickname The nickname of the operator to make a user.
  * 
- * @throw `ChannelException` If the operator is not found in the channel.
+ * @throw `UserNotInChannelException` If the operator is not found in the channel.
  */
 void Channel::makeOperAnUser(std::string nickname) {
     std::vector<User>::iterator it = findOper(nickname);
@@ -381,8 +347,8 @@ void Channel::makeOperAnUser(std::string nickname) {
         it->setNickname(it->getNickname().substr(1));
         this->_users.push_back(*it);
         this->_operators.erase(it);
-    } else {}
-        //throw ChannelException(USER_NOT_FOUND_ERR);
+    } else
+        throw UserNotInChannelException(nickname, this->_name);
 }
 
 /**
@@ -407,4 +373,36 @@ bool Channel::isOperUser(std::string const &nickname) const
  */
 bool Channel::isOper(const std::string &nickname) const {
     return findOper(nickname) != this->_operators.end();
+}
+
+/**
+ * This function aims to check if the channel is invite-only.
+ * 
+ * @return `true` if the channel is invite-only, `false` otherwise.
+ */
+bool Channel::isInviteOnly() const {
+    return this->_inviteOnly;
+}
+
+/**
+ * This function aims to set the channel as invite-only.
+ */
+void Channel::setInviteOnly(bool inviteOnly) {
+    this->_inviteOnly = inviteOnly;
+}
+
+/**
+ * This function aims to check if the channel is topic-protected.
+ * 
+ * @return `true` if the channel is topic-protected, `false` otherwise.
+ */
+bool Channel::isTopicProtected() const {
+    return this->_topicProtected;
+}
+
+/**
+ * This function aims to set the channel as topic-protected.
+ */
+void Channel::setTopicProtected(bool topicProtected) {
+    this->_topicProtected = topicProtected;
 }

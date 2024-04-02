@@ -1,45 +1,46 @@
 #ifndef EXCEPTIONS_HPP
 # define EXCEPTIONS_HPP
 
+# include "CommandNotFoundException.hpp"
 # include "IRCException.hpp"
 # include "ServerException.hpp"
-# include "CommandNotFoundException.hpp"
 
 // ========================================= IRC COMMAND ERROR MESSAGES =========================================
 
-# define ERR_NEED_MORE_PARAMS " :Not enough parameters"
+# define ERR_NEED_MORE_PARAMS(command)  (command) + " :Not enough parameters"
+# define ERR_NOT_REGISTERED ":You have not registered"
 # define ERR_ALREADY_REGISTERED ":You may not reregister"
 
 # define ERR_NO_NICKNAME_GIVEN ":No nickname given"
-# define ERR_ERRONEOUS_NICKNAME " :Erroneous nickname"
-# define ERR_NICKNAME_IN_USE " :Nickname is already in use"
-# define ERR_NICK_COLLISION " :Nickname collision KILL"
+# define ERR_ERRONEUS_NICKNAME(nick)  (nick) + " :Erroneus nickname"
+# define ERR_NICKNAME_IN_USE(nick) (nick) + " :Nickname is already in use"
+# define ERR_NICK_COLLISION(nick) (nick) + " :Nickname collision KILL"
+# define ERR_PASSWD_MISMATCH ":Password incorrect"
 
-// # define ERR_BANNED_FROM_CHAN(channel) (channel) " :Cannot join channel (+b)"
-// # define ERR_INVITE_ONLY_CHAN(channel) (channel) " :Cannot join channel (+i)"
-// # define ERR_BAD_CHANNEL_KEY(channel) (channel) " :Cannot join channel (+k)"
-// # define ERR_CHANNEL_IS_FULL(channel) (channel) " :Cannot join channel (+l)"
-// // # define ERR_BAD_CHAN_MASK ""
-// # define ERR_NO_SUCH_CHANNEL(channelName) (channelName) " :No such channel"
-// # define ERR_TOO_MANY_CHANNELS(channelName) (channelName) " :You have joined too many channels"
+# define ERR_INVITE_ONLY_CHAN(channel) (channel) + " :Cannot join channel (+i)"
+# define ERR_BAD_CHANNEL_KEY(channel) (channel) + " :Cannot join channel (+k)"
+# define ERR_CHANNEL_IS_FULL(channel) (channel) + " :Cannot join channel (+l)"
+# define ERR_BAD_CHAN_MASK(channel) (channel) + " :Bad Channel Mask"
+# define ERR_NO_SUCH_CHANNEL(channelName) (channelName) + " :No such channel"
+# define ERR_TOO_MANY_CHANNELS(channelName) (channelName) + " :You have joined too many channels"
 
-# define ERR_NOT_ON_CHANNEL " :You're not on that channel"
+# define ERR_NOT_ON_CHANNEL(channel)  (channel) + " :You're not on that channel"
 
-# define ERR_CHAN_O_PRIVS_NEEDED " :You're not channel operator"
+# define ERR_CHANOP_PRIVS_NEEDED(channel)  (channel) + " :You're not channel operator"
 
-# define ERR_NO_SUCH_NICK " :No such nick/channel"
-# define ERR_USER_ON_CHANNEL " :is already on channel"
+# define ERR_NO_SUCH_NICK(nickname) (nickname) + " :No such nick/channel"
+# define ERR_USER_ON_CHANNEL(user, channel) (user) + " " + (channel) + " :is already on channel"
+# define ERR_USER_NOT_IN_CHANNEL(user, channel) (user) + " " + (channel) + " :They aren't on that channel"
 
-# define ERR_NO_RECIPIENT(command) (":No recipient given (" + command + ")")
+# define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
-// #define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) " :Cannot send to channel"
-// #define ERR_NO_TOP_LEVEL(mask) (mask) " :No toplevel domain specified"
-// #define ERR_WILD_TOP_LEVEL(mask) (mask) " :Wildcard in toplevel domain"
-// #define ERR_TOO_MANY_TARGETS(target)  (target)" :Duplicate recipients. No message delivered"
+// # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
+// # define ERR_NO_TOP_LEVEL(mask) (mask) + " :No toplevel domain specified"
+// # define ERR_WILD_TOP_LEVEL(mask) (mask) + " :Wildcard in toplevel domain"
+// # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
 
 // #define ERR_KEYSET(channel) (channel) " :Channel key already set"
-
-// #define ERR_UNKOWN_MODE (modeChar) (modeChar) " :is unknown mode char to me"
+# define ERR_UNKOWN_MODE(modeChar) (modeChar + " :is unknown mode char to me")
 // #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
 // #define ERR_U_MODE_IS(userModeString) (userModeString)
 // #define ERR_U_MODE_UNKNOWN_FLAG ":Unknown MODE flag"
@@ -60,7 +61,7 @@ class AlreadyRegisteredException : public IRCException {
  */
 class ErroneousNicknameException : public IRCException {
     public:
-        ErroneousNicknameException(const std::string &nickname) : IRCException("432", nickname + ERR_ERRONEOUS_NICKNAME) {}
+        ErroneousNicknameException(const std::string &nickname) : IRCException("432", ERR_ERRONEUS_NICKNAME(nickname)) {}
 };
 
 /**
@@ -68,7 +69,7 @@ class ErroneousNicknameException : public IRCException {
  */
 class NeedMoreParamsException : public IRCException {
     public:
-        NeedMoreParamsException(const std::string &command) : IRCException("461", command + ERR_NEED_MORE_PARAMS) {}
+        NeedMoreParamsException(const std::string &command) : IRCException("461", ERR_NEED_MORE_PARAMS(command)) {}
 };
 
 /**
@@ -77,7 +78,7 @@ class NeedMoreParamsException : public IRCException {
  */
 class NickCollisionException : public IRCException {
     public:
-        NickCollisionException(const std::string &nickname) : IRCException("436", nickname + ERR_NICK_COLLISION) {}
+        NickCollisionException(const std::string &nickname) : IRCException("436", ERR_NICK_COLLISION(nickname)) {}
 };
 
 /**
@@ -86,7 +87,7 @@ class NickCollisionException : public IRCException {
  */
 class NicknameInUseException : public IRCException {
     public:
-        NicknameInUseException(const std::string &nickname) : IRCException("433", nickname + ERR_NICKNAME_IN_USE) {}
+        NicknameInUseException(const std::string &nickname) : IRCException("433", ERR_NICKNAME_IN_USE(nickname)) {}
 };
 
 /**
@@ -102,7 +103,7 @@ class NoNicknameGivenException : public IRCException {
  */
 class NotRegisteredException : public IRCException {
     public:
-        NotRegisteredException() : IRCException("451", ":You have not registered") {}
+        NotRegisteredException() : IRCException("451", ERR_NOT_REGISTERED) {}
 };
 
 /**
@@ -110,7 +111,7 @@ class NotRegisteredException : public IRCException {
  */
 class PasswordMismatchException : public IRCException {
     public:
-        PasswordMismatchException() : IRCException("464", ":Password incorrect") {}
+        PasswordMismatchException() : IRCException("464", ERR_PASSWD_MISMATCH) {}
 };
 
 /**
@@ -118,15 +119,7 @@ class PasswordMismatchException : public IRCException {
  */
 class InviteOnlyChanException : public IRCException {
     public:
-        InviteOnlyChanException(const std::string &channelName) : IRCException("473", channelName + " :Cannot join channel (+i)") {}
-};
-
-/**
- * This exception is thrown when an user attemps to join a channel where it was banned previously.
- */
-class BannedFromChanException : public IRCException {
-    public:
-        BannedFromChanException(const std::string &channelName) : IRCException("474", channelName + " :Cannot join channel (+b)") {}
+        InviteOnlyChanException(const std::string &channelName) : IRCException("473", ERR_INVITE_ONLY_CHAN(channelName)) {}
 };
 
 /**
@@ -134,7 +127,7 @@ class BannedFromChanException : public IRCException {
  */
 class BadChannelKeyException : public IRCException {
     public:
-        BadChannelKeyException(const std::string &channelName) : IRCException("475", channelName + " :Cannot join channel (+k)") {}
+        BadChannelKeyException(const std::string &channelName) : IRCException("475", ERR_BAD_CHANNEL_KEY(channelName)) {}
 };
 
 /**
@@ -142,7 +135,7 @@ class BadChannelKeyException : public IRCException {
  */
 class ChannelIsFullException : public IRCException {
     public:
-        ChannelIsFullException(const std::string &channelName) : IRCException("471", channelName + " :Cannot join channel (+l)") {}
+        ChannelIsFullException(const std::string &channelName) : IRCException("471", ERR_CHANNEL_IS_FULL(channelName)) {}
 };
 
 /**
@@ -150,7 +143,7 @@ class ChannelIsFullException : public IRCException {
  */
 class TooManyChannelsException : public IRCException {
     public:
-        TooManyChannelsException(const std::string &channelName) : IRCException("405", channelName + " :You have joined too many channels") {}
+        TooManyChannelsException(const std::string &channelName) : IRCException("405", ERR_TOO_MANY_CHANNELS(channelName)) {}
 };
 
 /**
@@ -174,7 +167,7 @@ class NoTextToSendException : public IRCException {
  */
 class NoSuchNickException : public IRCException {
     public:
-        NoSuchNickException(const std::string &nickname) : IRCException("401", nickname + ERR_NO_SUCH_NICK) {}
+        NoSuchNickException(const std::string &nickname) : IRCException("401", ERR_NO_SUCH_NICK(nickname)) {}
 };
 
 /**
@@ -182,7 +175,7 @@ class NoSuchNickException : public IRCException {
  */
 class NotOnChannelException : public IRCException {
     public:
-        NotOnChannelException(const std::string &channelName) : IRCException("442", channelName + ERR_NOT_ON_CHANNEL) {}
+        NotOnChannelException(const std::string &channelName) : IRCException("442", ERR_NOT_ON_CHANNEL(channelName)) {}
 };
 
 /**
@@ -191,7 +184,7 @@ class NotOnChannelException : public IRCException {
 class UserOnChannelException : public IRCException {
     public:
         UserOnChannelException(const std::string &nickname, const std::string &channelName)
-            : IRCException("443", nickname + "" + channelName + ERR_USER_ON_CHANNEL) {}
+            : IRCException("443", ERR_USER_ON_CHANNEL(nickname, channelName)) {}
 };
 
 /**
@@ -199,7 +192,7 @@ class UserOnChannelException : public IRCException {
  */
 class ChanOPrivsNeededException : public IRCException {
     public:
-        ChanOPrivsNeededException(const std::string &channelName) : IRCException("482", channelName + ERR_CHAN_O_PRIVS_NEEDED) {}
+        ChanOPrivsNeededException(const std::string &channelName) : IRCException("482", ERR_CHANOP_PRIVS_NEEDED(channelName)) {}
 };
 
 /**
@@ -207,7 +200,32 @@ class ChanOPrivsNeededException : public IRCException {
  */
 class NoSuchChannelException : public IRCException {
     public:
-        NoSuchChannelException(const std::string &channelName) : IRCException("403", channelName + " :No such channel") {}
+        NoSuchChannelException(const std::string &channelName) : IRCException("403", ERR_NO_SUCH_CHANNEL(channelName)) {}
+};
+
+/**
+ * This exception is thrown when the channel name is invalid.
+ */
+class BadChannelMaskException : public IRCException {
+    public:
+        BadChannelMaskException(const std::string &channelName) : IRCException("476", ERR_BAD_CHAN_MASK(channelName)) {}
+};
+
+/**
+ * This exception is thrown when the user is not in the channel.
+ */
+class UserNotInChannelException : public IRCException {
+    public:
+        UserNotInChannelException(const std::string &nickname, const std::string &channelName)
+            : IRCException("441", ERR_USER_NOT_IN_CHANNEL(nickname, channelName)) {}
+};
+
+/**
+ * This exception is thrown when the specified channel mode does not exist.
+ */
+class UnknownModeException : public IRCException {
+    public:
+        UnknownModeException(char modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
 };
 
 #endif
