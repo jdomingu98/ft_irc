@@ -20,8 +20,8 @@ ICommand *TopicParser::parse(const std::vector<std::string>& tokens) {
     Channel channel = Server::getInstance().getChannelByName(tokens[1]);
     if (tokens.size() == 2) {
         Logger::debug("TOPIC without comment");
-        return new TopicCommand(channel);
+        return new TopicCommand(&channel);
     }
     Logger::debug("TOPIC with comment");
-    return new TopicCommand(channel, join(tokens));
+    return new TopicCommand(&channel, join(tokens));
 }
