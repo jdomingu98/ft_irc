@@ -7,6 +7,7 @@
 
 # include "libsUtils.hpp"
 
+class Channel;
 
 /**
  * An ICommand implementation that is responsible for setting the topic of a channel.
@@ -14,7 +15,7 @@
  */
 class TopicCommand : public ICommand {
     private:
-        Channel     _channel;
+        Channel     *_channel;
         std::string _topic;
     
     public:
