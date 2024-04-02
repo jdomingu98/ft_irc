@@ -56,7 +56,6 @@ class User {
         bool canRegister() const;
         void addChannel(Channel &channel);
         void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
-        bool isUserAnOper(std::string channelName) const;
 };
 
 #endif

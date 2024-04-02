@@ -1,20 +1,27 @@
-#include"TopicParser.hpp"
+#include "TopicParser.hpp"
 
 /**
- * This function aims to parse the TOPIC command.
+ * Parses the TOPIC command.
  * 
- * @param tokens The tokens to be parsed.
+ * The format of the TOPIC command is as follows:
  * 
- * @return The parsed TOPIC command.
+ * Command: TOPIC
+ * Parameters: <channel> [<topic>]
+ * 
+ * @param tokens The parameters of the command.
+ * 
+ * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
+ * @return The parsed command.
  */
 ICommand *TopicParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("TOPIC");
-    if (tokens.size() == 2){
-        std::cout << "TOPIC == 2" << std::endl;
-        Channel channel = Server::getInstance().getChannelByName(tokens[1]);
-        std::cout << "parse topic channnel " << channel.getName() << std::endl;
-        return new TopicCommand(tokens[1], channel.getTopic());
+
+    Channel channel = Server::getInstance().getChannelByName(tokens[1]);
+    if (tokens.size() == 2) {
+        Logger::debug("TOPIC without comment");
+        return new TopicCommand(channel);
     }
-    return new TopicCommand(tokens[1], join(tokens));
+    Logger::debug("TOPIC with comment");
+    return new TopicCommand(channel, join(tokens));
 }

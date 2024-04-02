@@ -6,7 +6,6 @@
 # include "libsUtils.hpp"
 
 # define MAX_CHANNEL_NAME_LENGTH 20
-# define NONE ""
 # define NO_LIMIT -1
 # define BELL_CHAR '\a'
 
@@ -54,7 +53,6 @@ class Channel {
         std::vector<User>   getAllUsers() const;
         std::string         getTopic() const;
         bool                isPasswordSet() const;
-        bool                isOperUser(std::string const &nickname) const;
 
         // Setters
         void setTopic(std::string topic);

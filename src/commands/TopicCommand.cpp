@@ -1,51 +1,65 @@
 #include "TopicCommand.hpp"
 
 /**
- * Topic command constructor
+ * Constructs a new TopicCommand.
  * 
- * @param channelName 
+ * @param channel The channel where the topic will be set, removed or requested
  */
-//TopicCommand::TopicCommand(const std::string& channelName) : ICommand(true), _channelName(channelName) {}
+TopicCommand::TopicCommand(const Channel& channel) : ICommand(true), _channel(channel), _topic(NONE) {}
 
 /**
- * Topic command constructor
+ * Constructs a new TopicCommand.
  * 
- * @param channelName 
- * @param topic 
+ * @param channel The channel where the topic will be set, removed or requested
+ * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(const std::string& channelName, const std::string& topic) : ICommand(true), _channelName(channelName), _topic(topic) {}
+TopicCommand::TopicCommand(const Channel& channel, const std::string& topic) : ICommand(true), _channel(channel), _topic(topic) {}
 
 /**
- * Topic command destructor
+ * Destroys the TopicCommand.
  */
 TopicCommand::~TopicCommand() {}
 
 
 /**
- * This function aims to execute the topic command.
+ * Executes the command TOPIC.
  * 
- * @param server The server where the command is being executed.
- * @param clientFd The client file descriptor that is executing the command.
+ * @param clientFd The socket file descriptor of the client
+ * 
+ * @throws `NotOnChannelException` if the user is not on the channel
+ * @throws `ChanOPrivsNeededException` if the user is not an operator of the channel
  */
 void TopicCommand::execute(int clientFd) {
-    User user = Server::getInstance().getUserByFd(clientFd);
-    Channel *channel = user.getChannelByName(this->_channelName);
+    Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
+
+    std::string channelName = _channel.getName();
+
+    //Check the validation order with official IRC server
+
+    if (!user.isOnChannel(channelName))
+            throw NotOnChannelException(channelName);
     
-    if (channel == NULL)
-        throw ServerException("You're not on that channel");
-    if (_topic.empty()){
-        std::cout << "estoy empty" << channel->getTopic()<< std::endl;
-        //TODO: Send the topic to the user
+    Logger::debug("User in channel " + channelName);
+
+    if (!channel.isOper(user.getNickname())) 
+        throw ChanOPrivsNeededException(channelName);
+
+    Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
+
+    // TODO: set/remove with MODE command (flag +t)
+
+    if (_topic.empty()) { 
+        Logger::debug("Channel's topic is empty.");
+        // TODO: Send RPL_NO_TOPIC to user (No es seguro, es lo que he intuido)
+    } else {
+        Logger::debug("Channel's topic not empty.");
+        // TODO: Send RPL_TOPIC to user (No es seguro, es lo que he intuido)
     }
-    if (channel->getName() == _channelName){
-    //user.isUserAnOper(_channelName)){
-        std::cout << "antes del set "  << channel->getTopic() << std::endl;
-            channel->setTopic(_topic);
-        std::cout << "despues del set "  << channel->getTopic() << std::endl;
-            //TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
-        }
-        else {
-            //TODO: You're not channel operator"
-        }
-    //TODO: set/remove with cmd MODE (flag +t)
+    
+    Logger::debug("Setting the new channel topic to " + _topic);
+    channel->setTopic(_topic);
+    Logger::debug("Channel's topic set to: " + channel->getTopic());
+    
+    // TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
 }

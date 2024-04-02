@@ -1,20 +1,25 @@
-#ifndef TOPICCOMMAND_HPP
-# define TOPICCOMMAND_HPP
+#ifndef TOPIC_COMMAND_HPP
+# define TOPIC_COMMAND_HPP
 
-# include "Channel.hpp"
 # include "ICommand.hpp"
-# include "libsUtils.hpp"
-# include "Server.hpp"
-# include "User.hpp"
 
+# include "Server.hpp"
+
+# include "libsUtils.hpp"
+
+
+/**
+ * An ICommand implementation that is responsible for setting the topic of a channel.
+ * 
+ */
 class TopicCommand : public ICommand {
     private:
-        std::string _channelName;
+        Channel     _channel;
         std::string _topic;
     
     public:
-        /*TopicCommand(const std::string& channelName);*/
-        TopicCommand(const std::string& channelName, const std::string& topic);
+        TopicCommand(const Channel& channel);
+        TopicCommand(const Channel& channel, const std::string& topic);
         ~TopicCommand();
 
         void execute(int clientFd);

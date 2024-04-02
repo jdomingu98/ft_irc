@@ -209,20 +209,6 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
 }
 
 /**
- * This function aims to check if the user is an operator of a channel.
- * 
- * @param channelName The name of the channel.
- * 
- * @return `true` if the user is an operator of the channel, `false` otherwise.
- */
-bool User::isUserAnOper(std::string channelName) const {
-    std::vector<Channel>::const_iterator it = findChannel(channelName);
-    if (it != this->_channels.end())
-        return it->isOperUser(this->_nickname);
-    return false;
-}
-
-/**
  * This function aims to get a channel by the name.
  * 
  * @param channelName The name of the channel.

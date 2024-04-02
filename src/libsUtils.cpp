@@ -42,7 +42,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 /**
  * Joins the vector of strings.
  * 
- * @param msg The vector of strings.
+ * @param msg The vector of strings to be joined.
  * 
  * @return The joined string.
  */
