@@ -5,7 +5,7 @@
  * 
  * @param channel The channel where the topic will be set, removed or requested
  */
-TopicCommand::TopicCommand(const Channel& channel) : ICommand(true), _channel(channel), _topic(NONE) {}
+TopicCommand::TopicCommand(Channel *channel) : ICommand(true), _channel(channel), _topic(NONE) {}
 
 /**
  * Constructs a new TopicCommand.
@@ -13,7 +13,7 @@ TopicCommand::TopicCommand(const Channel& channel) : ICommand(true), _channel(ch
  * @param channel The channel where the topic will be set, removed or requested
  * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(const Channel& channel, const std::string& topic) : ICommand(true), _channel(channel), _topic(topic) {}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ICommand(true), _channel(channel), _topic(topic) {}
 
 /**
  * Destroys the TopicCommand.
@@ -59,7 +59,7 @@ void TopicCommand::execute(int clientFd) {
     
     Logger::debug("Setting the new channel topic to " + _topic);
     _channel->setTopic(_topic);
-    Logger::debug("Channel's topic set to: " + channel->getTopic());
+    Logger::debug("Channel's topic set to: " + _channel->getTopic());
     
     // TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
 }
