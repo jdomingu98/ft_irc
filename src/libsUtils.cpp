@@ -53,9 +53,18 @@ std::string join(const std::vector<std::string> &msg) {
         ++it;
     }
 
-    if (it == msg.end() || it + 1 == msg.end()) {
+    if (it == msg.end()) {
         return "";
     }
+    if (it + 1 == msg.end()){
+        std::string word = it->substr(it->find(":"));
+        for (int i = 0; word[i] != '\0'; i++){
+            word[i] = word[i + 1];
+        }
+        std::cout << "word: " << word << std::endl;
+        return word;
+    }
+
     std::string joined = it->substr(it->find(":") + 1);
     for (++it; it != msg.end(); ++it) {
         joined += " " + *it;

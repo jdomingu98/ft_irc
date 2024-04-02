@@ -5,7 +5,7 @@
  * 
  * @param channelName 
  */
-TopicCommand::TopicCommand(const std::string& channelName) : ICommand(true), _channelName(channelName) {}
+//TopicCommand::TopicCommand(const std::string& channelName) : ICommand(true), _channelName(channelName) {}
 
 /**
  * Topic command constructor
@@ -31,23 +31,21 @@ void TopicCommand::execute(int clientFd) {
     User user = Server::getInstance().getUserByFd(clientFd);
     Channel *channel = user.getChannelByName(this->_channelName);
     
-    std::cout << channel->getName() << std::endl;
-    std::cout << _channelName << std::endl;
     if (channel == NULL)
         throw ServerException("You're not on that channel");
-
-     if (channel->getName() == _channelName){
-            // user.isUserAnOper(_channelName))
+    if (_topic.empty()){
+        std::cout << "estoy empty" << channel->getTopic()<< std::endl;
+        //TODO: Send the topic to the user
+    }
+    if (channel->getName() == _channelName){
+    //user.isUserAnOper(_channelName)){
+        std::cout << "antes del set "  << channel->getTopic() << std::endl;
             channel->setTopic(_topic);
-            std::cout << "estoy aqui" << std::endl;
+        std::cout << "despues del set "  << channel->getTopic() << std::endl;
             //TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
         }
         else {
             //TODO: You're not channel operator"
         }
-    if (_topic.empty()){
-        //TODO: Send the topic to the user
-        std::cout << "estoy empty" << std::endl;
-    }
     //TODO: set/remove with cmd MODE (flag +t)
 }

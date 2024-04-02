@@ -13,7 +13,7 @@ class TopicCommand : public ICommand {
         std::string _topic;
     
     public:
-        TopicCommand(const std::string& channelName);
+        /*TopicCommand(const std::string& channelName);*/
         TopicCommand(const std::string& channelName, const std::string& topic);
         ~TopicCommand();
 
