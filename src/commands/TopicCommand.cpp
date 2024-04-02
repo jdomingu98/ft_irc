@@ -33,7 +33,7 @@ void TopicCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
 
-    std::string channelName = _channel.getName();
+    std::string channelName = _channel->getName();
 
     //Check the validation order with official IRC server
 
@@ -42,7 +42,7 @@ void TopicCommand::execute(int clientFd) {
     
     Logger::debug("User in channel " + channelName);
 
-    if (!channel.isOper(user.getNickname())) 
+    if (!_channel->isOper(user.getNickname())) 
         throw ChanOPrivsNeededException(channelName);
 
     Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
@@ -58,7 +58,7 @@ void TopicCommand::execute(int clientFd) {
     }
     
     Logger::debug("Setting the new channel topic to " + _topic);
-    channel->setTopic(_topic);
+    _channel->setTopic(_topic);
     Logger::debug("Channel's topic set to: " + channel->getTopic());
     
     // TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);

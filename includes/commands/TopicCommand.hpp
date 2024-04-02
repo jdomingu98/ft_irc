@@ -19,8 +19,8 @@ class TopicCommand : public ICommand {
         std::string _topic;
     
     public:
-        TopicCommand(const Channel& channel);
-        TopicCommand(const Channel& channel, const std::string& topic);
+        TopicCommand(Channel *channel);
+        TopicCommand(Channel *channel, const std::string& topic);
         ~TopicCommand();
 
         void execute(int clientFd);
