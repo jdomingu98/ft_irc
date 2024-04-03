@@ -17,19 +17,25 @@ PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers,
  * @throws `ServerException` no se que pasa si no se encuentra el usuario ///
  */
 void PrivateMessageCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User sender = server.getUserByFd(clientFd);
+    Server &server = Server::getInstance();
+    User &sender = server.getUserByFd(clientFd);
     Logger::debug("Sending private message from " + sender.getNickname());
 
     for (size_t i = 0; i < this->_receivers.size(); i++) {
         try {
-            User destinationUser = server.getUserByNickname(this->_receivers[i]);
-            sender.sendPrivateMessageToUser(destinationUser, this->_message);
-        } catch (const ServerException &e) {
-          // Uno de los usuarios no existe, deberiamos de cortar la ejecucion del comando?
-          // throw NoSuchNickException(receiver);
+            if (this->_receivers[i][0] == '#') {
+                Logger::debug("Sending private message to channel " + this->_receivers[i]);
+                Server &server = Server::getInstance();
+                Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
+                sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
+            } else {
+                User &destinationUser = server.getUserByNickname(this->_receivers[i]);
+                sender.sendPrivateMessageToUser(destinationUser, this->_message);
+            }
+        } catch (const NoSuchNickException &e) {
+            server.sendMessage(clientFd, e.what());
+        } catch (const NoSuchChannelException &e) {
             server.sendMessage(clientFd, e.what());
         }
     }
 }
-

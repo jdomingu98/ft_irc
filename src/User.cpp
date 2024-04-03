@@ -207,3 +207,11 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
+
+void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
+    Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
+    std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getName() + " :" + message;
+    std::vector<User> users = destination.getAllUsers();
+    for (size_t i = 0; i < users.size(); i++)
+        Server::getInstance().sendMessage(users[i].getFd(), response);
+}
