@@ -9,6 +9,8 @@
 
 # include "libsUtils.hpp"
 
+class Channel;
+
 class User;
 
 /**
