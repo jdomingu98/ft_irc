@@ -71,6 +71,7 @@ void JoinCommand::printUsers(Channel &channel) const {
 void JoinCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
+    Channel channel;
     
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
@@ -91,32 +92,29 @@ void JoinCommand::execute(int clientFd) {
             Logger::debug("CHANNEL DOES NOT EXIST");
             Channel newChannel(channelName, user);
             server.addChannel(newChannel);
+            channel = server.getChannelByName(channelName);
             if (!channelKey.empty())
-                server.getChannelByName(channelName).setPassword(channelKey);
+                channel.setPassword(channelKey);
         } else {
             Logger::debug("CHANNEL NOW EXISTS");
-            Channel &channel = server.getChannelByName(channelName);
+            channel = server.getChannelByName(channelName);
             Logger::debug("CHANNEL NAME: " + channel.getName());
 
             //2. Check if channel[i] is invite-only channel and if user is invited
-            if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {
+            if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
                 throw InviteOnlyChanException(channel.getName());
-            }
 
             //3. Check if password is correct if channel[i] is password-protected
-            if (channel.isPasswordSet() && channel.getPassword() != channelKey) {
+            if (channel.isPasswordSet() && channel.getPassword() != channelKey)
                 throw BadChannelKeyException(channel.getName());
-            }
 
             //4. Check if channel[i] has limit and if its full
-            if (channel.hasLimit() && channel.isFull()) {
+            if (channel.hasLimit() && channel.isFull())
                 throw ChannelIsFullException(channel.getName());
-            }
 
             //5. Check if user has joined max channels
-            if (user.isUserInMaxChannels()) {
+            if (user.isUserInMaxChannels())
                 throw TooManyChannelsException(channel.getName());
-            }
 
             Logger::debug("--- PRE SAVE ---");
             this->printUsers(channel);
@@ -126,8 +124,8 @@ void JoinCommand::execute(int clientFd) {
 
             Logger::debug("--- POST SAVE ---");
             this->printUsers(channel);
-    }
-        
+        }
+
         user.addChannel(channel);
 
         //6. Send JOIN message to all users in channel[i]

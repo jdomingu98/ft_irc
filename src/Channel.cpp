@@ -1,6 +1,13 @@
 #include "Channel.hpp"
 
 /**
+ * Constructs a new Channel.
+ * 
+ */
+Channel::Channel()
+    : _name(NONE), _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {}
+
+/**
  * Channel name and User constructor.
  * 
  * @param name The name of the channel.
