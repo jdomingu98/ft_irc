@@ -14,7 +14,6 @@ PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers,
  * 
  * @param clientFd The socket file descriptor of the client
  * 
- * @throws `ServerException` no se que pasa si no se encuentra el usuario ///
  */
 void PrivateMessageCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
