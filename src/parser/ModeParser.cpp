@@ -22,7 +22,7 @@ ICommand *ModeParser::parse(const std::vector<std::string>& tokens) {
 
     std::string channel = tokens[1];
     std::string modesStr = tokens[2];
-    std::string modeParams = tokens.size() > 3 ? tokens[3] : "";
+    std::string modeParams = tokens.size() > 3 ? tokens[3] : NONE;
     bool plus = modesStr[0] != '-';
 
     std::vector<Mode> modes;

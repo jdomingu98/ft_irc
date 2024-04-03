@@ -31,10 +31,10 @@ Channel::~Channel() {
  * @return `true` if the channel name is valid, `false` otherwise.
  */
 bool Channel::checkChannelName(std::string name) const {
-    if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH) {}
+    if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH)
         return false;
     for (size_t i = 1; i < name.size(); i++) {
-        if (name[i] == ' ' || name[i] == ',' || name[i] == BELL_CHAR) {}
+        if (name[i] == ' ' || name[i] == ',' || name[i] == BELL_CHAR)
             return false;
     }
     return true;
@@ -180,7 +180,7 @@ void Channel::setPassword(const std::string &password) {
  * This function aims to unset the password of the channel.
 */
 void Channel::unsetPassword() {
-    this->_password = "";
+    this->_password = NONE;
     this->_passwordSet = false;
 }
 
@@ -268,20 +268,6 @@ void Channel::addUser(User user) {
     if (it != this->_users.end()) {}
         //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
     this->_users.push_back(user);
-}
-
-/**
- * This function aims to add an operator to the channel.
- * 
- * @param user The operator to add.
- * 
- * @throw `ChannelException` If the operator is already in the channel.
- */
-void Channel::addOper(User user) {
-    std::vector<User>::iterator it = findOper(user.getNickname());
-    if (it != this->_operators.end()) {}
-        //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
-    this->_operators.push_back(user);
 }
 
 /**

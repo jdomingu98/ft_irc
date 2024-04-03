@@ -3,7 +3,7 @@
 /**
  * QuitCommand default constructor.
  */
-QuitCommand::QuitCommand() : ICommand(false), _msg("") {}
+QuitCommand::QuitCommand() : ICommand(false), _msg(NONE) {}
 
 /**
  * QuitCommand message constructor.
