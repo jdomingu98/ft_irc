@@ -289,11 +289,18 @@ void Channel::removeUser(std::string nickname) {
     std::vector<User>::iterator itUser = findUser(nickname);
     std::vector<User>::iterator itOper = findOper(nickname);
     if (itUser != this->_users.end())
+    {
+        (*itUser).removeChannel(this->_name);
         this->_users.erase(itUser);
+    }
     else if (itOper != this->_operators.end())
+    {
+        (*itOper).removeChannel(this->_name);
         this->_operators.erase(itOper);
+    }
     else
         throw UserNotInChannelException(nickname, this->_name);
+
     if (this->_users.empty() && this->_operators.empty()) {
         server.getChannels().erase(server.findChannel(this->_name));
         this->~Channel();

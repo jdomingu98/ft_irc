@@ -197,6 +197,15 @@ void User::addChannel(Channel &channel) {
 }
 
 /**
+ * This function aims to remove a channel from the user.
+ * 
+ * @param channelName The name of the channel to be removed.
+ */
+void User::removeChannel(std::string &channelName) {
+    this->_channels.erase(findChannel(channelName));
+}
+
+/**
  * This function aims to send a private message to an user.
  * 
  * @param destination The user who will receive the message.
