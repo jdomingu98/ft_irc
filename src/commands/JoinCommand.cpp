@@ -77,7 +77,7 @@ void JoinCommand::execute(int clientFd) {
             Logger::debug("CHANNEL DOES NOT EXIST");
             Channel newChannel(channelName, user);
             server.addChannel(newChannel);
-            if (channelKey != "")
+            if (!channelKey.empty())
                 server.getChannelByName(channelName).setPassword(channelKey);
         }
 
@@ -86,9 +86,9 @@ void JoinCommand::execute(int clientFd) {
         Logger::debug("CHANNEL NAME: " + channel.getName());
 
         //1. Check if channel[i] is invite-only channel and if user is invited -> ERR_INVITEONLYCHAN
-        /*if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {
+        if (channel.isInviteOnly() && !channel.isUserInvited(nickname)) {
             throw InviteOnlyChanException(channel.getName());
-        }*/
+        }
 
         //2. Check if password is correct if channel[i] is password-protected
         if (channel.isPasswordSet() && channel.getPassword() != channelKey) {
@@ -132,9 +132,11 @@ void JoinCommand::execute(int clientFd) {
 
         //5. Send JOIN message to all users in channel[i]
         std::string topic = channel.getTopic();
-        const std::string message = topic == "" ? RPL_NO_TOPIC(channel.getName())
-                                                : RPL_TOPIC(channel.getName(), topic);
+        const std::string message = topic.empty()   ? RPL_NO_TOPIC(channel.getName())
+                                                    : RPL_TOPIC(channel.getName(), topic);
+        
         server.sendMessage(clientFd, message);
         server.sendMessage(clientFd, rplNamReply(channel.getName(), channel.getOperators(), channel.getUsers()));
+        server.sendMessage(clientFd, RPL_END_OF_NAMES(channel.getName()));
     }
 }
