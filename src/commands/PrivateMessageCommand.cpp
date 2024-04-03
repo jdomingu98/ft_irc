@@ -24,7 +24,6 @@ void PrivateMessageCommand::execute(int clientFd) {
         try {
             if (this->_receivers[i][0] == '#') {
                 Logger::debug("Sending private message to channel " + this->_receivers[i]);
-                Server &server = Server::getInstance();
                 Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
                 sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
             } else {
