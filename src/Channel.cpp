@@ -286,19 +286,17 @@ void Channel::addUser(User user) {
  */
 void Channel::removeUser(std::string nickname) {
     Server& server = Server::getInstance();
-    std::vector<User>::iterator itUser = findUser(nickname);
-    std::vector<User>::iterator itOper = findOper(nickname);
-    if (itUser != this->_users.end())
-    {
-        (*itUser).removeChannel(this->_name);
+
+    std::vector<User>::iterator itUser = this->findUser(nickname);
+    std::vector<User>::iterator itOper = this->findOper(nickname);
+
+    if (itUser != this->_users.end()) {
+        itUser->removeChannel(this->_name);
         this->_users.erase(itUser);
-    }
-    else if (itOper != this->_operators.end())
-    {
-        (*itOper).removeChannel(this->_name);
+    } else if (itOper != this->_operators.end()) {
+        itOper->removeChannel(this->_name);
         this->_operators.erase(itOper);
-    }
-    else
+    } else
         throw UserNotInChannelException(nickname, this->_name);
 
     if (this->_users.empty() && this->_operators.empty()) {

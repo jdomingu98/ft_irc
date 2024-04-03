@@ -95,6 +95,7 @@ void JoinCommand::execute(int clientFd) {
             channel = server.getChannelByName(channelName);
             if (!channelKey.empty())
                 channel.setPassword(channelKey);
+            this->printUsers(channel);
         } else {
             Logger::debug("CHANNEL NOW EXISTS");
             channel = server.getChannelByName(channelName);
