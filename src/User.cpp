@@ -208,6 +208,12 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
 
+/**
+ * This function aims to send a private message to a channel.
+ * 
+ * @param destination The channel that will receive the message.
+ * @param message The message to send.
+ */
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
     std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getName() + " :" + message;
