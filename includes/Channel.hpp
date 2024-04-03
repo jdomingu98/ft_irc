@@ -37,14 +37,12 @@ class Channel {
         std::vector<User>::iterator         findOper(const std::string &nickname);
         std::vector<User>::const_iterator   findOper(const std::string &nickname) const;
 
-        // Constructors
-        Channel();
-
         // Other Operations
         bool checkChannelName(std::string name) const;
 
     public:
         // Constructors and destructor
+        Channel();
         Channel(const std::string &name, const User &user);
         ~Channel();
 
