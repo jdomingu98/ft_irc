@@ -201,7 +201,7 @@ void User::addChannel(Channel &channel) {
  * 
  * @param channelName The name of the channel to be removed.
  */
-void User::removeChannel(std::string &channelName) {
+void User::removeChannel(const std::string &channelName) {
     this->_channels.erase(findChannel(channelName));
 }
 
