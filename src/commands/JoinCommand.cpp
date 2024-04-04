@@ -108,13 +108,12 @@ void JoinCommand::execute(int clientFd) {
             Logger::debug("CHANNEL DOES NOT EXIST");
             
             Channel newChannel(channelName, user);
-            if (!channelKey.empty())
-                channel.setPassword(channelKey);
-            
             server.addChannel(newChannel);
             Channel &channel = server.getChannelByName(channelName);
+            if (!channelKey.empty())
+                channel.setPassword(channelKey);
+
             user.addChannel(channel);
-            
             this->printUsers(channel);
             
             sendMessages(clientFd, RPL_NO_TOPIC(channelName), channel);
