@@ -151,8 +151,8 @@ void JoinCommand::execute(int clientFd) {
         if (!channel.isUserInChannel(nickname)) {
             channel.addUser(user);
             user.addChannel(channel);
-        } else if (!channel.isOper(nickname)) {}
-            //throw IRCException(...); ??
+        } else 
+            throw UserOnChannelException(nickname, channelName); //Provisional
 
         Logger::debug("--- POST SAVE ---");
         this->printUsers(channel);
