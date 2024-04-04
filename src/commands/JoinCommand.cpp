@@ -91,10 +91,11 @@ void JoinCommand::execute(int clientFd) {
         if (!server.channelExists(channelName)) {
             Logger::debug("CHANNEL DOES NOT EXIST");
             Channel newChannel(channelName, user);
-            server.addChannel(newChannel);
-            channel = server.getChannelByName(channelName);
             if (!channelKey.empty())
                 channel.setPassword(channelKey);
+            server.addChannel(newChannel);
+            channel = server.getChannelByName(channelName);
+            user.addChannel(channel);
             this->printUsers(channel);
         } else {
             Logger::debug("CHANNEL NOW EXISTS");
@@ -120,14 +121,14 @@ void JoinCommand::execute(int clientFd) {
             Logger::debug("--- PRE SAVE ---");
             this->printUsers(channel);
 
-            if (!channel.isUserInChannel(nickname))
+            if (!channel.isUserInChannel(nickname)) {
                 channel.addUser(user);
+                user.addChannel(channel);
+            }
 
             Logger::debug("--- POST SAVE ---");
             this->printUsers(channel);
         }
-
-        user.addChannel(channel);
 
         //6. Send JOIN message to all users in channel[i]
         std::string topic = channel.getTopic();

@@ -46,7 +46,7 @@ void PartCommand::execute(int clientFd) {
         std::cout << "Users size: " << users.size() << std::endl;
         for (size_t j = 0; j < users.size(); j++) {
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, it->getName()));
+            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channel.getName()));
         }
         users.clear();
     }
