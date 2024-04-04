@@ -52,6 +52,24 @@ void JoinCommand::printUsers(Channel &channel) const {
     }
 }
 
+/**
+ * Sends the join message and responses to the client.
+ * 
+ * @param clientFd The socket file descriptor of the client
+ * @param message The message to be sent
+ * @param channel The channel to send the message to
+ * 
+ */
+void JoinCommand::sendMessages(int clientFd, const std::string &message, Channel &channel) const {
+    Server &server = Server::getInstance();
+
+    std::string channelName = channel.getName();
+        
+    server.sendMessage(clientFd, message);
+    server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
+    server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
+}
+
 /** ----------------TESTING-------------
  * JOIN (#/&)channel password -> joins channel with password if it's correct
  * JOIN #c1,#c2 password -> password for c1, none for c2
@@ -71,7 +89,6 @@ void JoinCommand::printUsers(Channel &channel) const {
 void JoinCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
-    Channel channel;
     
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
@@ -87,56 +104,61 @@ void JoinCommand::execute(int clientFd) {
 
         Logger::debug("JOINING CHANNEL: " + channelName + " WITH KEY: " + channelKey);
 
-        //1. If channel[i] does not exist, create it
         if (!server.channelExists(channelName)) {
             Logger::debug("CHANNEL DOES NOT EXIST");
+            
             Channel newChannel(channelName, user);
             if (!channelKey.empty())
                 channel.setPassword(channelKey);
+            
             server.addChannel(newChannel);
-            channel = server.getChannelByName(channelName);
+            Channel &channel = server.getChannelByName(channelName);
             user.addChannel(channel);
+            
             this->printUsers(channel);
-        } else {
-            Logger::debug("CHANNEL NOW EXISTS");
-            channel = server.getChannelByName(channelName);
-            Logger::debug("CHANNEL NAME: " + channel.getName());
-
-            //2. Check if channel[i] is invite-only channel and if user is invited
-            if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
-                throw InviteOnlyChanException(channel.getName());
-
-            //3. Check if password is correct if channel[i] is password-protected
-            if (channel.isPasswordSet() && channel.getPassword() != channelKey)
-                throw BadChannelKeyException(channel.getName());
-
-            //4. Check if channel[i] has limit and if its full
-            if (channel.hasLimit() && channel.isFull())
-                throw ChannelIsFullException(channel.getName());
-
-            //5. Check if user has joined max channels
-            if (user.isUserInMaxChannels())
-                throw TooManyChannelsException(channel.getName());
-
-            Logger::debug("--- PRE SAVE ---");
-            this->printUsers(channel);
-
-            if (!channel.isUserInChannel(nickname)) {
-                channel.addUser(user);
-                user.addChannel(channel);
-            }
-
-            Logger::debug("--- POST SAVE ---");
-            this->printUsers(channel);
+            
+            sendMessages(clientFd, RPL_NO_TOPIC(channelName), channel);
+            return;
         }
 
-        //6. Send JOIN message to all users in channel[i]
-        std::string topic = channel.getTopic();
-        const std::string message = topic.empty()   ? RPL_NO_TOPIC(channel.getName())
-                                                    : RPL_TOPIC(channel.getName(), topic);
+        Logger::debug("CHANNEL NOW EXISTS");
+        Channel &channel = server.getChannelByName(channelName);
+        Logger::debug("CHANNEL NAME: " + channelName);
         
-        server.sendMessage(clientFd, message);
-        server.sendMessage(clientFd, rplNamReply(channel.getName(), channel.getOperators(), channel.getUsers()));
-        server.sendMessage(clientFd, RPL_END_OF_NAMES(channel.getName()));
+        std::string topic = channel.getTopic();
+        const std::string message = topic.empty()   ? RPL_NO_TOPIC(channelName)
+                                                    : RPL_TOPIC(channelName, topic);
+        
+
+        //1. Check if channel[i] is invite-only channel and if user is invited
+        if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
+            throw InviteOnlyChanException(channelName);
+
+        //2. Check if password is correct if channel[i] is password-protected
+        if (channel.isPasswordSet() && channel.getPassword() != channelKey)
+            throw BadChannelKeyException(channelName);
+
+        //3. Check if channel[i] has limit and if its full
+        if (channel.hasLimit() && channel.isFull())
+            throw ChannelIsFullException(channelName);
+
+        //4. Check if user has joined max channels
+        if (user.isUserInMaxChannels())
+            throw TooManyChannelsException(channelName);
+
+        Logger::debug("--- PRE SAVE ---");
+        this->printUsers(channel);
+
+        if (!channel.isUserInChannel(nickname)) {
+            channel.addUser(user);
+            user.addChannel(channel);
+        } else if (!channel.isOper(nickname)) {}
+            //throw IRCException(...); ??
+
+        Logger::debug("--- POST SAVE ---");
+        this->printUsers(channel);
+
+        //5. Send JOIN message to all users in channel[i]
+        sendMessages(clientFd, message, channel);
     }
 }
