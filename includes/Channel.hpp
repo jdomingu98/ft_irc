@@ -60,7 +60,7 @@ class Channel {
 
         // User
         void addUser(User user);
-        void removeUser(std::string nickname);
+        void removeUser(const std::string &nickname);
         bool isUserInChannel(const std::string &nickname) const;
 
         // Oper

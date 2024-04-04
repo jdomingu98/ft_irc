@@ -42,8 +42,11 @@ void PartCommand::execute(int clientFd) {
 
         channel.removeUser(nickname);
 
+        Logger::debug("User " + nickname + " removed from channel " + this->_channels[i] + ".");
+
         std::vector<User> users = channel.getAllUsers();
-        std::cout << "Users size: " << users.size() << std::endl;
+        Logger::debug("Get users list of channel " + channel.getName());
+        
         for (size_t j = 0; j < users.size(); j++) {
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
             server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channel.getName()));
