@@ -4,7 +4,7 @@
  * Command User default constructor
  * 
  */
-UserCommand::UserCommand() : ICommand(false), _username(""), _hostname(""), _serverName(""), _realName("") {}
+UserCommand::UserCommand() : ICommand(false), _username(NONE), _hostname(NONE), _serverName(NONE), _realName(NONE) {}
 
 /**
  * Command User constructor

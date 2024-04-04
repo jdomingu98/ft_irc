@@ -35,7 +35,7 @@ ICommand *KickParser::parse(const std::vector<std::string>& tokens) {
         users.push_back(user);
     }
     
-    std::string comment = (tokens.size() == 4) ? tokens[3] : "";
+    std::string comment = (tokens.size() == 4) ? tokens[3] : NONE;
     channelsList.clear();
     usersList.clear();
     return new KickCommand(channels, users, comment);

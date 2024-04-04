@@ -2,18 +2,20 @@
 # define MODE_COMMAND_HPP
 
 # include "ICommand.hpp"
-# include "libsUtils.hpp"
+
 # include "Server.hpp"
+
+# include "libsUtils.hpp"
 
 /**
  * The different modes that a channel can have.
  */
 typedef enum EMode {
-  INVITE_ONLY = 'i',
-  TOPIC_PROTECTED = 't',
-  CHANNEL_KEY = 'k',
-  CHANNEL_OPERATOR = 'o',
-  USER_LIMIT = 'l',
+    INVITE_ONLY = 'i',
+    TOPIC_PROTECTED = 't',
+    CHANNEL_KEY = 'k',
+    CHANNEL_OPERATOR = 'o',
+    USER_LIMIT = 'l',
 } Mode;
 
 /**
@@ -21,7 +23,7 @@ typedef enum EMode {
  */
 class ModeCommand : public ICommand {
     private:
-        
+
         bool _plus;
         std::string _channel;
         std::vector<Mode> _modes;

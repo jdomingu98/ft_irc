@@ -58,7 +58,7 @@ bool User::isUserInMaxChannels() const {
  * 
  * @return `true` if the user is on the channel, `false` otherwise.
  */
-bool User::isOnChannel(std::string channelName) const {
+bool User::isOnChannel(const std::string &channelName) const {
     
     std::vector<Channel>::const_iterator it = findChannel(channelName);
     return it != this->_channels.end();
@@ -194,6 +194,15 @@ bool User::isRegistered() const {
  */
 void User::addChannel(Channel &channel) {
     this->_channels.push_back(channel);
+}
+
+/**
+ * This function aims to remove a channel from the user.
+ * 
+ * @param channelName The name of the channel to be removed.
+ */
+void User::removeChannel(const std::string &channelName) {
+    this->_channels.erase(findChannel(channelName));
 }
 
 /**

@@ -34,9 +34,9 @@ ICommand *JoinParser::parse(const std::vector<std::string>& tokens) {
                 continue;
             if (channelsVec[i].empty()) {}
                 // throw IRCException(); 
-            channels[channelsVec[i]] = (i < keysVec.size() && !keysVec[i].empty()) ? keysVec[i] : "";
+            channels[channelsVec[i]] = (i < keysVec.size() && !keysVec[i].empty()) ? keysVec[i] : NONE;
         } else if (!channelsVec[i].empty())
-            channels[channelsVec[i]] = "";
+            channels[channelsVec[i]] = NONE;
     }
 
     channelsVec.clear();
