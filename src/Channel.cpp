@@ -31,10 +31,10 @@ Channel::~Channel() {
  * @return `true` if the channel name is valid, `false` otherwise.
  */
 bool Channel::checkChannelName(std::string name) const {
-    if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH) {}
-        return false;
+    if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH)
+            return false;
     for (size_t i = 1; i < name.size(); i++) {
-        if (name[i] == ' ' || name[i] == ',' || name[i] == BELL_CHAR) {}
+        if (name[i] == ' ' || name[i] == ',' || name[i] == BELL_CHAR)
             return false;
     }
     return true;

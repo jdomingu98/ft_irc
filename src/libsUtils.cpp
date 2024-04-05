@@ -47,7 +47,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * @return The joined string.
  */
 std::string join(const std::vector<std::string> &msg) {
-    std::vector<std::string>::const_iterator it = msg.begin();
+  std::vector<std::string>::const_iterator it = msg.begin();
 
     while (it != msg.end() && it->find(":") == std::string::npos) {
         ++it;
@@ -56,18 +56,52 @@ std::string join(const std::vector<std::string> &msg) {
     if (it == msg.end()) {
         return "";
     }
-    if (it + 1 == msg.end()){
-        std::string word = it->substr(it->find(":"));
-        for (int i = 0; word[i] != '\0'; i++){
-            word[i] = word[i + 1];
-        }
-        std::cout << "word: " << word << std::endl;
-        return word;
+    std::string joined;
+    if (*it != ":") {
+        joined = it->substr(1); // Skip the first character (':')
+    } else if (it + 1 == msg.end()) {
+        return " ";
     }
-
-    std::string joined = it->substr(it->find(":") + 1);
-    for (++it; it != msg.end(); ++it) {
+    ++it;
+    for (; it != msg.end(); ++it) {
         joined += " " + *it;
     }
     return joined;
+}
+
+
+/**
+ * Checks if the string contains a colon.
+ * 
+ * @param tokens The vector of strings.
+ * 
+ * @return True if the string contains a colon, false otherwise.
+ */
+bool isColon(const std::vector<std::string> &msg) {
+    std::vector<std::string>::const_iterator it = msg.begin();
+    while (it != msg.end() && it->find(":") == std::string::npos) {
+        ++it;
+    }
+    if (it == msg.end()) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Checks if the string is only spaces.
+ * 
+ * @param tokens The vector of strings.
+ * 
+ * @return True if the strings are only spaces, false otherwise.
+ */
+bool isOnlySpaces(const std::vector<std::string> &msg) {
+    std::vector<std::string> newMsg(msg.begin() + 2, msg.end());
+    for (std::vector<std::string>::const_iterator it = newMsg.begin(); it != newMsg.end(); ++it) {
+        for (size_t i = 0; i < it->size(); i++) {
+            if ((*it)[i] != ' ')
+                return false;
+        }
+    }
+    return true;
 }

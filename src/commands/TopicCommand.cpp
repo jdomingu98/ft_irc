@@ -39,27 +39,23 @@ void TopicCommand::execute(int clientFd) {
 
     if (!user.isOnChannel(channelName))
             throw NotOnChannelException(channelName);
-    
     Logger::debug("User in channel " + channelName);
 
+    /*TODO: set/remove with MODE command (flag +t)
     if (!_channel->isOper(user.getNickname())) 
         throw ChanOPrivsNeededException(channelName);
-
-    Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
-
-    // TODO: set/remove with MODE command (flag +t)
-
+    Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);*/
     if (_topic.empty()) { 
         Logger::debug("Channel's topic is empty.");
         // TODO: Send RPL_NO_TOPIC to user (No es seguro, es lo que he intuido)
     } else {
         Logger::debug("Channel's topic not empty.");
+        Logger::debug("Setting the new channel topic to " + _topic);
+        _channel->setTopic(_topic);
         // TODO: Send RPL_TOPIC to user (No es seguro, es lo que he intuido)
     }
-    
-    Logger::debug("Setting the new channel topic to " + _topic);
-    _channel->setTopic(_topic);
-    Logger::debug("Channel's topic set to: " + _channel->getTopic());
+
+    Logger::debug("Channel's topic is: " + _channel->getTopic());
     
     // TODO:(channel, ":" + user.getNickname() + " TOPIC " + channel.getName() + " :" + _topic);
 }
