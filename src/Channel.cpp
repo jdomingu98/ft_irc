@@ -300,7 +300,7 @@ void Channel::removeUser(const std::string &nickname) {
         throw UserNotInChannelException(nickname, this->_name);
         
     if (this->_users.empty() && this->_operators.empty()) {
-        std::vector<Channel> serverChannels = server.getChannels();
+        std::vector<Channel> &serverChannels = server.getChannels();
         
         for (size_t i = 0; i < serverChannels.size(); i++) {
             if (serverChannels[i].getName() == this->_name) {
