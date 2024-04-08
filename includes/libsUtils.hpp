@@ -17,6 +17,8 @@
 
 # include "exceptions.hpp"
 
+# include "Server.hpp"
+
 // =================================================================================
 
 # define SUCCESS 0
@@ -55,7 +57,7 @@
 
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);
-std::string join(const std::vector<std::string> &msg);
+const std::string &join(const std::vector<std::string> &msg);
 bool isColon(const std::vector<std::string> &msg);
 bool isOnlySpaces(const std::vector<std::string> &msg);
 

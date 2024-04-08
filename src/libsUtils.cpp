@@ -46,18 +46,18 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * 
  * @return The joined string.
  */
-std::string join(const std::vector<std::string> &msg) {
+const std::string &join(const std::vector<std::string> &msg) {
   std::vector<std::string>::const_iterator it = msg.begin();
 
     while (it != msg.end() && it->find(":") == std::string::npos)
         ++it;
     if (it == msg.end())
-        return "";
+        return NONE;
     std::string joined;
     if (*it != ":")
         joined = it->substr(1);
     else if (it + 1 == msg.end())
-        return " ";
+        return NONE;
     ++it;
     for (; it != msg.end(); ++it)
         joined += " " + *it;
@@ -76,9 +76,7 @@ bool isColon(const std::vector<std::string> &msg) {
     std::vector<std::string>::const_iterator it = msg.begin();
     while (it != msg.end() && it->find(":") == std::string::npos)
         ++it;
-    if (it == msg.end())
-        return false;
-    return true;
+    return it != msg.end();
 }
 
 /**
