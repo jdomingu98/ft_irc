@@ -228,7 +228,5 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
  */
 Channel *User::getChannelByName(std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
-    if (it != this->_channels.end())
-        return &(*it);
-    return NULL;
+    return (it != this->_channels.end()) ? &(*it) : NULL;
 }

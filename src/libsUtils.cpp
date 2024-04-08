@@ -59,8 +59,8 @@ const std::string join(const std::vector<std::string> &msg) {
     else if (it + 1 == msg.end())
         return NONE;
     ++it;
-    for (; it != msg.end(); ++it)
-        joined += " " + *it;
+    while(it != msg.end())
+        joined += " " + *it++;
     return joined;
 }
 
