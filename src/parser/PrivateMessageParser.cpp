@@ -14,7 +14,7 @@
  * @throws `NoTextToSendException` if no text is given.
  * @return The parsed command.
  */
-ICommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
+ACommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> receivers;
     std::string message;
 

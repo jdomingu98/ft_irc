@@ -13,7 +13,7 @@
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
  * @return The parsed command.
  */
-ICommand *UserParser::parse(const std::vector<std::string>& tokens) {
+ACommand *UserParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 5)
         throw NeedMoreParamsException("USER");
     std::string username = tokens[1];

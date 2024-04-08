@@ -192,11 +192,14 @@ void Server::handleExistingConnection(int clientFd) {
     if (buffer[0] == '\0')
         return;
     Logger::debug("Mensaje del cliente: " + std::string(buffer, readBytes));
+    User &client = getUserByFd(clientFd);
     try {
-        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        ACommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        if (command->needsValidation() && !client.isRegistered())
+            throw NotRegisteredException();
         command->execute(clientFd);
     } catch (IRCException& e) {
-        std::string clientNickname = getUserByFd(clientFd).getNickname();
+        std::string clientNickname = client.getNickname();
         this->sendMessage(clientFd,
             std::string(":irc.ft_messenger.net ")
             + e.getErrorCode()

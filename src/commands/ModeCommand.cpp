@@ -10,7 +10,7 @@
  * 
  */
 ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, const std::string& modeParams)
-    : ICommand(true), _plus(plus), _channel(channel), _modes(modes), _modeParams(modeParams) {}
+    : ACommand(true), _plus(plus), _channel(channel), _modes(modes), _modeParams(modeParams) {}
 
 /**
  * Destroy the ModeCommand.
