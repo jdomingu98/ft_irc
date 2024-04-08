@@ -449,4 +449,3 @@ Channel &Server::getChannelByName(const std::string &channelName) {
 bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
 }
-

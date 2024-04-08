@@ -39,7 +39,6 @@ class Server {
         struct pollfd           _fds[MAX_CLIENTS];
         std::vector<User>       _users;
         std::vector<Channel>    _channels;
-        std::string             _topic;
 
         // Singleton Pattern
         static Server           *_server;
