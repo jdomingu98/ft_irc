@@ -28,7 +28,7 @@ PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mod
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= main Server User Channel libsUtils Logger 
+FILES 			= main Server User Channel libsUtils Logger
 
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
 SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))

@@ -1,5 +1,5 @@
-#ifndef I_COMMAND_HPP
-# define I_COMMAND_HPP
+#ifndef A_COMMAND_HPP
+# define A_COMMAND_HPP
 
 class Server;
 
