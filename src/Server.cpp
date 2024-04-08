@@ -1,7 +1,6 @@
 #include "Server.hpp"
 
 Server *Server::_server = NULL;
-Server::_signalReceived = false;
 
 /**
  * This function aims to validate the port number.
@@ -27,7 +26,7 @@ bool Server::isValidPort(const std::string &port) const {
  * 
  * @throws `ServerException` if the port is out of range.
  */
-Server::Server(const std::string port, const std::string password) : _password(password) {
+Server::Server(const std::string port, const std::string password) : _password(password), _signalReceived(false) {
     if (!this->isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
@@ -52,6 +51,8 @@ Server::~Server() {
  */
 void Server::init(std::string port, std::string password) {
     Server::_server = new Server(port, password);
+    signal(SIGINT, &signalHandler);
+    signal(SIGQUIT, &signalHandler);
     Server::_server->listenClients();
 }
 
@@ -72,9 +73,10 @@ Server &Server::getInstance() {
  * @param signal The signal received.
  */
 void signalHandler(int signal) {
-    Logger::debug("Signal " + signal +" Received!!");
+    (void) signal;
+    Logger::debug("Signal Received!!");
     Logger::debug("Stopping the server...");
-    Server::_signalReceived = true;
+    Server::getInstance().setSignalReceived();
 }
 
 /**
@@ -113,6 +115,11 @@ void Server::initServer() {
     // htons: Converts host format port to network format port.
     this->_serverAddr.sin_port = htons(this->_port);
 
+    // set the socket option (SO_REUSEADDR) to reuse the address
+    int enabled = 1;
+    if (setsockopt(this->_socketFd, SOL_SOCKET, SO_REUSEADDR, &enabled, sizeof(int)) < 0)
+        throw ServerException(REUSE_ADDR_EXPT);
+
     // Setting the socket option for non-blocking socket (O_NONBLOCK)
     if (fcntl(this->_socketFd, F_SETFL, O_NONBLOCK) < 0)
         throw ServerException(FCNTL_EXPT);
@@ -138,13 +145,14 @@ void Server::initServer() {
  * @throws `ServerException` if the poll function fails,
  *  the server can't accept a new connection,
  *  the revents value is different from POLLIN,
- *  the server can't receive a message or the server can't send a message.
+ *  the server can't receive a message or
+ *  the server can't send a message.
  */
 void Server::listenClients() {
     int numFds = 1;
     
-    while (!Server::_signalReceived) {
-        if (poll(this->_fds, numFds, -1) == -1)
+    while (!this->_signalReceived) {
+        if (poll(this->_fds, numFds, -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
         for (int i = 0; i < numFds; i++) {
@@ -161,7 +169,7 @@ void Server::listenClients() {
                 this->handleExistingConnection(this->_fds[i].fd);
         }
     }
-
+    Logger::debug("Closing connections...");
     this->closeConnections();
 }
 
@@ -234,6 +242,10 @@ void Server::handleExistingConnection(int clientFd) {
  */
 bool Server::isValidPassword(const std::string &password) const {
     return password == this->_password;
+}
+
+void Server::setSignalReceived() {
+	this->_signalReceived = true;
 }
 
 /**
@@ -426,7 +438,7 @@ void Server::addChannel(Channel channel) {
  * 
  * @return The channels of the server.
  */
-std::vector<Channel> Server::getChannels() const {
+std::vector<Channel> &Server::getChannels() {
     return this->_channels;
 }
 
@@ -467,4 +479,3 @@ Channel &Server::getChannelByName(const std::string &channelName) {
 bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
 }
-

@@ -13,7 +13,6 @@
 # include <string>
 # include <vector>
 # include <unistd.h>
-# include <fcntl.h>
 
 # include "Logger.hpp"
 
@@ -35,6 +34,7 @@
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
 # define SOCKET_EXPT "[ERROR] Unable to open server socket."
+# define REUSE_ADDR_EXPT "[ERROR] Failed to set SO_REUSEADDR option on server"
 # define FCNTL_EXPT "[ERROR] Unable to set server socket as non-blocking."
 # define BIND_EXPT "[ERROR] Unable to link server socket."
 # define LISTEN_EXPT "[ERROR] unable to start listening on server socket."
