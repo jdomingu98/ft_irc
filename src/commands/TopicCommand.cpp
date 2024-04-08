@@ -44,9 +44,7 @@ void TopicCommand::execute(int clientFd) {
     if (_channel->isTopicProtected() && !_channel->isOper(user.getNickname())) 
         throw ChanOPrivsNeededException(channelName);
     Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
-    if (_topic.empty()) { 
-        Logger::debug("Channel's topic is empty.");
-    } else {
+    if (!_topic.empty()) { 
         Logger::debug("Channel's topic not empty.");
         Logger::debug("Setting the new channel topic to " + _topic);
         _channel->setTopic(_topic);

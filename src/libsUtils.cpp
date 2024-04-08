@@ -49,23 +49,18 @@ std::vector<std::string> split(const std::string &s, char delim) {
 std::string join(const std::vector<std::string> &msg) {
   std::vector<std::string>::const_iterator it = msg.begin();
 
-    while (it != msg.end() && it->find(":") == std::string::npos) {
+    while (it != msg.end() && it->find(":") == std::string::npos)
         ++it;
-    }
-
-    if (it == msg.end()) {
+    if (it == msg.end())
         return "";
-    }
     std::string joined;
-    if (*it != ":") {
+    if (*it != ":")
         joined = it->substr(1);
-    } else if (it + 1 == msg.end()) {
+    else if (it + 1 == msg.end())
         return " ";
-    }
     ++it;
-    for (; it != msg.end(); ++it) {
+    for (; it != msg.end(); ++it)
         joined += " " + *it;
-    }
     return joined;
 }
 
@@ -79,12 +74,10 @@ std::string join(const std::vector<std::string> &msg) {
  */
 bool isColon(const std::vector<std::string> &msg) {
     std::vector<std::string>::const_iterator it = msg.begin();
-    while (it != msg.end() && it->find(":") == std::string::npos) {
+    while (it != msg.end() && it->find(":") == std::string::npos)
         ++it;
-    }
-    if (it == msg.end()) {
+    if (it == msg.end())
         return false;
-    }
     return true;
 }
 
