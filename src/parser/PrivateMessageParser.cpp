@@ -6,7 +6,7 @@
  * The format of the PRIVMSG command is as follows:
  * 
  * Command: PRIVMSG
- * Parameters: <receiver>{,<receiver>} <text to be sent>
+ * Parameters: <receiver>{,<receiver>} :<text to be sent>
  * 
  * @param tokens The parameters of the command.
  * 
@@ -18,21 +18,14 @@ ICommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> receivers;
     std::string message;
 
-    size_t i = 1;
-    while (i < tokens.size() && tokens[i][0] != ':') {
-        receivers.push_back(tokens[i]);
-        i++;
-    }
-    if (i == 1) {
+    if (tokens.size() < 2 || tokens[1][0] == ':')
         throw NoRecipientGivenException("PRIVMSG");
-    }
-    if (i == tokens.size()) {
+    receivers = split(tokens[1], ',');
+    if (tokens.size() < 3 || tokens[2][0] != ':')
         throw NoTextToSendException();
-    }
-    message = tokens[i].substr(1);
-    for (size_t j = i + 1; j < tokens.size(); j++) {
-        message += " " + tokens[j];
-    }
+    message = tokens[2].substr(1);
+    for (size_t i = 2; i < tokens.size(); i++)
+        message += " " + tokens[i];
 
     return new PrivateMessageCommand(receivers, message);
 }

@@ -215,6 +215,20 @@ void User::removeChannel(const std::string &channelName) {
  */
 void User::sendPrivateMessageToUser(const User &destination, const std::string& message) const {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
-    std::string response = ":" + this->_nickname + " PRIVMSG " + destination.getNickname() + " :" + message;
+    std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getNickname(), message);
     Server::getInstance().sendMessage(destination.getFd(), response);
+}
+
+/**
+ * This function aims to send a private message to a channel.
+ * 
+ * @param destination The channel that will receive the message.
+ * @param message The message to send.
+ */
+void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
+    Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
+    std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getName(), message);
+    std::vector<User> users = destination.getAllUsers();
+    for (size_t i = 0; i < users.size(); i++)
+        Server::getInstance().sendMessage(users[i].getFd(), response);
 }
