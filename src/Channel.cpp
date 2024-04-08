@@ -286,10 +286,10 @@ void Channel::addUser(User user) {
  */
 void Channel::removeUser(const std::string &nickname) {
     Server& server = Server::getInstance();
-
+    
     std::vector<User>::iterator itUser = this->findUser(nickname);
-    std::vector<User>::iterator itOper = this->findOper(nickname);
-
+    std::vector<User>::iterator itOper = this->findOper(nickname);   
+    
     if (itUser != this->_users.end()) {
         itUser->removeChannel(this->_name);
         this->_users.erase(itUser);
@@ -298,10 +298,17 @@ void Channel::removeUser(const std::string &nickname) {
         this->_operators.erase(itOper);
     } else
         throw UserNotInChannelException(nickname, this->_name);
-
+        
     if (this->_users.empty() && this->_operators.empty()) {
-        server.getChannels().erase(server.findChannel(this->_name));
-        this->~Channel();
+        std::vector<Channel> &serverChannels = server.getChannels();
+        
+        for (size_t i = 0; i < serverChannels.size(); i++) {
+            if (serverChannels[i].getName() == this->_name) {
+                serverChannels.erase(serverChannels.begin() + i);
+                break;
+            }	
+        }
+        serverChannels.clear();
     }
 }
 

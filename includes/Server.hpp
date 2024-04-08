@@ -73,7 +73,7 @@ class Server {
         void        attemptUserRegistration(int clientFd);
 
         // Channel
-        std::vector<Channel> getChannels() const;
+        std::vector<Channel> &getChannels();
         Channel &getChannelByName(const std::string &channelName);
         bool    channelExists(const std::string &channelName) const;
         void    addChannel(Channel channel);
