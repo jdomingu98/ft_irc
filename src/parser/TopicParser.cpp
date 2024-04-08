@@ -21,7 +21,7 @@ ICommand *TopicParser::parse(const std::vector<std::string>& tokens) {
         Logger::debug("TOPIC without comment");
         return new TopicCommand(&channel);
     }
-    if (!isColon(tokens)){
+    if (!isColon(tokens)) {
         throw NeedMoreParamsException("TOPIC");
     }
     Logger::debug("TOPIC with comment");

@@ -41,20 +41,17 @@ void TopicCommand::execute(int clientFd) {
             throw NotOnChannelException(channelName);
     Logger::debug("User in channel " + channelName);
 
-    /*if (_channel->isTopicProtected() && !_channel->isOper(user.getNickname())) 
-        throw ChanOPrivsNeededException(channelName);*/
+    if (_channel->isTopicProtected() && !_channel->isOper(user.getNickname())) 
+        throw ChanOPrivsNeededException(channelName);
     Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
     if (_topic.empty()) { 
         Logger::debug("Channel's topic is empty.");
-        // TODO: Send RPL_NO_TOPIC to user (No es seguro, es lo que he intuido)
     } else {
         Logger::debug("Channel's topic not empty.");
         Logger::debug("Setting the new channel topic to " + _topic);
         _channel->setTopic(_topic);
-        // TODO: Send RPL_TOPIC to user (No es seguro, es lo que he intuido)
-
         std::string message = "The new TOPIC in the " + channelName + " is: " + _topic + " By->" + user.getNickname() + ".";
-        _channel->BroadcastToChannel(message, user.getNickname());
+        _channel->broadcastToChannel(message, user.getNickname());
     }
     
     Logger::debug("Channel's topic is: " + _channel->getTopic());

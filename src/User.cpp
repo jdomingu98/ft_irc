@@ -213,7 +213,7 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
  * 
  * @param channelName The name of the channel.
  * 
- * @return The channel with the name.
+ * @return A pointer of the found channel or `NULL` in other case.
  */
 Channel *User::getChannelByName(std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);

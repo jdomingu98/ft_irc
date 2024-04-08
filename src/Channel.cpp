@@ -400,7 +400,7 @@ void Channel::setTopicProtected(bool topicProtected) {
  * @param message The message to broadcast.
  * @param nickname The nickname of the user who sends the message.
  */
-void Channel::BroadcastToChannel(const std::string &message, const std::string &nickname) {
+void Channel::broadcastToChannel(const std::string &message, const std::string &nickname) {
     Server& server = Server::getInstance();
     std::vector<User> allUsers = getAllUsers();
     for (size_t i = 0; i < allUsers.size(); i++) {
