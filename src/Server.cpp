@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 Server *Server::_server = NULL;
+Server::_signalReceived = false;
 
 /**
  * This function aims to validate the port number.
@@ -66,15 +67,26 @@ Server &Server::getInstance() {
 }
 
 /**
+ * This function aims to handle the signals `Ctrl+C` + `Ctrl+\\`.
+ * 
+ * @param signal The signal received.
+ */
+void signalHandler(int signal) {
+    Logger::debug("Signal " + signal +" Received!!");
+    Logger::debug("Stopping the server...");
+    Server::_signalReceived = true;
+}
+
+/**
  * This function aims to close all the connections.
  */
 void Server::closeConnections() {
-    if (this->_socketFd != -1)
-        close(this->_socketFd);
-
     for (size_t i = 0; i < this->_users.size(); i++)
         close(this->_users[i].getFd());
     std::vector<User>().swap(this->_users);
+
+    if (this->_socketFd != -1)
+        close(this->_socketFd);
 }
 
 /**
@@ -100,6 +112,10 @@ void Server::initServer() {
     this->_serverAddr.sin_addr.s_addr = INADDR_ANY;
     // htons: Converts host format port to network format port.
     this->_serverAddr.sin_port = htons(this->_port);
+
+    // Setting the socket option for non-blocking socket (O_NONBLOCK)
+    if (fcntl(this->_socketFd, F_SETFL, O_NONBLOCK) < 0)
+        throw ServerException(FCNTL_EXPT);
 
     // Binding the server socket
     if (bind(this->_socketFd, (struct sockaddr*)&this->_serverAddr, sizeof(this->_serverAddr)) < 0)
@@ -127,7 +143,7 @@ void Server::initServer() {
 void Server::listenClients() {
     int numFds = 1;
     
-    while (true) {
+    while (!Server::_signalReceived) {
         if (poll(this->_fds, numFds, -1) == -1)
             throw ServerException(POLL_EXPT);
 
@@ -145,6 +161,8 @@ void Server::listenClients() {
                 this->handleExistingConnection(this->_fds[i].fd);
         }
     }
+
+    this->closeConnections();
 }
 
 /**
@@ -408,7 +426,7 @@ void Server::addChannel(Channel channel) {
  * 
  * @return The channels of the server.
  */
-std::vector<Channel> &Server::getChannels() {
+std::vector<Channel> Server::getChannels() const {
     return this->_channels;
 }
 

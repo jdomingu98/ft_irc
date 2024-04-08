@@ -42,6 +42,10 @@ class Server {
         static Server           *_server;
         Server(const std::string port, const std::string password);
 
+        // Signal Handler
+        static bool _signalReceived;
+        static void signalHandler(int signal);
+
         // Server logic
         bool isValidPort(const std::string &port) const;
         void initServer();
