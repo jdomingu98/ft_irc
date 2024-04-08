@@ -1,6 +1,13 @@
 #include "Channel.hpp"
 
 /**
+ * Constructs a new Channel.
+ * 
+ */
+Channel::Channel()
+    : _name(NONE), _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {}
+
+/**
  * Channel name and User constructor.
  * 
  * @param name The name of the channel.
@@ -180,7 +187,7 @@ void Channel::setPassword(const std::string &password) {
  * This function aims to unset the password of the channel.
 */
 void Channel::unsetPassword() {
-    this->_password = "";
+    this->_password = NONE;
     this->_passwordSet = false;
 }
 
@@ -271,39 +278,37 @@ void Channel::addUser(User user) {
 }
 
 /**
- * This function aims to add an operator to the channel.
- * 
- * @param user The operator to add.
- * 
- * @throw `ChannelException` If the operator is already in the channel.
- */
-void Channel::addOper(User user) {
-    std::vector<User>::iterator it = findOper(user.getNickname());
-    if (it != this->_operators.end()) {}
-        //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
-    this->_operators.push_back(user);
-}
-
-/**
  * This function aims to remove a user from the channel.
  * 
  * @param nickname The nickname of the user to remove.
  * 
  * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
-void Channel::removeUser(std::string nickname) {
+void Channel::removeUser(const std::string &nickname) {
     Server& server = Server::getInstance();
-    std::vector<User>::iterator itUser = findUser(nickname);
-    std::vector<User>::iterator itOper = findOper(nickname);
-    if (itUser != this->_users.end())
+    
+    std::vector<User>::iterator itUser = this->findUser(nickname);
+    std::vector<User>::iterator itOper = this->findOper(nickname);   
+    
+    if (itUser != this->_users.end()) {
+        itUser->removeChannel(this->_name);
         this->_users.erase(itUser);
-    else if (itOper != this->_operators.end())
+    } else if (itOper != this->_operators.end()) {
+        itOper->removeChannel(this->_name);
         this->_operators.erase(itOper);
-    else
+    } else
         throw UserNotInChannelException(nickname, this->_name);
+        
     if (this->_users.empty() && this->_operators.empty()) {
-        server.getChannels().erase(server.findChannel(this->_name));
-        this->~Channel();
+        std::vector<Channel> &serverChannels = server.getChannels();
+        
+        for (size_t i = 0; i < serverChannels.size(); i++) {
+            if (serverChannels[i].getName() == this->_name) {
+                serverChannels.erase(serverChannels.begin() + i);
+                break;
+            }	
+        }
+        serverChannels.clear();
     }
 }
 

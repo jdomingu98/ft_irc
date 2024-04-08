@@ -3,7 +3,7 @@
 /**
  * NickCommand default constructor.
  */
-NickCommand::NickCommand() : ICommand(false),  _nickname("") {}
+NickCommand::NickCommand() : ICommand(false),  _nickname(NONE) {}
 
 /**
  * NickCommand nickname constructor.

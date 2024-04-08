@@ -10,7 +10,7 @@
  * 
  */
 ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, const std::string& modeParams)
-  : ICommand(true), _plus(plus), _channel(channel), _modes(modes), _modeParams(modeParams) {}
+    : ICommand(true), _plus(plus), _channel(channel), _modes(modes), _modeParams(modeParams) {}
 
 /**
  * Destroy the ModeCommand.
@@ -28,6 +28,7 @@ void ModeCommand::execute(int clientFd) {
     Server server = Server::getInstance();
     User me = server.getUserByFd(clientFd);
     Channel channel = server.getChannelByName(_channel);
+    
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
 
@@ -67,7 +68,7 @@ void ModeCommand::execute(int clientFd) {
  * Sets the channel as invite-only mode.
  */
 void ModeCommand::inviteOnly() {
-  Server::getInstance().getChannelByName(_channel).setInviteOnly(_plus);
+    Server::getInstance().getChannelByName(_channel).setInviteOnly(_plus);
 }
 
 /**
@@ -76,7 +77,7 @@ void ModeCommand::inviteOnly() {
  * Sets the topic of the channel.
  */
 void ModeCommand::topicProtected() {
-  Server::getInstance().getChannelByName(_channel).setTopicProtected(_plus);
+    Server::getInstance().getChannelByName(_channel).setTopicProtected(_plus);
 }
 
 /**

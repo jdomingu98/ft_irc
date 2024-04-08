@@ -408,7 +408,7 @@ void Server::addChannel(Channel channel) {
  * 
  * @return The channels of the server.
  */
-std::vector<Channel> Server::getChannels() const {
+std::vector<Channel> &Server::getChannels() {
     return this->_channels;
 }
 

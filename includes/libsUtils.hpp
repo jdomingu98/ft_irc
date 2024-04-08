@@ -24,6 +24,8 @@
 # define SUCCESS 0
 # define EXIT 1
 
+# define NONE ""
+
 # define DEFAULT_PORT "6666"
 # define DEFAULT_PASS "1234"
 
@@ -51,9 +53,12 @@
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
 // # define RPL_AWAY(nickname, awayMessage) (nickname) + " :" + (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
+# define RPL_END_OF_NAMES(channel) (channel) + " :End of /NAMES list."
 
-# define PART_MSG(nickname, username, hostname, channelName) ":" + nickname + "!" + username + "@" + hostname + " PART " + channelName
-# define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) ":" + nickname + "!" + username + "@" + hostname + " KICK " + channelName + " " + kickedUser + " :" + comment
+# define USER_ID(nickname, username, hostname) ":" + nickname + "!" + username + "@" + hostname
+# define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN " + ":" + channelName //??
+# define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + channelName
+# define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + channelName + " " + kickedUser + " :" + comment
 
 std::string trim(const std::string& str);
 std::vector<std::string> split(const std::string &s, char delim);

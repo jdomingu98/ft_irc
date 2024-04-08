@@ -42,6 +42,7 @@ class Channel {
 
     public:
         // Constructors and destructor
+        Channel();
         Channel(const std::string &name, const User &user);
         ~Channel();
 
@@ -59,11 +60,10 @@ class Channel {
 
         // User
         void addUser(User user);
-        void removeUser(std::string nickname);
+        void removeUser(const std::string &nickname);
         bool isUserInChannel(const std::string &nickname) const;
 
         // Oper
-        void addOper(User user);
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
         bool isOper(const std::string &nickname) const;
