@@ -24,10 +24,11 @@ void PrivateMessageCommand::execute(int clientFd) {
         try {
             if (this->_receivers[i][0] == '#') {
                 Logger::debug("Sending private message to channel " + this->_receivers[i]);
-                if (!server.channelExists(this->_receivers[i])) {
+                if (!server.channelExists(this->_receivers[i]))
                     throw CannotSendToChanException(this->_receivers[i]);
-                }
                 Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
+                if (!destinationChannel.isUserInChannel(sender.getNickname()))
+                    throw CannotSendToChanException(this->_receivers[i]);
                 sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
             } else {
                 User &destinationUser = server.getUserByNickname(this->_receivers[i]);
