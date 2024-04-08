@@ -3,7 +3,7 @@
 /**
  * InviteCommand default constructor.
  */
-InviteCommand::InviteCommand() : ICommand(true), _nickname(""), _channelName("") {}
+InviteCommand::InviteCommand() : ICommand(true), _nickname(NONE), _channelName(NONE) {}
 
 /**
  * InviteCommand nickname and channel name constructor.

@@ -31,29 +31,26 @@ void PartCommand::execute(int clientFd) {
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
 
-    std::vector<Channel> serverChannels = server.getChannels();
-
-
     for (size_t i = 0; i < this->_channels.size(); i++) {
         
-        std::vector<Channel>::iterator it = server.findChannel(this->_channels[i]);
-        
-        //Comprobar qué se valida primero
-        if (it == serverChannels.end())
-            throw NoSuchChannelException(this->_channels[i]);
+        Channel &channel = server.getChannelByName(this->_channels[i]);
 	
         if (!user.isOnChannel(this->_channels[i]))
             throw NotOnChannelException(this->_channels[i]);
 
         Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
-        it->removeUser(nickname);
-        std::vector<User> users = it->getAllUsers();
-        std::cout << "Users size: " << users.size() << std::endl;
+
+        channel.removeUser(nickname);
+
+        Logger::debug("User " + nickname + " removed from channel " + this->_channels[i] + ".");
+
+        std::vector<User> users = channel.getAllUsers();
+        Logger::debug("Get users list of channel " + channel.getName());
+        
         for (size_t j = 0; j < users.size(); j++) {
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, it->getName()));
+            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channel.getName()));
         }
         users.clear();
     }
-    serverChannels.clear();
 }

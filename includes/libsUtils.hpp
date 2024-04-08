@@ -22,6 +22,8 @@
 # define SUCCESS 0
 # define EXIT 1
 
+# define NONE ""
+
 # define DEFAULT_PORT "6666"
 # define DEFAULT_PASS "1234"
 

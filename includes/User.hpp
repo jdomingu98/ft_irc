@@ -39,7 +39,7 @@ class User {
         std::string getUsername() const;
         std::string getHostname() const;
         bool isUserInMaxChannels() const;
-        bool isOnChannel(std::string channelName) const;
+        bool isOnChannel(const std::string &channelName) const;
         bool isRegistered() const;
 
         // Setters
@@ -54,6 +54,7 @@ class User {
         void makeRegistration();
         bool canRegister() const;
         void addChannel(Channel &channel);
+        void removeChannel(const std::string &channelName);
         void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
 };
 
