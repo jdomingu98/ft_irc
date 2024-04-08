@@ -74,6 +74,7 @@ Server &Server::getInstance() {
  */
 void signalHandler(int signal) {
     (void) signal;
+    std::cout << "\b\b\033[K";
     Logger::debug("Signal Received!!");
     Logger::debug("Stopping the server...");
     Server::getInstance().setSignalReceived();
