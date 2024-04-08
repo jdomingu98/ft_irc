@@ -32,7 +32,7 @@ Channel::~Channel() {
  */
 bool Channel::checkChannelName(std::string name) const {
     if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH)
-            return false;
+        return false;
     for (size_t i = 1; i < name.size(); i++) {
         if (name[i] == ' ' || name[i] == ',' || name[i] == BELL_CHAR)
             return false;

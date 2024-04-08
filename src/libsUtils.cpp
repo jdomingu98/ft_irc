@@ -68,7 +68,7 @@ std::string join(const std::vector<std::string> &msg) {
 /**
  * Checks if the string contains a colon.
  * 
- * @param tokens The vector of strings.
+ * @param msg The vector of strings.
  * 
  * @return `true` if the vector only have spaces, `false` otherwise.
  */
@@ -89,8 +89,8 @@ bool isColon(const std::vector<std::string> &msg) {
  * @return `true` if the vector only have spaces, `false` otherwise.
  */
 bool isOnlySpaces(const std::vector<std::string> &msg) {
-    std::vector<std::string> newMsg(msg.begin() + 2, msg.end());
-    for (std::vector<std::string>::const_iterator it = newMsg.begin(); it != newMsg.end(); ++it) {
+    std::vector<std::string> msgToken(msg.begin() + 2, msg.end());
+    for (std::vector<std::string>::const_iterator it = msgToken.begin(); it != msgToken.end(); ++it) {
         for (size_t i = 0; i < it->size(); i++) {
             if ((*it)[i] != ' ')
                 return false;
