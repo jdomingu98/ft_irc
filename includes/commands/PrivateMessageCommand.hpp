@@ -3,7 +3,10 @@
 
 # include "ACommand.hpp"
 # include "Server.hpp"
+# include "User.hpp"
 # include "libsUtils.hpp"
+
+class User;
 
 /**
  * A class that represents the PRIVMSG command.
