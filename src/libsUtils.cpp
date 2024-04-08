@@ -46,7 +46,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * 
  * @return The joined string.
  */
-const std::string &join(const std::vector<std::string> &msg) {
+const std::string join(const std::vector<std::string> &msg) {
   std::vector<std::string>::const_iterator it = msg.begin();
 
     while (it != msg.end() && it->find(":") == std::string::npos)
