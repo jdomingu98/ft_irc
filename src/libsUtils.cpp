@@ -9,14 +9,12 @@
  */
 std::string trim(const std::string& str) {
     std::string::const_iterator it = str.begin();
-    while (it != str.end() && std::isspace(*it)) {
+    while (it != str.end() && std::isspace(*it))
         it++;
-    }
 
     std::string::const_reverse_iterator rit = str.rbegin();
-    while (rit.base() != it && std::isspace(*rit)) {
+    while (rit.base() != it && std::isspace(*rit))
         rit++;
-    }
 
     return std::string(it, rit.base());
 }
@@ -33,9 +31,8 @@ std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
-    while (std::getline(ss, item, delim)) {
+    while (std::getline(ss, item, delim))
         elems.push_back(item);
-    }
     return elems;
 }
 
@@ -50,4 +47,66 @@ bool isNumber(const std::string& s) {
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it)) ++it;
     return !s.empty() && it == s.end();
+
+/**
+ * Joins the vector of strings.
+ * 
+ * @param msg The vector of strings to be joined.
+ * 
+ * @return The joined string.
+ */
+const std::string join(const std::vector<std::string> &msg) {
+    std::string strJoined;
+    std::vector<std::string>::const_iterator it = msg.begin();
+
+    while (it != msg.end() && it->find(":") == std::string::npos)
+        it++;
+    
+    if (it == msg.end())
+        return NONE;
+    
+    if (*it != ":")
+        strJoined = it->substr(1);
+    else if (it + 1 == msg.end())
+        return NONE;
+    it++;
+    
+    while (it != msg.end())
+        strJoined += " " + *it++;
+    
+    return strJoined;
+}
+
+/**
+ * Checks if the string contains a colon.
+ * 
+ * @param msg The vector of strings.
+ * 
+ * @return `true` if the vector only have spaces, `false` otherwise.
+ */
+bool isColonPresent(const std::vector<std::string> &msg) {
+    std::vector<std::string>::const_iterator it = msg.begin();
+    
+    while (it != msg.end() && it->find(":") == std::string::npos)
+        it++;
+    return it != msg.end();
+}
+
+/**
+ * Checks if the vector only have spaces.
+ * 
+ * @param msg The vector of strings.
+ * 
+ * @return `true` if the vector only have spaces, `false` otherwise.
+ */
+bool haveOnlySpaces(const std::vector<std::string> &msg) {
+    std::vector<std::string> msgToken(msg.begin() + 2, msg.end());
+    
+    for (std::vector<std::string>::const_iterator it = msgToken.begin(); it != msgToken.end(); it++) {
+        for (size_t i = 0; i < it->size(); i++) {
+            if (!std::isspace((*it)[i]))
+                return false;
+        }
+    }
+    return true;
 }
