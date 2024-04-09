@@ -1,7 +1,7 @@
 #ifndef TOPIC_COMMAND_HPP
 # define TOPIC_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -10,10 +10,10 @@
 class Channel;
 
 /**
- * An ICommand implementation that is responsible for setting the topic of a channel.
+ * An ACommand implementation that is responsible for setting the topic of a channel.
  * 
  */
-class TopicCommand : public ICommand {
+class TopicCommand : public ACommand {
     private:
         Channel     *_channel;
         std::string _topic;

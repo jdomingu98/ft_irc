@@ -13,7 +13,7 @@
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
  * @return The parsed command.
  */
-ICommand *TopicParser::parse(const std::vector<std::string>& tokens) {
+ACommand *TopicParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("TOPIC");
     
