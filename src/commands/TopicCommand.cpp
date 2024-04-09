@@ -5,7 +5,7 @@
  * 
  * @param channel The channel where the topic will be set, removed or requested
  */
-TopicCommand::TopicCommand(Channel *channel) : ICommand(true), _channel(channel), _topic(NONE) {}
+TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel), _topic(NONE) {}
 
 /**
  * Constructs a new TopicCommand.
@@ -13,7 +13,7 @@ TopicCommand::TopicCommand(Channel *channel) : ICommand(true), _channel(channel)
  * @param channel The channel where the topic will be set, removed or requested
  * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ICommand(true), _channel(channel), _topic(topic) {}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic) {}
 
 /**
  * Destroys the TopicCommand.
