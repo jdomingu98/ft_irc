@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 # include <arpa/inet.h>
+# include <fcntl.h>
 # include <netinet/in.h>
 # include <poll.h>
 # include <sys/socket.h>
@@ -44,13 +45,15 @@ class Server {
         static Server           *_server;
         Server(const std::string port, const std::string password);
 
+        // Signal Handler
+        bool _signalReceived;
+
         // Server logic
         bool isValidPort(const std::string &port) const;
         void initServer();
         void listenClients();
         void handleNewConnection(int numFds);
         void handleExistingConnection(int fd);
-        void closeConnections();
 
         // User Iterators
         std::vector<User>::iterator findUserByFd(int clientFd);
@@ -85,10 +88,14 @@ class Server {
         void    sendMessage(int clientFd, const std::string& message) const;
         void    sendExceptionMessage(int clientFd, const IRCException &e) const;
         bool    isValidPassword(const std::string& password) const;
+        void	setSignalReceived();
+        void	closeConnections();
 
         // Channel Iterators
         std::vector<Channel>::iterator findChannel(const std::string &channelName);
         std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
 };
+
+void signalHandler(int signal);
 
 #endif
