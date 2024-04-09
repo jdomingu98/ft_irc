@@ -13,7 +13,7 @@
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
  * @return The parsed command.
  */
-ICommand *InviteParser::parse(const std::vector<std::string>& tokens) {
+ACommand *InviteParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
       throw NeedMoreParamsException("INVITE");
     return new InviteCommand(tokens[1], tokens[2]);

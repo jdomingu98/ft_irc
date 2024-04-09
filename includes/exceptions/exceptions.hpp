@@ -34,7 +34,7 @@
 
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
-// # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
+# define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
 // # define ERR_NO_TOP_LEVEL(mask) (mask) + " :No toplevel domain specified"
 // # define ERR_WILD_TOP_LEVEL(mask) (mask) + " :Wildcard in toplevel domain"
 // # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
@@ -226,6 +226,15 @@ class UserNotInChannelException : public IRCException {
 class UnknownModeException : public IRCException {
     public:
         UnknownModeException(char modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
+};
+
+
+/**
+ * This exception is thrown when the user tries to send a message to a channel that does not exist.
+ */
+class CannotSendToChanException : public IRCException {
+    public:
+        CannotSendToChanException(const std::string &channelName) : IRCException("404", ERR_CANNOT_SEND_TO_CHAN(channelName)) {}
 };
 
 #endif

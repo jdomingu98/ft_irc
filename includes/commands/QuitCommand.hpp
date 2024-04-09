@@ -1,7 +1,7 @@
 #ifndef QUIT_COMMAND_HPP
 # define QUIT_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 // # include "User.hpp"
@@ -9,9 +9,9 @@
 # include "libsUtils.hpp"
 
 /**
- * An ICommand implementation that is responsible for closing the connection with the server.
+ * An ACommand implementation that is responsible for closing the connection with the server.
  */
-class QuitCommand : public ICommand {
+class QuitCommand : public ACommand {
     private:
         std::string _msg;
     public:

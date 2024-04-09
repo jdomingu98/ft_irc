@@ -3,14 +3,14 @@
 /**
  * NickCommand default constructor.
  */
-NickCommand::NickCommand() : ICommand(false),  _nickname(NONE) {}
+NickCommand::NickCommand() : ACommand(false),  _nickname(NONE) {}
 
 /**
  * NickCommand nickname constructor.
  * 
  * @param nickname The nickname
  */
-NickCommand::NickCommand(const std::string& nickname) : ICommand(false), _nickname(nickname) {}
+NickCommand::NickCommand(const std::string& nickname) : ACommand(false), _nickname(nickname) {}
 
 /**
  * NickCommand destructor.

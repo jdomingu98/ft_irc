@@ -1,7 +1,7 @@
 #ifndef KICK_COMMAND_HPP
 # define KICK_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -12,10 +12,10 @@ class Channel;
 class User;
 
 /**
- * An ICommand implementation that is responsible for the kicking of users on channels.
+ * An ACommand implementation that is responsible for the kicking of users on channels.
  * 
  */
-class KickCommand : public ICommand {
+class KickCommand : public ACommand {
     private:
         std::vector<Channel>    _channels;
         std::vector<User>       _users;

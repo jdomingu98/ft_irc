@@ -57,6 +57,7 @@ class User {
         void addChannel(Channel &channel);
         void removeChannel(const std::string &channelName);
         void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
+        void sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const;
 };
 
 #endif

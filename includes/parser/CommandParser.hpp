@@ -1,7 +1,7 @@
 #ifndef COMMAND_PARSER_HPP
 # define COMMAND_PARSER_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 # include "IParser.hpp"
 
 # include "UserCommand.hpp"
@@ -46,7 +46,7 @@ class CommandParser {
         static IParser* getParser(std::string command);
     
     public:
-        static ICommand* parse(const std::string& command);
+        static ACommand* parse(const std::string& command);
 };
 
 #endif

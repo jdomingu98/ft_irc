@@ -1,16 +1,16 @@
 #ifndef USER_COMMAND_HPP
 # define USER_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
 # include "libsUtils.hpp"
 
 /**
- * An ICommand implementation that is responsible for setting the username data of an user.
+ * An ACommand implementation that is responsible for setting the username data of an user.
  */
-class UserCommand : public ICommand {
+class UserCommand : public ACommand {
     private:
         std::string _username;
         std::string _hostname;

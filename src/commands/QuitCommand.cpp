@@ -3,14 +3,14 @@
 /**
  * QuitCommand default constructor.
  */
-QuitCommand::QuitCommand() : ICommand(false), _msg(NONE) {}
+QuitCommand::QuitCommand() : ACommand(false), _msg(NONE) {}
 
 /**
  * QuitCommand message constructor.
  * 
  * @param msg The message
  */
-QuitCommand::QuitCommand(std::string msg) : ICommand(false), _msg(msg) {}
+QuitCommand::QuitCommand(std::string msg) : ACommand(false), _msg(msg) {}
 
 /**
  * QuitCommand destructor.

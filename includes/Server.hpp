@@ -7,7 +7,7 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 # include "CommandParser.hpp"
 
 # include "Channel.hpp"
@@ -83,6 +83,7 @@ class Server {
 
         // Other Operations
         void    sendMessage(int clientFd, const std::string& message) const;
+        void    sendExceptionMessage(int clientFd, const IRCException &e) const;
         bool    isValidPassword(const std::string& password) const;
 
         // Channel Iterators

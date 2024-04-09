@@ -5,7 +5,7 @@
  * 
  * @param channels The vector of channels to be left.
  */
-PartCommand::PartCommand(std::vector<std::string> channels) : ICommand(true), _channels(channels) {}
+PartCommand::PartCommand(std::vector<std::string> channels) : ACommand(true), _channels(channels) {}
 
 /**
  * Destroys the PartCommand.

@@ -1,7 +1,7 @@
 #ifndef NICK_COMMAND_HPP
 # define NICK_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -11,10 +11,10 @@
 # define MAX_NICKNAME_SIZE 9
 
 /**
- * An ICommand implementation that is responsible for setting the nickname of an user.
+ * An ACommand implementation that is responsible for setting the nickname of an user.
  * 
 */
-class NickCommand : public ICommand {
+class NickCommand : public ACommand {
     private:
         std::string _nickname;
 
