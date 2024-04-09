@@ -12,7 +12,7 @@
  * 
  * @return The parsed command.
  */
-ICommand *QuitParser::parse(const std::vector<std::string>& tokens) {
+ACommand *QuitParser::parse(const std::vector<std::string>& tokens) {
     // TODO: fix bug: if the message contains spaces, it will be split into multiple tokens.
     // The message should be the concatenation of all the tokens after the command.
     if (tokens.size() == 2)

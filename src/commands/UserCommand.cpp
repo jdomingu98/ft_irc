@@ -4,7 +4,7 @@
  * Command User default constructor
  * 
  */
-UserCommand::UserCommand() : ICommand(false), _username(NONE), _hostname(NONE), _serverName(NONE), _realName(NONE) {}
+UserCommand::UserCommand() : ACommand(false), _username(NONE), _hostname(NONE), _serverName(NONE), _realName(NONE) {}
 
 /**
  * Command User constructor
@@ -15,7 +15,7 @@ UserCommand::UserCommand() : ICommand(false), _username(NONE), _hostname(NONE), 
  * @param realName The real name of the client
  */
 UserCommand::UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName,
-                            const std::string& realName) : ICommand(false), _username(username), _hostname(hostname),
+                            const std::string& realName) : ACommand(false), _username(username), _hostname(hostname),
                                                             _serverName(serverName), _realName(realName) {}
 
 /**

@@ -7,7 +7,7 @@
  * @param message The message to be sent
  */
 PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers, std::string message)
-    : ICommand(true), _receivers(receivers), _message(message) {}
+    : ACommand(true), _receivers(receivers), _message(message) {}
 
 /**
  * Execute the command PRIVMSG.

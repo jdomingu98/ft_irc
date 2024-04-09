@@ -16,7 +16,7 @@
  * @return The parsed command.
  *
  */
-ICommand *ModeParser::parse(const std::vector<std::string>& tokens) {
+ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("MODE");
 

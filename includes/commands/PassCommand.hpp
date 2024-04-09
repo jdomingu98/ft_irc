@@ -1,16 +1,16 @@
 #ifndef PASS_COMMAND_HPP
 # define PASS_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
 # include "libsUtils.hpp"
 
 /**
- * An ICommand implementation that is responsible for validating the server connection.
+ * An ACommand implementation that is responsible for validating the server connection.
 */
-class PassCommand : public ICommand {
+class PassCommand : public ACommand {
     private:
         std::string _password;
     

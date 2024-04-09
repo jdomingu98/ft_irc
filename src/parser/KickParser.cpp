@@ -14,7 +14,7 @@
  * @throws `BadChannelMaskException` if the channel mask is invalid.
  * @return The parsed command.
  */
-ICommand *KickParser::parse(const std::vector<std::string>& tokens) {
+ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
         throw NeedMoreParamsException("KICK");
 
