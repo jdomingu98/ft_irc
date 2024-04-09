@@ -101,8 +101,6 @@ void JoinCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
     
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
     Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
@@ -116,9 +114,8 @@ void JoinCommand::execute(int clientFd) {
 
         if (!server.channelExists(channelName)) {
             Logger::debug("CHANNEL DOES NOT EXIST");
-            
-            Channel newChannel(channelName, user);
-            server.addChannel(newChannel);
+
+            server.addChannel(Channel(channelName, user));
             Channel &channel = server.getChannelByName(channelName);
             if (!channelKey.empty())
                 channel.setPassword(channelKey);
