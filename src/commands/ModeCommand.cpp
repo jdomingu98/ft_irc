@@ -115,6 +115,8 @@ void ModeCommand::channelOperator() {
  */
 void ModeCommand::userLimit() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
-    int numUsers = _plus ? std::atoi(_modeParams.c_str()) : NO_LIMIT;
-    channel.setLimit(numUsers);
+    if (isNumber(_modeParams)) {
+        int numUsers = _plus ? std::atoi(_modeParams.c_str()) : NO_LIMIT;
+        channel.setLimit(numUsers);
+    }
 }
