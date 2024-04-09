@@ -223,17 +223,14 @@ void Server::handleExistingConnection(int clientFd) {
     if (buffer[0] == '\0')
         return;
     Logger::debug("Mensaje del cliente: " + std::string(buffer, readBytes));
+    User &client = getUserByFd(clientFd);
     try {
-        ICommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        ACommand* command = CommandParser::parse(std::string(buffer, readBytes));
+        if (command->needsValidation() && !client.isRegistered())
+            throw NotRegisteredException();
         command->execute(clientFd);
     } catch (IRCException& e) {
-        std::string clientNickname = getUserByFd(clientFd).getNickname();
-        this->sendMessage(clientFd,
-            std::string(":irc.ft_messenger.net ")
-            + e.getErrorCode()
-            + (clientNickname.empty() ? std::string(" * ") : std::string(" " + clientNickname + " "))
-            + e.what() + std::string(".")
-        );
+        this->sendExceptionMessage(clientFd, e);
     } catch (CommandNotFoundException &e) {
         // pass
     }
@@ -315,6 +312,17 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
     std::string messageToSend = message + std::string("\r\n");
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
+}
+
+/**
+ * This function aims to send an exception message to a client.
+ * 
+ * @param clientFd The file descriptor of the client.
+ * @param e The exception to send.
+ */
+void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
+    std::string clientNickname = getUserByFd(clientFd).getNickname();
+    this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**

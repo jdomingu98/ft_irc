@@ -3,7 +3,7 @@
 
 # include <map>
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -14,10 +14,10 @@ class Channel;
 class User;
 
 /**
- * An ICommand implementation that is responsible for the binding and creation of a channel.
+ * An ACommand implementation that is responsible for the binding and creation of a channel.
  * 
  */
-class JoinCommand : public ICommand {
+class JoinCommand : public ACommand {
     private:
         std::map<std::string, std::string> _channels; //key: channelName, value: channelPassword
 

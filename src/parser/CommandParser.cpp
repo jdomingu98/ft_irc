@@ -7,11 +7,11 @@
  * 
  * @return The parsed command.
  */
-ICommand* CommandParser::parse(const std::string& input) {
+ACommand* CommandParser::parse(const std::string& input) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
     IParser *parser = CommandParser::getParser(tokens[0]);
     try {
-        ICommand *command = parser->parse(tokens);
+        ACommand *command = parser->parse(tokens);
         delete parser;
         return command;
     } catch (...) {
@@ -45,6 +45,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new InviteParser();
     if (command == "PART")
         return new PartParser();
+    if (command == "TOPIC")
+        return new TopicParser();
     if (command == "KICK")
         return new KickParser();
     if (command == "MODE")

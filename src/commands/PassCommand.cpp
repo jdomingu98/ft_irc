@@ -3,14 +3,14 @@
 /**
  * PassCommand default constructor.
 */
-PassCommand::PassCommand() : ICommand(false), _password(NONE) {}
+PassCommand::PassCommand() : ACommand(false), _password(NONE) {}
 
 /**
  * PassCommand password constructor.
  * 
  * @param password The password
  */
-PassCommand::PassCommand(const std::string& password) : ICommand(false), _password(password) {}
+PassCommand::PassCommand(const std::string& password) : ACommand(false), _password(password) {}
 
 /**
  * PassCommand destructor.

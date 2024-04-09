@@ -8,7 +8,7 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 # include "CommandParser.hpp"
 
 # include "Channel.hpp"
@@ -21,6 +21,8 @@
 
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
+
+# define NONE ""
 
 class User;
 class Channel;
@@ -84,6 +86,7 @@ class Server {
 
         // Other Operations
         void    sendMessage(int clientFd, const std::string& message) const;
+        void    sendExceptionMessage(int clientFd, const IRCException &e) const;
         bool    isValidPassword(const std::string& password) const;
         void	setSignalReceived();
         void	closeConnections();

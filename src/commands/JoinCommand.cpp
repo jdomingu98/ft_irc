@@ -6,7 +6,7 @@
  * @param channelMap The map of channels to be joined.
  */
 JoinCommand::JoinCommand(std::map<std::string, std::string> channelMap)
-    : ICommand(true), _channels(channelMap) {}
+    : ACommand(true), _channels(channelMap) {}
 
 /**
  * Destroys the JoinCommand.

@@ -2,13 +2,13 @@
 # define INVITE_COMMAND_HPP
 
 # include "libsUtils.hpp"
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 # include "Server.hpp"
 
 /**
  * A class that represents the command INVITE.
  */
-class InviteCommand : public ICommand {
+class InviteCommand : public ACommand {
     private:
         std::string _nickname;
         std::string _channelName;

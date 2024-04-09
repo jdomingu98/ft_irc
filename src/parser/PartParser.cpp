@@ -13,7 +13,7 @@
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
  * @return The parsed command.
  */
-ICommand *PartParser::parse(const std::vector<std::string>& tokens) {
+ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("PART");
 
