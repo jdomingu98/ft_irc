@@ -16,13 +16,17 @@
 ICommand *TopicParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("TOPIC");
+    
     Channel &channel = Server::getInstance().getChannelByName(tokens[1]);
-    if (tokens.size() == 2 || isOnlySpaces(tokens)){
+    
+    if (tokens.size() == 2 || haveOnlySpaces(tokens)) {
         Logger::debug("TOPIC without comment");
         return new TopicCommand(&channel);
     }
-    if (!isColon(tokens))
+    
+    if (!isColonPresent(tokens))
         throw NeedMoreParamsException("TOPIC");
+    
     Logger::debug("TOPIC with comment");
     return new TopicCommand(&channel, join(tokens));
 }
