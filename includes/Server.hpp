@@ -21,6 +21,8 @@
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
 
+# define NONE ""
+
 class User;
 class Channel;
 
