@@ -25,9 +25,9 @@ ModeCommand::~ModeCommand() {}
  * @throws `NotOnChannelException` if the user is not on the channel
  */
 void ModeCommand::execute(int clientFd) {
-    Server server = Server::getInstance();
-    User me = server.getUserByFd(clientFd);
-    Channel channel = server.getChannelByName(_channel);
+    Server &server = Server::getInstance();
+    User &me = server.getUserByFd(clientFd);
+    Channel &channel = server.getChannelByName(_channel);
     
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
