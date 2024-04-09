@@ -48,7 +48,7 @@ void TopicCommand::execute(int clientFd) {
         Logger::debug("Channel's topic not empty.");
         Logger::debug("Setting the new channel topic to " + _topic);
         _channel->setTopic(_topic);
-        std::string message = TOPIC_MSG(channelName, _topic, user.getNickname());
+        std::string message = TOPIC_MSG(user.getNickname(), user.getUsername(), user.getHostname(), channelName, _topic);
         _channel->broadcastToChannel(message, user.getNickname());
     }
     
