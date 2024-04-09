@@ -33,6 +33,8 @@
 
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
+# define WELCOME_MSG "Welcome to the ft_messenger server! Please enter your password: "
+
 # define SOCKET_EXPT "[ERROR] Unable to open server socket."
 # define REUSE_ADDR_EXPT "[ERROR] Failed to set SO_REUSEADDR option on server"
 # define FCNTL_EXPT "[ERROR] Unable to set server socket as non-blocking."

@@ -186,17 +186,21 @@ void Server::handleNewConnection(int numFds) {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
-    int client_socket = accept(this->_socketFd, (struct sockaddr*)&this->_serverAddr, &size);
+    int clientSocket = accept(this->_socketFd, (struct sockaddr*) &this->_serverAddr, &size);
 
-    if (client_socket < 0)
+    if (clientSocket < 0)
         throw ServerException(ACCEPT_EXPT);
+    
+    // Setting the client socket option for non-blocking socket (O_NONBLOCK)
+    if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) < 0)
+        throw ServerException(FCNTL_EXPT);
 
-    this->_users.push_back(User(client_socket));
+    this->_users.push_back(User(clientSocket));
     // Add new socket to poll_fds array
-    this->_fds[numFds].fd = client_socket;
+    this->_fds[numFds].fd = clientSocket;
     this->_fds[numFds].events = POLLIN;
 
-    this->sendMessage(client_socket, "Welcome to the server! Please enter your password: ");
+    this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -245,8 +249,11 @@ bool Server::isValidPassword(const std::string &password) const {
     return password == this->_password;
 }
 
+/**
+ * This function sets to `true` the signal received flag
+ */
 void Server::setSignalReceived() {
-	this->_signalReceived = true;
+    this->_signalReceived = true;
 }
 
 /**
