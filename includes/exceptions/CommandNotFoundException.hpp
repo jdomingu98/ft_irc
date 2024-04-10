@@ -12,7 +12,7 @@ class CommandNotFoundException : public std::exception {
         ~CommandNotFoundException() throw() {}
 
         const char *what() const throw() {
-            return "";
+            return "Command not found!";
         }
 };
 
