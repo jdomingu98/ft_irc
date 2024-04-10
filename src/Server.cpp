@@ -225,8 +225,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
-    // recv reads less than BUFFER_SIZE when the message is complete
-    if (readBytes < BUFFER_SIZE) {
+    if (buffer[readBytes - 1] == '\n') {
         User &client = getUserByFd(clientFd);
 
         Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
@@ -237,6 +236,7 @@ void Server::handleExistingConnection(int clientFd) {
                 throw NotRegisteredException();
             
             command->execute(clientFd);
+            this->_inputBuffer[clientFd].clear();
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
 
@@ -245,7 +245,7 @@ void Server::handleExistingConnection(int clientFd) {
             Logger::debug("Command not found!");
         }
     }
-    this->_inputBuffer[clientFd].clear();
+
 }
 
 /**
