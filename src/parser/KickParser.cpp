@@ -18,6 +18,7 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
         throw NeedMoreParamsException("KICK");
 
+    Server &server = Server::getInstance();
     std::vector<std::string> channelsList = split(tokens[1], ',');
     std::vector<std::string> usersList = split(tokens[2], ',');
     std::vector<Channel> channels;
@@ -26,12 +27,13 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     for (size_t i = 0; i < channelsList.size(); i++) {
         if (channelsList[i][0] != '#' && channelsList[i][0] != '&')
             throw BadChannelMaskException(channelsList[i]);
-        Channel &channel = Server::getInstance().getChannelByName(channelsList[i]);
+        
+        Channel &channel = server.getChannelByName(channelsList[i]);
         channels.push_back(channel);
     }
 
     for (size_t i = 0; i < usersList.size(); i++) {
-        User &user = Server::getInstance().getUserByNickname(usersList[i]);
+        User &user = server.getUserByNickname(usersList[i]);
         users.push_back(user);
     }
     

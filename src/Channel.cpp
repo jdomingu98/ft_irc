@@ -285,7 +285,7 @@ void Channel::addUser(User user) {
  * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
 void Channel::removeUser(const std::string &nickname) {
-    Server& server = Server::getInstance();
+    Server &server = Server::getInstance();
     
     std::vector<User>::iterator itUser = this->findUser(nickname);
     std::vector<User>::iterator itOper = this->findOper(nickname);   
