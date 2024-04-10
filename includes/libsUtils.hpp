@@ -6,6 +6,7 @@
 */
 
 # include <algorithm>
+# include <csignal>
 # include <cstdlib>
 # include <iostream>
 # include <sstream>
@@ -32,7 +33,11 @@
 
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
+# define WELCOME_MSG "Welcome to the ft_messenger server! Please enter your password: "
+
 # define SOCKET_EXPT "[ERROR] Unable to open server socket."
+# define REUSE_ADDR_EXPT "[ERROR] Failed to set SO_REUSEADDR option on server"
+# define FCNTL_EXPT "[ERROR] Unable to set server socket as non-blocking."
 # define BIND_EXPT "[ERROR] Unable to link server socket."
 # define LISTEN_EXPT "[ERROR] unable to start listening on server socket."
 # define POLL_EXPT "[ERROR] Unexpected failure on poll function."
@@ -57,11 +62,20 @@
 # define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN " + ":" + channelName //??
 # define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + channelName
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + channelName + " " + kickedUser + " :" + comment
+# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + channelName + " :" + topic
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + destination + " :" + message
 
 # define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
+
 std::string trim(const std::string& str);
+
 std::vector<std::string> split(const std::string &s, char delim);
+
+const std::string join(const std::vector<std::string> &msg);
+
+bool isColonPresent(const std::vector<std::string> &msg);
+
+bool haveOnlySpaces(const std::vector<std::string> &msg);
 
 #endif

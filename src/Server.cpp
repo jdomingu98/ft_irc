@@ -26,7 +26,7 @@ bool Server::isValidPort(const std::string &port) const {
  * 
  * @throws `ServerException` if the port is out of range.
  */
-Server::Server(const std::string port, const std::string password) : _password(password) {
+Server::Server(const std::string port, const std::string password) : _password(password), _signalReceived(false) {
     if (!this->isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
@@ -51,6 +51,8 @@ Server::~Server() {
  */
 void Server::init(std::string port, std::string password) {
     Server::_server = new Server(port, password);
+    signal(SIGINT, &signalHandler);
+    signal(SIGQUIT, &signalHandler);
     Server::_server->listenClients();
 }
 
@@ -66,15 +68,28 @@ Server &Server::getInstance() {
 }
 
 /**
+ * This function aims to handle the signals `Ctrl+C` + `Ctrl+\\`.
+ * 
+ * @param signal The signal received.
+ */
+void signalHandler(int signal) {
+    (void) signal;
+    std::cout << "\b\b\033[K";
+    Logger::debug("Signal Received!!");
+    Logger::debug("Stopping the server...");
+    Server::getInstance().setSignalReceived();
+}
+
+/**
  * This function aims to close all the connections.
  */
 void Server::closeConnections() {
-    if (this->_socketFd != -1)
-        close(this->_socketFd);
-
     for (size_t i = 0; i < this->_users.size(); i++)
         close(this->_users[i].getFd());
     std::vector<User>().swap(this->_users);
+
+    if (this->_socketFd != -1)
+        close(this->_socketFd);
 }
 
 /**
@@ -101,6 +116,15 @@ void Server::initServer() {
     // htons: Converts host format port to network format port.
     this->_serverAddr.sin_port = htons(this->_port);
 
+    // set the socket option (SO_REUSEADDR) to reuse the address
+    int enabled = 1;
+    if (setsockopt(this->_socketFd, SOL_SOCKET, SO_REUSEADDR, &enabled, sizeof(int)) < 0)
+        throw ServerException(REUSE_ADDR_EXPT);
+
+    // Setting the socket option for non-blocking socket (O_NONBLOCK)
+    if (fcntl(this->_socketFd, F_SETFL, O_NONBLOCK) < 0)
+        throw ServerException(FCNTL_EXPT);
+
     // Binding the server socket
     if (bind(this->_socketFd, (struct sockaddr*)&this->_serverAddr, sizeof(this->_serverAddr)) < 0)
         throw ServerException(BIND_EXPT);
@@ -122,13 +146,14 @@ void Server::initServer() {
  * @throws `ServerException` if the poll function fails,
  *  the server can't accept a new connection,
  *  the revents value is different from POLLIN,
- *  the server can't receive a message or the server can't send a message.
+ *  the server can't receive a message or
+ *  the server can't send a message.
  */
 void Server::listenClients() {
     int numFds = 1;
     
-    while (true) {
-        if (poll(this->_fds, numFds, -1) == -1)
+    while (!this->_signalReceived) {
+        if (poll(this->_fds, numFds, -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
         for (int i = 0; i < numFds; i++) {
@@ -145,6 +170,8 @@ void Server::listenClients() {
                 this->handleExistingConnection(this->_fds[i].fd);
         }
     }
+    Logger::debug("Closing connections...");
+    this->closeConnections();
 }
 
 /**
@@ -159,17 +186,21 @@ void Server::handleNewConnection(int numFds) {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
-    int client_socket = accept(this->_socketFd, (struct sockaddr*)&this->_serverAddr, &size);
+    int clientSocket = accept(this->_socketFd, (struct sockaddr*) &this->_serverAddr, &size);
 
-    if (client_socket < 0)
+    if (clientSocket < 0)
         throw ServerException(ACCEPT_EXPT);
+    
+    // Setting the client socket option for non-blocking socket (O_NONBLOCK)
+    if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) < 0)
+        throw ServerException(FCNTL_EXPT);
 
-    this->_users.push_back(User(client_socket));
+    this->_users.push_back(User(clientSocket));
     // Add new socket to poll_fds array
-    this->_fds[numFds].fd = client_socket;
+    this->_fds[numFds].fd = clientSocket;
     this->_fds[numFds].events = POLLIN;
 
-    this->sendMessage(client_socket, "Welcome to the server! Please enter your password: ");
+    this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -213,6 +244,13 @@ void Server::handleExistingConnection(int clientFd) {
  */
 bool Server::isValidPassword(const std::string &password) const {
     return password == this->_password;
+}
+
+/**
+ * This function sets to `true` the signal received flag
+ */
+void Server::setSignalReceived() {
+    this->_signalReceived = true;
 }
 
 /**
@@ -457,4 +495,3 @@ Channel &Server::getChannelByName(const std::string &channelName) {
 bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
 }
-

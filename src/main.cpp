@@ -1,7 +1,5 @@
 #include "Server.hpp"
 
-#include "libsUtils.hpp"
-
 /**
  * The main function.
  * B================D----3
@@ -27,6 +25,7 @@ int main(int argc, char **argv) {
         Server::init(port, password);
     } catch (ServerException& e) {
         std::cerr << e.what() << std::endl;
+        Server::getInstance().closeConnections();
     }
 
     return SUCCESS;
