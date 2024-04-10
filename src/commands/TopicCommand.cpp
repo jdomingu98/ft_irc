@@ -5,7 +5,7 @@
  * 
  * @param channel The channel where the topic will be set, removed or requested
  */
-TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel), _topic(NONE) {}
+TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel), _topic(NONE), _newTopicProvide(false) {}
 
 /**
  * Constructs a new TopicCommand.
@@ -13,7 +13,7 @@ TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel)
  * @param channel The channel where the topic will be set, removed or requested
  * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic) {}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvide(true){}
 
 /**
  * Destroys the TopicCommand.
@@ -50,14 +50,21 @@ void TopicCommand::execute(int clientFd) {
     
     Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
     
-    if (!_topic.empty()) { 
-        Logger::debug("Channel's topic not empty.");
-        
+    if (_topic != NONE)
+            Logger::debug("Channel's topic not empty.");
+    else
+            Logger::debug("Channel's topic is empty.");
+    if (_newTopicProvide) {  
         Logger::debug("Setting the new channel topic to " + _topic);
         _channel->setTopic(_topic);
 
         Logger::debug("Sending topic to all channel users");
-        _channel->broadcastToChannel(TOPIC_MSG(nickname, username, hostname, channelName, _topic), nickname);
+        _channel->broadcastToChannel(TOPIC_MSG(nickname, username, hostname, channelName, _topic));
+    }
+    else {
+        
+        Logger::debug("Sending topic to user");
+        server.sendMessage(clientFd, RPL_TOPIC(channelName, _channel->getTopic()));
     }
     
     Logger::debug("Channel's topic is: " + _channel->getTopic());

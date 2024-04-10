@@ -35,6 +35,7 @@
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
 # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
+#define ERR_MISSING_COLON(command) (command) + " :Missing colon"
 // # define ERR_NO_TOP_LEVEL(mask) (mask) + " :No toplevel domain specified"
 // # define ERR_WILD_TOP_LEVEL(mask) (mask) + " :Wildcard in toplevel domain"
 // # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
@@ -235,6 +236,14 @@ class UnknownModeException : public IRCException {
 class CannotSendToChanException : public IRCException {
     public:
         CannotSendToChanException(const std::string &channelName) : IRCException("404", ERR_CANNOT_SEND_TO_CHAN(channelName)) {}
+};
+
+/**
+ * This exception is thrown when a colon is missing.
+ */
+class MissingColonException : public IRCException {
+    public:
+        MissingColonException(const std::string &command) : IRCException("488", ERR_MISSING_COLON(command)) {}
 };
 
 #endif
