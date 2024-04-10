@@ -210,7 +210,7 @@ void Server::handleNewConnection(int numFds) {
  * 
  * @throws `ServerException` if the server can't receive a message or the server can't send a message.
  */
-void Server::handleExistingConnection(int clientFd) { 
+void Server::handleExistingConnection(int clientFd) {
     char buffer[BUFFER_SIZE];
     std::memset(buffer, '\0', BUFFER_SIZE);
 
@@ -234,14 +234,13 @@ void Server::handleExistingConnection(int clientFd) {
 
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
-            
+
             command->execute(clientFd);
             this->_inputBuffer[clientFd].clear();
+            
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
-
         } catch (CommandNotFoundException &e) {
-            // pass
             Logger::debug("Command not found!");
         }
     }
