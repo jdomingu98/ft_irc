@@ -23,10 +23,15 @@ int main(int argc, char **argv) {
         std::string port = std::string(argv[1]);
         std::string password = std::string(argv[2]);
         Server::init(port, password);
-    } catch (ServerException& e) {
+    } catch (ServerException &e) {
         std::cerr << e.what() << std::endl;
-        Server::getInstance().closeConnections();
+    } catch (CommandNotFoundException &e) {
+        std::cerr << e.what() << std::endl;
+    } catch (IRCException &e) {
+        std::cerr << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Unexpected error occurs!" << std::endl;
     }
-
+    Server::getInstance().closeConnections();
     return SUCCESS;
 }

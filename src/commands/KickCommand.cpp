@@ -34,13 +34,13 @@ void KickCommand::execute(int clientFd) {
         kickedUser = _users[i].getNickname();
         
         if (!_channels[i].isUserInChannel(nickname))
-            throw new NotOnChannelException(channelName);
+            throw NotOnChannelException(channelName);
         
         if (!_channels[i].isOper(nickname))
-            throw new ChanOPrivsNeededException(channelName);
+            throw ChanOPrivsNeededException(channelName);
         
         if (!_channels[i].isUserInChannel(kickedUser))
-            throw new UserNotInChannelException(kickedUser, channelName);
+            throw UserNotInChannelException(kickedUser, channelName);
         
         std::vector<User> channelUsers = _channels[i].getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
