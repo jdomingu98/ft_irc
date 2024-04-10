@@ -1,7 +1,7 @@
 #ifndef PART_COMMAND_HPP
 # define PART_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -10,10 +10,10 @@
 class Channel;
 
 /**
- * An ICommand implementation that is responsible for the leaving of a channel.
+ * An ACommand implementation that is responsible for the leaving of a channel.
  * 
  */
-class PartCommand : public ICommand {
+class PartCommand : public ACommand {
     private:
         std::vector<std::string> _channels;
 

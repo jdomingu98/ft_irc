@@ -3,7 +3,7 @@
 /**
  * InviteCommand default constructor.
  */
-InviteCommand::InviteCommand() : ICommand(true), _nickname(NONE), _channelName(NONE) {}
+InviteCommand::InviteCommand() : ACommand(true), _nickname(NONE), _channelName(NONE) {}
 
 /**
  * InviteCommand nickname and channel name constructor.
@@ -12,7 +12,7 @@ InviteCommand::InviteCommand() : ICommand(true), _nickname(NONE), _channelName(N
  * @param channelName The channel name
  */
 InviteCommand::InviteCommand(const std::string& nickname, const std::string& channelName)
-    : ICommand(true), _nickname(nickname), _channelName(channelName) {}
+    : ACommand(true), _nickname(nickname), _channelName(channelName) {}
 
 /**
  * InviteCommand destructor.

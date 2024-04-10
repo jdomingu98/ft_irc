@@ -1,7 +1,7 @@
 #ifndef MODE_COMMAND_HPP
 # define MODE_COMMAND_HPP
 
-# include "ICommand.hpp"
+# include "ACommand.hpp"
 
 # include "Server.hpp"
 
@@ -19,9 +19,9 @@ typedef enum EMode {
 } Mode;
 
 /**
- * An ICommand implementation that is responsible for setting the modes of a channel.
+ * An ACommand implementation that is responsible for setting the modes of a channel.
  */
-class ModeCommand : public ICommand {
+class ModeCommand : public ACommand {
     private:
 
         bool _plus;
