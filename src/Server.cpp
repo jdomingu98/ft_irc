@@ -229,7 +229,6 @@ void Server::handleExistingConnection(int clientFd) {
     if (buffer[readBytes - 1] == '\n') {
         User &client = getUserByFd(clientFd);
 
-
         try {
             ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
 
