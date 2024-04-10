@@ -26,8 +26,6 @@ int main(int argc, char **argv) {
     } catch (ServerException &e) {
         std::cerr << e.what() << std::endl;
         Server::getInstance().closeConnections();
-    } catch (CommandNotFoundException &e) {
-        std::cerr << e.what() << std::endl;
     }
 
     Server::getInstance().closeConnections();
