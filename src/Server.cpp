@@ -225,10 +225,11 @@ void Server::handleExistingConnection(int clientFd) {
 
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
+    Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
     if (buffer[readBytes - 1] == '\n') {
         User &client = getUserByFd(clientFd);
 
-        Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
+
         try {
             ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
 
