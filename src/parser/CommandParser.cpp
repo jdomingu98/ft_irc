@@ -25,7 +25,7 @@ ACommand* CommandParser::parse(const std::string& input) {
  * 
  * @param command The command to parse
  * 
- * @throws `CommandNotFoundException` if the command is invalid
+ * @throws `UnknownCommandException` if the command is invalid
  * @return The parser for the command
  */
 IParser* CommandParser::getParser(std::string command) {
@@ -51,7 +51,7 @@ IParser* CommandParser::getParser(std::string command) {
         return new KickParser();
     if (command == "MODE")
         return new ModeParser();
-    throw CommandNotFoundException();
+    throw UnknownCommandException();
 }
 
 /**

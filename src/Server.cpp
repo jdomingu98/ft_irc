@@ -231,8 +231,6 @@ void Server::handleExistingConnection(int clientFd) {
         command->execute(clientFd);
     } catch (IRCException& e) {
         this->sendExceptionMessage(clientFd, e);
-    } catch (CommandNotFoundException &e) {
-        this->sendMessage(clientFd, e.what());
     }
 }
 
