@@ -8,7 +8,9 @@
 # include <algorithm>
 # include <csignal>
 # include <cstdlib>
+# include <cstring>
 # include <iostream>
+# include <map>
 # include <sstream>
 # include <string>
 # include <vector>

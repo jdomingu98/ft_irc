@@ -24,8 +24,9 @@
 
 # define NONE ""
 
-class User;
 class Channel;
+
+class User;
 
 /**
  * A class that represents the server.
@@ -33,13 +34,14 @@ class Channel;
 class Server {
 
     private:
-        uint16_t                _port;
-        std::string             _password;
-        int                     _socketFd;
-        struct sockaddr_in      _serverAddr;
-        struct pollfd           _fds[MAX_CLIENTS];
-        std::vector<User>       _users;
-        std::vector<Channel>    _channels;
+        uint16_t                    _port;
+        std::string                 _password;
+        int                         _socketFd;
+        struct sockaddr_in          _serverAddr;
+        struct pollfd               _fds[MAX_CLIENTS];
+        std::map<int, std::string>  _inputBuffer;
+        std::vector<User>           _users;
+        std::vector<Channel>        _channels;
 
         // Singleton Pattern
         static Server           *_server;
