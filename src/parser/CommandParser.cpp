@@ -51,7 +51,7 @@ IParser* CommandParser::getParser(std::string command) {
         return new KickParser();
     if (command == "MODE")
         return new ModeParser();
-    throw UnknownCommandException();
+    throw UnknownCommandException(command);
 }
 
 /**
