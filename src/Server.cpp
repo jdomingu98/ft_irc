@@ -222,7 +222,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     if (!buffer[0])
         return;
-
+  
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
@@ -240,11 +240,8 @@ void Server::handleExistingConnection(int clientFd) {
             
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
-        } catch (CommandNotFoundException &e) {
-            Logger::debug("Command not found!");
         }
     }
-
 }
 
 /**
