@@ -17,12 +17,12 @@ class User;
  */
 class KickCommand : public ACommand {
     private:
-        std::vector<Channel>    _channels;
-        std::vector<User>       _users;
-        std::string             _comment;
+        std::vector<Channel>    &_channels;
+        const std::vector<User> &_users;
+        const std::string       &_comment;
 
     public:
-        KickCommand(std::vector<Channel> channels, std::vector<User> users, std::string comment);
+        KickCommand(std::vector<Channel> &channels, const std::vector<User> &users, const std::string &comment);
         ~KickCommand();
 
         void execute(int clientFd);

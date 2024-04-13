@@ -40,28 +40,21 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * Joins the vector of strings.
  * 
  * @param msg The vector of strings to be joined.
+ * @param initialMsgPosition The position where the message begins
  * 
  * @return The joined string.
  */
-const std::string join(const std::vector<std::string> &msg) {
+const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
     std::string strJoined;
-    std::vector<std::string>::const_iterator it = msg.begin();
 
-    while (it != msg.end() && it->find(":") == std::string::npos)
-        it++;
-    
-    if (it == msg.end())
+    if (msg.empty())
         return NONE;
     
-    if (*it != ":")
-        strJoined = it->substr(1);
-    else if (it + 1 == msg.end())
-        return NONE;
-    it++;
-    
-    while (it != msg.end())
-        strJoined += " " + *it++;
-    
+    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    strJoined += msgTokens[0];    
+
+    for (size_t i = 1; i < msgTokens.size(); i++)
+        strJoined += " " + msgTokens[i];
     return strJoined;
 }
 
