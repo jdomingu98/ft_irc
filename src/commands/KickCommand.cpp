@@ -47,33 +47,35 @@ void KickCommand::execute(int clientFd) {
         for (size_t i = 0; i < channelUsers.size(); i++) {
             Logger::debug("Sending KICK message of user " + kickedUser + ", from user " + nickname +
                             ", to user " + channelUsers[i].getNickname().c_str());
-            server.sendMessage(channel.getFd(),
+            server.sendMessage(channelUsers[i].getFd(),
                                 KICK_MSG(nickname, user.getUsername(), user.getHostname(),
                                         this->_channels[i], kickedUser, comment));
         }
         channelUsers.clear();
         Logger::debug("<--- PRE REMOVE --->");
         Logger::debug("OPERATORS:");
-        std::vector<User> opers = _channels[i].getOperators();
+        std::vector<User> opers = channel.getOperators();
         for (size_t i = 0; i < opers.size(); i++) {
             Logger::debug(opers[i].getNickname());
         }
 
         Logger::debug("USERS:");
-        std::vector<User> users = _channels[i].getUsers();
+        std::vector<User> users = channel.getUsers();
         for (size_t i = 0; i < users.size(); i++) {
             Logger::debug(users[i].getNickname());
         }
+
         channel.removeUser(kickedUser);
+
         Logger::debug("<--- POST REMOVE --->");
         Logger::debug("OPERATORS:");
-        opers = server.getChannelByName(_channels[i].getName()).getOperators();
+        opers = channel.getOperators();
         for (size_t i = 0; i < opers.size(); i++) {
             Logger::debug(opers[i].getNickname());
         }
         
         Logger::debug("USERS:");
-        users = server.getChannelByName(_channels[i].getName()).getUsers();
+        users = channel.getUsers();
         for (size_t i = 0; i < users.size(); i++) {
             Logger::debug(users[i].getNickname());
         }
