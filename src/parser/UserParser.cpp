@@ -16,14 +16,6 @@
 ACommand *UserParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 5)
         throw NeedMoreParamsException("USER");
-    std::string username = tokens[1];
-    std::string hostname = tokens[2];
-    std::string serverName = tokens[3];
-    std::string realName = tokens[4];
-    // remove the ':' from the real name:
-    realName = realName.substr(1);
-
-    for (size_t i = 5; i < tokens.size(); i++)
-        realName += " " + tokens[i];
-    return new UserCommand(username, hostname, serverName, realName);
+        
+    return new UserCommand(tokens[1], tokens[2], tokens[3], join(tokens, 4));
 }
