@@ -22,7 +22,7 @@ ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
 
     for (size_t i = 0; i < channels.size(); i++) {
         if (channels[i][0]  != "#" && channels[i][0] != "&")
-            throw BadChannelMaskException(channelsList[i]);
+            throw BadChannelMaskException(channels[i]);
     }
 
     return new PartCommand(channels);
