@@ -222,7 +222,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     if (!buffer[0])
         return;
-  
+
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
@@ -232,15 +232,20 @@ void Server::handleExistingConnection(int clientFd) {
         try {
             ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
 
+            if (!command) {
+                this->_inputBuffer[clientFd].clear();
+                return;
+            }
+
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
 
             command->execute(clientFd);
-            this->_inputBuffer[clientFd].clear();
             
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
+        this->_inputBuffer[clientFd].clear();
     }
 }
 
