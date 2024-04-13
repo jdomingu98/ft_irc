@@ -51,7 +51,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new KickParser();
     if (command == "MODE")
         return new ModeParser();
-    throw UnknownCommandException(command);
+    if (command != NONE)
+        throw UnknownCommandException(command);
 }
 
 /**
@@ -67,6 +68,8 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
     std::istringstream tokenStream(command);
     
     while (std::getline(tokenStream, token, ' ')) {
+        if (token.empty())
+            continue;
         tokens.push_back(trim(token));
     }
     return tokens;
