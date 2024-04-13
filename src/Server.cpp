@@ -234,13 +234,11 @@ void Server::handleExistingConnection(int clientFd) {
 
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
-
             command->execute(clientFd);
-            this->_inputBuffer[clientFd].clear();
-            
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
+        this->_inputBuffer[clientFd].clear();
     }
 }
 
