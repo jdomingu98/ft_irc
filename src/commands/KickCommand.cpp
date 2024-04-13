@@ -67,13 +67,13 @@ void KickCommand::execute(int clientFd) {
         _channels[i].removeUser(kickedUser);
         Logger::debug("<--- POST REMOVE --->");
         Logger::debug("OPERATORS:");
-        opers = _channels[i].getOperators();
+        opers = server.getChannelByName(_channels[i].getName()).getOperators();
         for (size_t i = 0; i < opers.size(); i++) {
             Logger::debug(opers[i].getNickname());
         }
         
         Logger::debug("USERS:");
-        users = _channels[i].getUsers();
+        users = server.getChannelByName(_channels[i].getName()).getUsers();
         for (size_t i = 0; i < users.size(); i++) {
             Logger::debug(users[i].getNickname());
         }

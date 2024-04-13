@@ -47,14 +47,23 @@ std::vector<std::string> split(const std::string &s, char delim) {
 const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
     std::string strJoined;
 
+    for (size_t i = initialMsgPosition; i < msg.size(); i++) {
+        Logger::debug(msg[i]);
+    }
+
     if (msg.empty())
         return NONE;
     
     std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    for (size_t i = 0; i < msgTokens.size(); i++) {
+        Logger::debug(msgTokens[i]);
+    }
     strJoined += msgTokens[0];    
 
     for (size_t i = 1; i < msgTokens.size(); i++)
         strJoined += " " + msgTokens[i];
+
+    Logger::debug(strJoined); 
     return strJoined;
 }
 
