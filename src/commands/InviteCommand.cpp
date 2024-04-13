@@ -30,8 +30,8 @@ InviteCommand::~InviteCommand() {}
  * @throws `ChanOPrivsNeededException` If the user which invites is not an operator of the channel and the channel is invite-only
  */
 void InviteCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User me = server.getUserByFd(clientFd);
+    Server &server = Server::getInstance();
+    User &me = server.getUserByFd(clientFd);
     
     if (!server.isNicknameInUse(this->_nickname))
         throw NoSuchNickException(this->_nickname);
@@ -39,7 +39,7 @@ void InviteCommand::execute(int clientFd) {
     if (!me.isOnChannel(this->_channelName))
         throw NotOnChannelException(this->_channelName);
     
-    Channel channel = server.getChannelByName(this->_channelName);
+    Channel &channel = server.getChannelByName(this->_channelName);
     
     if (channel.isUserInChannel(this->_nickname))
         throw UserOnChannelException(this->_nickname, this->_channelName);

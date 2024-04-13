@@ -37,6 +37,19 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 /**
+ * Checks if the string is a number.
+ * 
+ * @param s The string to be checked.
+ * 
+ * @return `true` if the string is a number, `false` otherwise.
+ */
+bool isNumber(const std::string& s) {
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+/**
  * Joins the vector of strings.
  * 
  * @param msg The vector of strings to be joined.
@@ -66,7 +79,6 @@ const std::string join(const std::vector<std::string> &msg, size_t initialMsgPos
     Logger::debug(strJoined.substr(1)); 
     return strJoined.substr(1);
 }
-
 
 /**
  * Checks if the string contains a colon.
