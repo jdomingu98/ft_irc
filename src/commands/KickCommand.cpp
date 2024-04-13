@@ -42,7 +42,7 @@ void KickCommand::execute(int clientFd) {
         if (!_channels[i].isUserInChannel(kickedUser))
             throw UserNotInChannelException(kickedUser, channelName);
         
-        std::vector<User> &channelUsers = _channels[i].getAllUsers();
+        std::vector<User> channelUsers = _channels[i].getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
         for (size_t i = 0; i < channelUsers.size(); i++) {
             Logger::debug("Sending KICK message of user " + kickedUser + ", from user " + nickname +

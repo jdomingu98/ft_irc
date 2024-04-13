@@ -24,8 +24,8 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     Server &server = Server::getInstance();
     std::vector<std::string> channelsList = split(tokens[1], ',');
     std::vector<std::string> usersList = split(tokens[2], ',');
-    std::vector<Channel> &channels;
-    std::vector<User> &users;
+    std::vector<Channel> channels;
+    std::vector<User> users;
     
     for (size_t i = 0; i < channelsList.size(); i++) {
         if (channelsList[i][0] != '#' && channelsList[i][0] != '&')
