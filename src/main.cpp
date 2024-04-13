@@ -25,8 +25,6 @@ int main(int argc, char **argv) {
         Server::init(port, password);
     } catch (ServerException &e) {
         std::cerr << e.what() << std::endl;
-    } catch (CommandNotFoundException &e) {
-        std::cerr << e.what() << std::endl;
     } catch (IRCException &e) {
         std::cerr << e.what() << std::endl;
     } catch (...) {
