@@ -17,12 +17,12 @@
  *
  */
 ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() < 2)
+    if (tokens.size() <3)
         throw NeedMoreParamsException("MODE");
 
     std::string channel = tokens[1];
     std::string modesStr = tokens[2];
-    std::string modeParams = tokens.size() > 3 ? tokens[3] : NONE;
+    std::string modeParams = tokens.size() > 4 ? tokens[3] : NONE;
     bool plus = modesStr[0] != '-';
 
     std::vector<Mode> modes;
