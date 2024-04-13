@@ -88,6 +88,8 @@ void ModeCommand::topicProtected() {
  * Sets the password of the channel.
  */
 void ModeCommand::channelKey() {
+    if (_modeParams == NONE && _plus)
+        throw NeedMoreParamsException("MODE");
     Channel &channel = Server::getInstance().getChannelByName(_channel);
     if (_plus)
         channel.setPassword(_modeParams);
@@ -101,6 +103,8 @@ void ModeCommand::channelKey() {
  * Sets the user as an operator of the channel.
  */
 void ModeCommand::channelOperator() {
+    if (_modeParams == NONE)
+        throw NeedMoreParamsException("MODE");
     Channel &channel = Server::getInstance().getChannelByName(_channel);
     if (!channel.isUserInChannel(_modeParams))
         throw UserNotInChannelException(_modeParams, _channel);
@@ -116,9 +120,13 @@ void ModeCommand::channelOperator() {
  * Sets the limit of users in the channel.
  */
 void ModeCommand::userLimit() {
-    Channel &channel = Server::getInstance().getChannelByName(_channel);
-    if (isNumber(_modeParams)) {
-        int numUsers = _plus ? std::atoi(_modeParams.c_str()) : NO_LIMIT;
-        channel.setLimit(numUsers);
-    }
+    if (_modeParams == NONE && _plus)
+        throw NeedMoreParamsException("MODE");
+    if (!isNumber(_modeParams))
+        return ;
+
+    int numUsers = std::atoi(_modeParams.c_str());
+    if (numUsers < 0 || numUsers > MAX_CLIENTS)
+        numUsers = MAX_CLIENTS;
+    Server::getInstance().getChannelByName(_channel).setLimit(_plus ? numUsers : NO_LIMIT);
 }
