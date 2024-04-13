@@ -5,8 +5,6 @@
 
 # include "Server.hpp"
 
-# include "libsUtils.hpp"
-
 class Channel;
 
 class User;
@@ -17,12 +15,12 @@ class User;
  */
 class KickCommand : public ACommand {
     private:
-        std::vector<Channel>    &_channels;
-        const std::vector<User> &_users;
-        const std::string       &_comment;
+        std::vector<std::string>    _channels;
+        const std::vector<User>     _users;
+        const std::string           &_comment;
 
     public:
-        KickCommand(std::vector<Channel> &channels, const std::vector<User> &users, const std::string &comment);
+        KickCommand(std::vector<std::string> channels, const std::vector<User> &users, const std::string &comment);
         ~KickCommand();
 
         void execute(int clientFd);

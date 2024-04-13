@@ -7,7 +7,7 @@
  * @param users The users to kick
  * @param comment The comment for the kick
  */
-KickCommand::KickCommand(std::vector<Channel> &channels, const std::vector<User> &users, const std::string &comment) : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
+KickCommand::KickCommand(std::vector<std::string> channels, const std::vector<User> &users, const std::string &comment) : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
 
 /**
  * Destroys the KickCommand.
@@ -27,29 +27,29 @@ void KickCommand::execute(int clientFd) {
     std::string nickname = user.getNickname();
 
     // Doy por hecho que _channels.size() == _users.size()
-    std::string channelName;
     std::string kickedUser;
     for (size_t i = 0; i < _channels.size(); i++) {
-        channelName = _channels[i].getName();
-        kickedUser = _users[i].getNickname();
+        kickedUser = (this->_users)[i].getNickname();
+
+        Channel &channel = server.getChannelByName(this->_channels[i]);
+
+        if (!channel.isUserInChannel(nickname))
+            throw NotOnChannelException(this->_channels[i]);
         
-        if (!_channels[i].isUserInChannel(nickname))
-            throw NotOnChannelException(channelName);
+        if (!channel.isOper(nickname))
+            throw ChanOPrivsNeededException(this->_channels[i]);
         
-        if (!_channels[i].isOper(nickname))
-            throw ChanOPrivsNeededException(channelName);
+        if (!channel.isUserInChannel(kickedUser))
+            throw UserNotInChannelException(kickedUser, this->_channels[i]);
         
-        if (!_channels[i].isUserInChannel(kickedUser))
-            throw UserNotInChannelException(kickedUser, channelName);
-        
-        std::vector<User> channelUsers = _channels[i].getAllUsers();
+        std::vector<User> channelUsers = channel.getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
         for (size_t i = 0; i < channelUsers.size(); i++) {
             Logger::debug("Sending KICK message of user " + kickedUser + ", from user " + nickname +
                             ", to user " + channelUsers[i].getNickname().c_str());
-            server.sendMessage(channelUsers[i].getFd(),
+            server.sendMessage(channel.getFd(),
                                 KICK_MSG(nickname, user.getUsername(), user.getHostname(),
-                                        channelName, kickedUser, comment));
+                                        this->_channels[i], kickedUser, comment));
         }
         channelUsers.clear();
         Logger::debug("<--- PRE REMOVE --->");
@@ -64,7 +64,7 @@ void KickCommand::execute(int clientFd) {
         for (size_t i = 0; i < users.size(); i++) {
             Logger::debug(users[i].getNickname());
         }
-        _channels[i].removeUser(kickedUser);
+        channel.removeUser(kickedUser);
         Logger::debug("<--- POST REMOVE --->");
         Logger::debug("OPERATORS:");
         opers = server.getChannelByName(_channels[i].getName()).getOperators();
