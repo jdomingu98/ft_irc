@@ -44,6 +44,8 @@ void ModeCommand::execute(int clientFd) {
                 ModeCommand::channelKey();
                 break;
             case CHANNEL_OPERATOR:
+                if (!channel.isOper(me.getNickname()))
+                    throw ChanOPrivsNeededException(_channel);
                 ModeCommand::channelOperator();
                 break;
             case USER_LIMIT:
