@@ -21,7 +21,7 @@ ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> channels = split(tokens[1], ',');
 
     for (size_t i = 0; i < channels.size(); i++) {
-        if (channels[i][0]  != "#" && channels[i][0] != "&")
+        if (channels[i][0]  != '#' && channels[i][0] != '&')
             throw BadChannelMaskException(channels[i]);
     }
 
