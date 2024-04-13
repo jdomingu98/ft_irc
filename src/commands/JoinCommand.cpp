@@ -138,7 +138,6 @@ void JoinCommand::execute(int clientFd) {
         const std::string message = topic.empty()   ? RPL_NO_TOPIC(channelName)
                                                     : RPL_TOPIC(channelName, topic);
         
-
         //1. Check if channel[i] is invite-only channel and if user is invited
         if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
             throw InviteOnlyChanException(channelName);

@@ -40,29 +40,31 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * Joins the vector of strings.
  * 
  * @param msg The vector of strings to be joined.
+ * @param initialMsgPosition The position where the message begins
  * 
  * @return The joined string.
  */
-const std::string join(const std::vector<std::string> &msg) {
-    std::string strJoined;
-    std::vector<std::string>::const_iterator it = msg.begin();
+const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
 
-    while (it != msg.end() && it->find(":") == std::string::npos)
-        it++;
-    
-    if (it == msg.end())
+    if (msg.empty() || initialMsgPosition >= msg.size())
         return NONE;
     
-    if (*it != ":")
-        strJoined = it->substr(1);
-    else if (it + 1 == msg.end())
+    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    std::string strJoined;
+
+    if (msgTokens.empty())
         return NONE;
-    it++;
-    
-    while (it != msg.end())
-        strJoined += " " + *it++;
-    
-    return strJoined;
+
+    strJoined = msgTokens[0];
+
+    if (strJoined.size() < 2 || strJoined[0] != ':' || strJoined[1] == ' ')
+        return NONE;
+
+    for (size_t i = 1; i < msgTokens.size(); i++)
+        strJoined += " " + msgTokens[i];
+
+    Logger::debug(strJoined.substr(1)); 
+    return strJoined.substr(1);
 }
 
 

@@ -5,8 +5,6 @@
 
 # include "Server.hpp"
 
-# include "libsUtils.hpp"
-
 /**
  * The different modes that a channel can have.
  */
