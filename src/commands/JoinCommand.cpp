@@ -160,9 +160,8 @@ void JoinCommand::execute(int clientFd) {
         this->printUsers(channel);
 
         //5. Send JOIN message to all users in channel[i]
-        std::string topic = channel.getTopic()    ;
-        const std::string message = topic.empty() ? RPL_NO_TOPIC(channelName)
-                                                  : RPL_TOPIC(channelName, topic);
-        sendMessages(clientFd, message, channel)  ;
+        std::string topic = channel.getTopic();
+        const std::string message = topic.empty() ? RPL_NO_TOPIC(channelName) : RPL_TOPIC(channelName, topic);
+        sendMessages(clientFd, message, channel);
     }
 }
