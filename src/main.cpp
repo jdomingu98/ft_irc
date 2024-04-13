@@ -32,6 +32,7 @@ int main(int argc, char **argv) {
     } catch (...) {
         std::cerr << "Unexpected error occurs!" << std::endl;
     }
+
     Server::getInstance().closeConnections();
     return SUCCESS;
 }
