@@ -22,7 +22,7 @@ ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
 
     std::string channel = tokens[1];
     std::string modesStr = tokens[2];
-    std::string modeParams = tokens.size() > 4 ? tokens[3] : NONE;
+    std::string modeParams = tokens.size() > 3 ? tokens[3] : NONE;
     bool plus = modesStr[0] != '-';
 
     std::vector<Mode> modes;
@@ -39,7 +39,7 @@ ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
             modes.push_back(CHANNEL_OPERATOR);
         else if (modesStr[i] == 'l')
             modes.push_back(USER_LIMIT);
-        else throw UnknownModeException(modesStr[i]);
+        else throw UnknownModeException(std::string(1, modesStr[i]));
     }
     return new ModeCommand(plus, channel, modes, modeParams);
 }
