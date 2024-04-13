@@ -52,32 +52,6 @@ void KickCommand::execute(int clientFd) {
                                         this->_channels[i], kickedUser, comment));
         }
         channelUsers.clear();
-        Logger::debug("<--- PRE REMOVE --->");
-        Logger::debug("OPERATORS:");
-        std::vector<User> opers = channel.getOperators();
-        for (size_t i = 0; i < opers.size(); i++) {
-            Logger::debug(opers[i].getNickname());
-        }
-
-        Logger::debug("USERS:");
-        std::vector<User> users = channel.getUsers();
-        for (size_t i = 0; i < users.size(); i++) {
-            Logger::debug(users[i].getNickname());
-        }
-
         channel.removeUser(kickedUser);
-
-        Logger::debug("<--- POST REMOVE --->");
-        Logger::debug("OPERATORS:");
-        opers = channel.getOperators();
-        for (size_t i = 0; i < opers.size(); i++) {
-            Logger::debug(opers[i].getNickname());
-        }
-        
-        Logger::debug("USERS:");
-        users = channel.getUsers();
-        for (size_t i = 0; i < users.size(); i++) {
-            Logger::debug(users[i].getNickname());
-        }
     }
 }
