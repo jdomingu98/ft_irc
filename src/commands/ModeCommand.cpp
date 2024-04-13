@@ -102,8 +102,8 @@ void ModeCommand::channelKey() {
  */
 void ModeCommand::channelOperator() {
     Channel &channel = Server::getInstance().getChannelByName(_channel);
-    if (!channel.isUserInChannel(_modeParams)) {}
-        // throw NotOnChannelException(_channel);
+    if (!channel.isUserInChannel(_modeParams))
+        throw UserNotInChannelException(_modeParams, _channel);
     if (_plus)
         channel.makeUserAnOper(_modeParams);
     else
