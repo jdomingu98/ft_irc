@@ -28,7 +28,7 @@ void KickCommand::execute(int clientFd) {
 
     // Doy por hecho que _channels.size() == _users.size()
     std::string kickedUser;
-    for (size_t i = 0; i < _channels.size(); i++) {
+    for (size_t i = 0; i < this->_channels.size(); i++) {
         kickedUser = (this->_users)[i].getNickname();
 
         Channel &channel = server.getChannelByName(this->_channels[i]);
@@ -45,8 +45,8 @@ void KickCommand::execute(int clientFd) {
         std::vector<User> channelUsers = channel.getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
         for (size_t i = 0; i < channelUsers.size(); i++) {
-            Logger::debug("Sending KICK message of user " + kickedUser + ", from user " + nickname +
-                            ", to user " + channelUsers[i].getNickname().c_str());
+            Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[i].getNickname().c_str());
+            Logger::debug("Channel name: " + this->_channels[i]);
             server.sendMessage(channelUsers[i].getFd(),
                                 KICK_MSG(nickname, user.getUsername(), user.getHostname(),
                                         this->_channels[i], kickedUser, comment));
