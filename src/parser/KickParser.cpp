@@ -32,7 +32,7 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
         users.push_back(user);
     }
     
-    const std::string &comment = (tokens.size() >= 4) ? join(tokens, 3) : NONE;
+    const std::string comment = (tokens.size() > 3) ? join(tokens, 3) : NONE;
     usersList.clear();
     return new KickCommand(channels, users, comment);
 }

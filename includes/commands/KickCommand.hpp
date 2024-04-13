@@ -17,10 +17,10 @@ class KickCommand : public ACommand {
     private:
         std::vector<std::string>    _channels;
         const std::vector<User>     _users;
-        const std::string           &_comment;
+        std::string           _comment;
 
     public:
-        KickCommand(std::vector<std::string> channels, const std::vector<User> &users, const std::string &comment);
+        KickCommand(std::vector<std::string> channels, const std::vector<User> &users, std::string comment);
         ~KickCommand();
 
         void execute(int clientFd);
