@@ -101,8 +101,6 @@ void JoinCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
     
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
     Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
@@ -116,9 +114,8 @@ void JoinCommand::execute(int clientFd) {
 
         if (!server.channelExists(channelName)) {
             Logger::debug("CHANNEL DOES NOT EXIST");
-            
-            Channel newChannel(channelName, user);
-            server.addChannel(newChannel);
+
+            server.addChannel(Channel(channelName, user));
             Channel &channel = server.getChannelByName(channelName);
             if (!channelKey.empty())
                 channel.setPassword(channelKey);
@@ -134,10 +131,9 @@ void JoinCommand::execute(int clientFd) {
         Channel &channel = server.getChannelByName(channelName);
         Logger::debug("CHANNEL NAME: " + channelName);
         
-        std::string topic = channel.getTopic();
-        const std::string message = topic.empty()   ? RPL_NO_TOPIC(channelName)
-                                                    : RPL_TOPIC(channelName, topic);
-        
+        if (channel.isUserInChannel(nickname))
+            throw UserOnChannelException(nickname, channelName); //Provisional
+
         //1. Check if channel[i] is invite-only channel and if user is invited
         if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
             throw InviteOnlyChanException(channelName);
@@ -157,16 +153,15 @@ void JoinCommand::execute(int clientFd) {
         Logger::debug("--- PRE SAVE ---");
         this->printUsers(channel);
 
-        if (!channel.isUserInChannel(nickname)) {
-            channel.addUser(user);
-            user.addChannel(channel);
-        } else 
-            throw UserOnChannelException(nickname, channelName); //Provisional
+        channel.addUser(user);
+        user.addChannel(channel);
 
         Logger::debug("--- POST SAVE ---");
         this->printUsers(channel);
 
         //5. Send JOIN message to all users in channel[i]
+        std::string topic = channel.getTopic();
+        const std::string message = topic.empty() ? RPL_NO_TOPIC(channelName) : RPL_TOPIC(channelName, topic);
         sendMessages(clientFd, message, channel);
     }
 }
