@@ -1,7 +1,6 @@
 #ifndef EXCEPTIONS_HPP
 # define EXCEPTIONS_HPP
 
-# include "CommandNotFoundException.hpp"
 # include "IRCException.hpp"
 # include "ServerException.hpp"
 
@@ -10,6 +9,7 @@
 # define ERR_NEED_MORE_PARAMS(command)  (command) + " :Not enough parameters"
 # define ERR_NOT_REGISTERED ":You have not registered"
 # define ERR_ALREADY_REGISTERED ":You may not reregister"
+# define ERR_UNKNOWN_COMMAND(command) (command) + " :Unknown command"
 
 # define ERR_NO_NICKNAME_GIVEN ":No nickname given"
 # define ERR_ERRONEUS_NICKNAME(nick)  (nick) + " :Erroneus nickname"
@@ -229,13 +229,20 @@ class UnknownModeException : public IRCException {
         UnknownModeException(char modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
 };
 
-
 /**
  * This exception is thrown when the user tries to send a message to a channel that does not exist.
  */
 class CannotSendToChanException : public IRCException {
     public:
         CannotSendToChanException(const std::string &channelName) : IRCException("404", ERR_CANNOT_SEND_TO_CHAN(channelName)) {}
+};
+
+/**
+ * This exception is thrown when the user tries to launch an unknown command.
+ */
+class UnknownCommandException : public IRCException {
+    public:
+        UnknownCommandException(const std::string &command) : IRCException("421", ERR_UNKNOWN_COMMAND(command)) {}
 };
 
 /**

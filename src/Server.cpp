@@ -212,27 +212,35 @@ void Server::handleNewConnection(int numFds) {
  */
 void Server::handleExistingConnection(int clientFd) {
     char buffer[BUFFER_SIZE];
-    for (size_t i = 0; i < BUFFER_SIZE; i++)
-        buffer[i] = 0;
+    std::memset(buffer, '\0', BUFFER_SIZE);
 
     int readBytes = recv(clientFd, buffer, BUFFER_SIZE, 0);
     if (readBytes < 0)
         throw ServerException(RECV_EXPT);
-    buffer[readBytes] = 0;
+    
+    buffer[readBytes] = '\0';
 
-    if (buffer[0] == '\0')
+    if (!buffer[0])
         return;
-    Logger::debug("Mensaje del cliente: " + std::string(buffer, readBytes));
-    User &client = getUserByFd(clientFd);
-    try {
-        ACommand* command = CommandParser::parse(std::string(buffer, readBytes));
-        if (command->needsValidation() && !client.isRegistered())
-            throw NotRegisteredException();
-        command->execute(clientFd);
-    } catch (IRCException& e) {
-        this->sendExceptionMessage(clientFd, e);
-    } catch (CommandNotFoundException &e) {
-        // pass
+  
+    this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
+
+    Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
+    if (buffer[readBytes - 1] == '\n') {
+        User &client = getUserByFd(clientFd);
+
+        try {
+            ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
+
+            if (command->needsValidation() && !client.isRegistered())
+                throw NotRegisteredException();
+
+            command->execute(clientFd);
+            this->_inputBuffer[clientFd].clear();
+            
+        } catch (IRCException &e) {
+            this->sendExceptionMessage(clientFd, e);
+        }
     }
 }
 
