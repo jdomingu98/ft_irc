@@ -91,6 +91,7 @@ class Server {
         void    sendExceptionMessage(int clientFd, const IRCException &e) const;
         bool    isValidPassword(const std::string& password) const;
         void	setSignalReceived();
+        void    closeClientConnection(int clientFd);
         void	closeConnections();
 
         // Channel Iterators

@@ -1,16 +1,11 @@
 #include "QuitCommand.hpp"
 
 /**
- * QuitCommand default constructor.
- */
-QuitCommand::QuitCommand() : ACommand(false), _msg(NONE) {}
-
-/**
  * QuitCommand message constructor.
  * 
  * @param msg The message
  */
-QuitCommand::QuitCommand(std::string msg) : ACommand(false), _msg(msg) {}
+QuitCommand::QuitCommand(std::string message) : ACommand(false), _message(message) {}
 
 /**
  * QuitCommand destructor.
@@ -24,10 +19,19 @@ QuitCommand::~QuitCommand() {}
  * 
  */
 void QuitCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    if (this->_msg.length() == 0) {
-        // message = user.getNickname();
-        //send message to all clients on channel and server
+    Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
+
+    std::string nickname = user.getNickname();
+    std::vector<Channel> channels = user.getChannels();
+
+    for (size_t i = 0; i < channels.size(); i++) {
+        std::vector<User> usersChannel = channels[i].getUsers();
+        for (size_t j = 0; j < usersChannel.size(); j++)
+            server.sendMessage(usersChannel[j].getFd(), QUIT_MSG(nickname, user.getUsername(), user.getHostname(), _message.empty() ? nickname : _message));
+        usersChannel.clear();
+        channels[i].removeUser(nickname);
     }
-    server.removeUser(clientFd);
+    channels.clear();
+    server.closeClientConnection(clientFd);
 }

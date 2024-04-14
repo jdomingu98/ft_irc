@@ -80,6 +80,11 @@ void signalHandler(int signal) {
     Server::getInstance().setSignalReceived();
 }
 
+void Server::closeClientConnection(int clientFd) {
+    this->removeUser(clientFd);
+    close(clientFd);
+}
+
 /**
  * This function aims to close all the connections.
  */
