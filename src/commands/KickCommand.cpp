@@ -7,7 +7,8 @@
  * @param users The users to kick
  * @param comment The comment for the kick
  */
-KickCommand::KickCommand(std::vector<std::string> channels, const std::vector<User> &users, std::string comment) : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
+KickCommand::KickCommand(std::vector<std::string> channels, const std::vector<User> &users, std::string comment)
+    : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
 
 /**
  * Destroys the KickCommand.
