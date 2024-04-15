@@ -364,8 +364,20 @@ User &Server::getUserByNickname(const std::string &nickname) {
 void Server::sendMessage(int clientFd, const std::string& message) const {
     if (!this->isUserConnected(clientFd))
         return;
+
+    int msgSignal = 0;
     std::string messageToSend = message + std::string("\r\n");
-    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL) < 0)
+    
+    // setsocketopt in Mac (+ 0 value on send function) to avoid sending signal SIGPIPE
+    // Same behaviour in Linux with MSG_NOSIGNAL on send function
+    #ifdef __APPLE__
+        int enabled = 1;
+        setsockopt(clientFd, SOL_SOCKET, SO_NOSIGPIPE, (void *) &enabled, sizeof(int));
+    #else
+        msgSignal = MSG_NOSIGNAL;
+    #endif
+    
+    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0)
         throw ServerException(SEND_EXPT);
 }
 
