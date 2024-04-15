@@ -80,11 +80,6 @@ void signalHandler(int signal) {
     Server::getInstance().setSignalReceived();
 }
 
-void Server::closeClientConnection(int clientFd) {
-    this->removeUser(clientFd);
-    close(clientFd);
-}
-
 /**
  * This function aims to close all the connections.
  */
@@ -165,9 +160,15 @@ void Server::listenClients() {
             if (this->_fds[i].revents == 0)
                 continue;
 
+            // Client disconnected
+            /*if (this->_fds[i].revents & POLLHUP) {
+                this->handleClientDisconnection(this->_fds[i].fd, numFds);
+                continue;
+            }*/
+
             if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
-
+            
             if (this->_fds[i].fd == this->_socketFd) {
                 this->handleNewConnection(numFds);
                 numFds++;
@@ -177,6 +178,44 @@ void Server::listenClients() {
     }
     Logger::debug("Closing connections...");
     this->closeConnections();
+}
+
+/**
+ * This function aims to handle a client disconnection.
+ * 
+ * It removes the user from all the channels and the server.
+ * 
+ * @param clientFd The file descriptor of the client.
+ * @param numFds The number of file descriptors.
+ * 
+ */
+void Server::handleClientDisconnection(int clientFd, int numFds) {
+    User &user = this->getUserByFd(clientFd);
+    std::vector<Channel> &channels = this->getChannels();
+
+    std::string nickname = user.getNickname();
+
+    for (size_t i = 0; i < channels.size(); i++) {
+        Channel &channel = channels[i];
+        if (channel.isUserInChannel(nickname))
+            channel.removeUser(nickname);
+    }
+    this->removeUser(clientFd);
+    
+    channels.clear();
+    close(clientFd);
+    
+    int i = 0;
+    while (i < numFds && this->_fds[i].fd != clientFd)
+        i++;
+    
+    if (i == numFds)
+        return;
+    
+    for (int j = i; j < numFds - 1; j++) {
+        _fds[j] = _fds[j + 1];
+    }
+    numFds--;
 }
 
 /**
