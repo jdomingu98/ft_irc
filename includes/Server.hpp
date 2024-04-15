@@ -88,6 +88,7 @@ class Server {
         void    removeChannel(std::string channelName);
 
         // Disconnection
+        bool    isUserConnected(int clientFd) const;
         void    handleClientDisconnection(int clientFd);
         void	closeConnections();
 

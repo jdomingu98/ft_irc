@@ -31,11 +31,11 @@ void QuitCommand::execute(int clientFd) {
         for (size_t j = 0; j < usersChannel.size(); j++) {
             if (!channels[i].isUserInChannel(usersChannel[j].getNickname()))
                 continue;
-            server.sendMessage(usersChannel[j].getFd(), QUIT_MSG(nickname, user.getUsername(), user.getHostname(), _message.empty() ? nickname : _message));
+            if (server.isUserConnected(usersChannel[j].getFd()))
+                server.sendMessage(usersChannel[j].getFd(), QUIT_MSG(nickname, user.getUsername(), user.getHostname(), _message.empty() ? nickname : _message));
         }
 
         usersChannel.clear();
-        channels[i].removeUser(nickname);
     }
     server.handleClientDisconnection(clientFd);
 }

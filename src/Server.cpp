@@ -207,7 +207,6 @@ void Server::handleClientDisconnection(int clientFd) {
     for (int j = i; j < this->_numFds - 1; j++) {
         this->_fds[j] = this->_fds[j + 1];
     }
-    this->_fds[this->_numFds - 1] = NULL;
     (this->_numFds)--;
 }
 
@@ -545,4 +544,20 @@ Channel &Server::getChannelByName(const std::string &channelName) {
  */
 bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
+}
+
+/**
+ * This function aims to check if a user is connected.
+ * 
+ * @param clientFd The file descriptor of the user.
+ * 
+ * @return `true` if the user is connected, `false` otherwise.
+ */
+bool Server::isUserConnected(int clientFd) const {
+    for (int i = 0; i < this->_numFds; i++) {
+        if (this->_fds[i].fd == clientFd) {
+            return true;
+        }
+    }
+    return false;
 }
