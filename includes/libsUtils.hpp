@@ -6,6 +6,7 @@
 */
 
 # include <algorithm>
+# include <cerrno>
 # include <csignal>
 # include <cstdlib>
 # include <cstring>
