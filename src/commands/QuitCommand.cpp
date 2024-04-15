@@ -26,7 +26,7 @@ void QuitCommand::execute(int clientFd) {
     std::vector<Channel> channels = server.getChannels();
 
     for (size_t i = 0; i < channels.size(); i++) {
-        std::vector<User> usersChannel = channels[i].getUsers();
+        std::vector<User> usersChannel = channels[i].getAllUsers();
 
         for (size_t j = 0; j < usersChannel.size(); j++) {
             if (!channels[i].isUserInChannel(usersChannel[j].getNickname()))
