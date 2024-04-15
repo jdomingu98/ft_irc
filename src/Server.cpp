@@ -161,10 +161,10 @@ void Server::listenClients() {
                 continue;
 
             // Client disconnected
-            /*if (this->_fds[i].revents & POLLHUP) {
+            if (this->_fds[i].revents & POLLHUP) {
                 this->handleClientDisconnection(this->_fds[i].fd, numFds);
                 continue;
-            }*/
+            }
 
             if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
