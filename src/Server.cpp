@@ -205,9 +205,9 @@ void Server::handleClientDisconnection(int clientFd) {
         return;
     
     for (int j = i; j < this->_numFds - 1; j++) {
-        _fds[j] = _fds[j + 1];
+        this->_fds[j] = this->_fds[j + 1];
     }
-    this->_fds[this->_numFds - 1] = 0;
+    this->_fds[this->_numFds - 1] = NULL;
     (this->_numFds)--;
 }
 
