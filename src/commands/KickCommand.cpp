@@ -46,14 +46,11 @@ void KickCommand::execute(int clientFd) {
         std::vector<User> channelUsers = channel.getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
 
-        int destFd;
         for (size_t j = 0; j < channelUsers.size(); j++) {
-            destFd = channelUsers[j].getFd();
             Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[j].getNickname().c_str());
-            if (server.isUserConnected(destFd)) {
-                server.sendMessage(destFd, KICK_MSG(nickname, user.getUsername(), user.getHostname(),
-                                            this->_channels[i], kickedUser, comment));
-            }
+            server.sendMessage(channelUsers[j].getFd(),
+                                    KICK_MSG(nickname, user.getUsername(), user.getHostname(),
+                                        this->_channels[i], kickedUser, comment));
         }
         channelUsers.clear();
         channel.removeUser(kickedUser);

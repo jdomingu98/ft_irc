@@ -313,7 +313,6 @@ void Channel::removeUser(const std::string &nickname) {
                 break;
             }	
         }
-        //serverChannels.clear();
     }
 }
 
@@ -414,7 +413,7 @@ void Channel::broadcastToChannel(const std::string &message, const std::string &
     Server& server = Server::getInstance();
     std::vector<User> allUsers = getAllUsers();
     for (size_t i = 0; i < allUsers.size(); i++) {
-        if (allUsers[i].getNickname() != nickname && server.isUserConnected(allUsers[i].getFd()))
+        if (allUsers[i].getNickname() != nickname)
             server.sendMessage(allUsers[i].getFd(), message);
     }
 }

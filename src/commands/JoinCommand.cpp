@@ -75,11 +75,9 @@ void JoinCommand::sendMessages(int clientFd, const std::string &message, Channel
 
     std::string channelName = channel.getName();
     
-    if (server.isUserConnected(clientFd)) {
-        server.sendMessage(clientFd, message);
-        server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
-        server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
-    }
+    server.sendMessage(clientFd, message);
+    server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
+    server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
 }
 
 /** ----------------TESTING-------------

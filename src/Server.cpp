@@ -234,8 +234,7 @@ void Server::handleNewConnection() {
     this->_fds[this->_numFds].fd = clientSocket;
     this->_fds[this->_numFds].events = POLLIN;
 
-    if (this->isUserConnected(clientSocket))
-        this->sendMessage(clientSocket, WELCOME_MSG);
+    this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -363,6 +362,8 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
+    if (!this->isUserConnected(clientFd))
+        return;
     std::string messageToSend = message + std::string("\r\n");
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL) < 0)
         throw ServerException(SEND_EXPT);
@@ -376,9 +377,8 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
-    
-    if (this->isUserConnected(clientFd))
-        this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+
+    this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**
