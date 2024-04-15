@@ -5,8 +5,6 @@
 
 # include "Server.hpp"
 
-# include "libsUtils.hpp"
-
 /**
  * An ACommand implementation that is responsible for setting the username data of an user.
  */

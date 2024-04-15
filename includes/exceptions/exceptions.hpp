@@ -41,7 +41,7 @@
 // # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
 
 // #define ERR_KEYSET(channel) (channel) " :Channel key already set"
-# define ERR_UNKOWN_MODE(modeChar) (modeChar + " :is unknown mode char to me")
+# define ERR_UNKOWN_MODE(modeChar) (modeChar) + " :is unknown mode char to me"
 // #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
 // #define ERR_U_MODE_IS(userModeString) (userModeString)
 // #define ERR_U_MODE_UNKNOWN_FLAG ":Unknown MODE flag"
@@ -226,7 +226,7 @@ class UserNotInChannelException : public IRCException {
  */
 class UnknownModeException : public IRCException {
     public:
-        UnknownModeException(char modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
+        UnknownModeException(const std::string &modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
 };
 
 /**

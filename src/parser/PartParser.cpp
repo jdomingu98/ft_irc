@@ -11,6 +11,7 @@
  * @param tokens The parameters of the command.
  * 
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
+ * @throws `BadChannelMaskException` if the channel mask is invalid.
  * @return The parsed command.
  */
 ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
@@ -20,10 +21,8 @@ ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> channels = split(tokens[1], ',');
 
     for (size_t i = 0; i < channels.size(); i++) {
-        //Search channels
-        if (channels[i]  != "#" || channels[i] != "&") { //Probar que devuelve server oficial
-            //throw IRCException();
-        }
+        if (channels[i][0]  != '#' && channels[i][0] != '&')
+            throw BadChannelMaskException(channels[i]);
     }
 
     return new PartCommand(channels);

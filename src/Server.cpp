@@ -222,7 +222,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     if (!buffer[0])
         return;
-  
+
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
@@ -232,15 +232,18 @@ void Server::handleExistingConnection(int clientFd) {
         try {
             ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
 
+            if (!command) {
+                this->_inputBuffer[clientFd].clear();
+                return;
+            }
+
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
-
             command->execute(clientFd);
-            this->_inputBuffer[clientFd].clear();
-            
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
+        this->_inputBuffer[clientFd].clear();
     }
 }
 
@@ -317,8 +320,19 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
+    int msgSignal = 0;
     std::string messageToSend = message + std::string("\r\n");
-    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL) < 0)
+    
+    // setsocketopt in Mac (+ 0 value on send function) to avoid sending signal SIGPIPE
+    // Same behaviour in Linux with MSG_NOSIGNAL on send function
+    #ifdef __APPLE__
+        int enabled = 1;
+        setsockopt(clientFd, SOL_SOCKET, SO_NOSIGPIPE, (void *) &enabled, sizeof(int));
+    #else
+        msgSignal = MSG_NOSIGNAL;
+    #endif
+    
+    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0)
         throw ServerException(SEND_EXPT);
 }
 

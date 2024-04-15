@@ -25,7 +25,10 @@ int main(int argc, char **argv) {
         Server::init(port, password);
     } catch (ServerException &e) {
         std::cerr << e.what() << std::endl;
-        Server::getInstance().closeConnections();
+    } catch (IRCException &e) {
+        std::cerr << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Unexpected error occurs!" << std::endl;
     }
 
     Server::getInstance().closeConnections();

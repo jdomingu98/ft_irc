@@ -272,8 +272,9 @@ bool Channel::isFull() const {
  */
 void Channel::addUser(User user) {
     std::vector<User>::iterator it = findUser(user.getNickname());
-    if (it != this->_users.end()) {}
+    if (it != this->_users.end()) {
         //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
+    }
     this->_users.push_back(user);
 }
 
@@ -285,20 +286,24 @@ void Channel::addUser(User user) {
  * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
 void Channel::removeUser(const std::string &nickname) {
-    Server& server = Server::getInstance();
+    Server &server = Server::getInstance();
     
     std::vector<User>::iterator itUser = this->findUser(nickname);
     std::vector<User>::iterator itOper = this->findOper(nickname);   
     
+    if (itUser == this->_users.end() && itOper == this->_operators.end())
+        throw UserNotInChannelException(nickname, this->_name);
+
     if (itUser != this->_users.end()) {
         itUser->removeChannel(this->_name);
         this->_users.erase(itUser);
-    } else if (itOper != this->_operators.end()) {
+    }
+    
+    if (itOper != this->_operators.end()) {
         itOper->removeChannel(this->_name);
         this->_operators.erase(itOper);
-    } else
-        throw UserNotInChannelException(nickname, this->_name);
-        
+    }
+
     if (this->_users.empty() && this->_operators.empty()) {
         std::vector<Channel> &serverChannels = server.getChannels();
         

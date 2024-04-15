@@ -15,19 +15,16 @@
  * @return The parsed command.
  */
 ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() < 3)
+    if (tokens.size() < 3 || tokens[1].empty() || tokens[2].empty())
         throw NeedMoreParamsException("KICK");
 
-    std::vector<std::string> channelsList = split(tokens[1], ',');
+    std::vector<std::string> channels = split(tokens[1], ',');
     std::vector<std::string> usersList = split(tokens[2], ',');
-    std::vector<Channel> channels;
     std::vector<User> users;
     
-    for (size_t i = 0; i < channelsList.size(); i++) {
-        if (channelsList[i][0] != '#' && channelsList[i][0] != '&')
-            throw BadChannelMaskException(channelsList[i]);
-        Channel &channel = Server::getInstance().getChannelByName(channelsList[i]);
-        channels.push_back(channel);
+    for (size_t i = 0; i < channels.size(); i++) {
+        if (channels[i][0] != '#' && channels[i][0] != '&')
+            throw BadChannelMaskException(channels[i]);
     }
 
     for (size_t i = 0; i < usersList.size(); i++) {
@@ -35,8 +32,7 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
         users.push_back(user);
     }
     
-    std::string comment = (tokens.size() == 4) ? tokens[3] : NONE;
-    channelsList.clear();
+    const std::string comment = (tokens.size() > 3) ? join(tokens, 3) : NONE;
     usersList.clear();
     return new KickCommand(channels, users, comment);
 }

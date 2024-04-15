@@ -37,34 +37,48 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 /**
+ * Checks if the string is a number.
+ * 
+ * @param s The string to be checked.
+ * 
+ * @return `true` if the string is a number, `false` otherwise.
+ */
+bool isNumber(const std::string& s) {
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+/**
  * Joins the vector of strings.
  * 
  * @param msg The vector of strings to be joined.
+ * @param initialMsgPosition The position where the message begins
  * 
  * @return The joined string.
  */
-const std::string join(const std::vector<std::string> &msg) {
+const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
+
+    if (msg.empty() || initialMsgPosition >= msg.size())
+        return NONE;
+    
+    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
     std::string strJoined;
-    std::vector<std::string>::const_iterator it = msg.begin();
 
-    while (it != msg.end() && it->find(":") == std::string::npos)
-        it++;
-    
-    if (it == msg.end())
+    if (msgTokens.empty())
         return NONE;
-    
-    if (*it != ":")
-        strJoined = it->substr(1);
-    else if (it + 1 == msg.end())
+
+    strJoined = msgTokens[0];
+
+    if (strJoined.size() < 2 || strJoined[0] != ':' || strJoined[1] == ' ')
         return NONE;
-    it++;
-    
-    while (it != msg.end())
-        strJoined += " " + *it++;
-    
-    return strJoined;
+
+    for (size_t i = 1; i < msgTokens.size(); i++)
+        strJoined += " " + msgTokens[i];
+
+    Logger::debug(strJoined.substr(1)); 
+    return strJoined.substr(1);
 }
-
 
 /**
  * Checks if the string contains a colon.

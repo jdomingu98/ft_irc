@@ -40,6 +40,6 @@ void UserCommand::execute(int clientFd) {
     user.setHostname(this->_hostname);
     user.setServerName(this->_serverName);
     user.setRealName(this->_realName);
-     if (user.canRegister())
+    if (user.canRegister())
         server.attemptUserRegistration(clientFd);
 }
