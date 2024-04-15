@@ -250,8 +250,11 @@ void Server::handleExistingConnection(int clientFd) {
     std::memset(buffer, '\0', BUFFER_SIZE);
 
     int readBytes = recv(clientFd, buffer, BUFFER_SIZE, 0);
-    if (readBytes < 0)
+    if (readBytes < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
         throw ServerException(RECV_EXPT);
+    }
     else if (readBytes == 0) {
         QuitCommand quit("Client disconnected!");
         quit.execute(clientFd);
