@@ -234,7 +234,8 @@ void Server::handleNewConnection() {
     this->_fds[this->_numFds].fd = clientSocket;
     this->_fds[this->_numFds].events = POLLIN;
 
-    this->sendMessage(clientSocket, WELCOME_MSG);
+    if (this->isUserConnected(clientSocket))
+        this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -372,7 +373,9 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
-    this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+    
+    if (this->isUserConnected(clientFd))
+        this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**

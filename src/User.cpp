@@ -214,9 +214,14 @@ void User::removeChannel(const std::string &channelName) {
  * @param message The message to send.
  */
 void User::sendPrivateMessageToUser(const User &destination, const std::string& message) const {
+    Server &server = Server::getInstance();
+    int destFd = destination.getFd();
+
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
     std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getNickname(), message);
-    Server::getInstance().sendMessage(destination.getFd(), response);
+
+    if (server.isUserConnected(destFd))
+        server.sendMessage(destFd, response);
 }
 
 /**
@@ -237,9 +242,15 @@ Channel *User::getChannelByName(std::string &channelName) {
  * @param message The message to send.
  */
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
+    Server &server = Server::getInstance();
+    int destFd;
+
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
     std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getName(), message);
     std::vector<User> users = destination.getAllUsers();
-    for (size_t i = 0; i < users.size(); i++)
-        Server::getInstance().sendMessage(users[i].getFd(), response);
+    for (size_t i = 0; i < users.size(); i++) {
+        destFd = users[i].getFd();
+        if (server.isUserConnected(destFd))
+            server.sendMessage(destFd, response);
+    }
 }

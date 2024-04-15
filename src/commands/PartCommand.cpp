@@ -47,9 +47,12 @@ void PartCommand::execute(int clientFd) {
         std::vector<User> users = channel.getAllUsers();
         Logger::debug("Get users list of channel " + channel.getName());
         
+        int destFd;
         for (size_t j = 0; j < users.size(); j++) {
+            destFd = users[j].getFd();
             Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-            server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channel.getName()));
+            if (server.isUserConnected(destFd))
+                server.sendMessage(destFd, PART_MSG(nickname, username, hostname, channel.getName()));
         }
         users.clear();
     }

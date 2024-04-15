@@ -48,5 +48,6 @@ void InviteCommand::execute(int clientFd) {
         throw ChanOPrivsNeededException(this->_channelName);
     
     channel.inviteUser(this->_nickname);
-    server.sendMessage(clientFd, RPL_INVITING(this->_channelName, this->_nickname));
+    if (server.isUserConnected(clientFd))
+        server.sendMessage(clientFd, RPL_INVITING(this->_channelName, this->_nickname));
 }
