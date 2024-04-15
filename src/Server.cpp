@@ -192,11 +192,9 @@ void Server::handleClientDisconnection(int clientFd) {
     std::string nickname = user.getNickname();
 
     for (size_t i = 0; i < channels.size(); i++) {
-        Channel &channel = channels[i];
-        if (channel.isUserInChannel(nickname))
-            channel.removeUser(nickname);
+        if (channels[i].isUserInChannel(nickname))
+            channels[i].removeUser(nickname);
     }
-    channels.clear();
     this->removeUser(clientFd);
 
     int i = 0;
@@ -209,6 +207,7 @@ void Server::handleClientDisconnection(int clientFd) {
     for (int j = i; j < this->_numFds - 1; j++) {
         _fds[j] = _fds[j + 1];
     }
+    this->_fds[this->_numFds - 1] = 0;
     (this->_numFds)--;
 }
 
@@ -256,6 +255,7 @@ void Server::handleExistingConnection(int clientFd) {
     else if (readBytes == 0) {
         QuitCommand quit("Client disconnected!");
         quit.execute(clientFd);
+        return;
     }
     
     buffer[readBytes] = '\0';

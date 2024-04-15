@@ -37,6 +37,5 @@ void QuitCommand::execute(int clientFd) {
         usersChannel.clear();
         channels[i].removeUser(nickname);
     }
-    channels.clear();
     server.handleClientDisconnection(clientFd);
 }
