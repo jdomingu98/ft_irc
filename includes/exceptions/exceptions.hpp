@@ -35,7 +35,6 @@
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
 # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
-#define ERR_MISSING_COLON(command) (command) + " :Missing colon"
 // # define ERR_NO_TOP_LEVEL(mask) (mask) + " :No toplevel domain specified"
 // # define ERR_WILD_TOP_LEVEL(mask) (mask) + " :Wildcard in toplevel domain"
 // # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
@@ -243,14 +242,6 @@ class CannotSendToChanException : public IRCException {
 class UnknownCommandException : public IRCException {
     public:
         UnknownCommandException(const std::string &command) : IRCException("421", ERR_UNKNOWN_COMMAND(command)) {}
-};
-
-/**
- * This exception is thrown when a colon is missing.
- */
-class MissingColonException : public IRCException {
-    public:
-        MissingColonException(const std::string &command) : IRCException("488", ERR_MISSING_COLON(command)) {}
 };
 
 #endif

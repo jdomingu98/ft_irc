@@ -25,7 +25,7 @@ ACommand *TopicParser::parse(const std::vector<std::string>& tokens) {
     }
     
     if (!isColonPresent(tokens))
-        throw MissingColonException("TOPIC");
+        throw NeedMoreParamsException("TOPIC");
     
     Logger::debug("TOPIC with comment");
     return new TopicCommand(&channel, join(tokens, 2));
