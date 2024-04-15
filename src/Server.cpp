@@ -150,19 +150,19 @@ void Server::initServer() {
  *  the server can't send a message.
  */
 void Server::listenClients() {
-    int numFds = 1;
+    this->_numFds = 1;
     
     while (!this->_signalReceived) {
-        if (poll(this->_fds, numFds, -1) == -1 && !this->_signalReceived)
+        if (poll(this->_fds, this->_numFds, -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < numFds; i++) {
+        for (int i = 0; i < this->_numFds; i++) {
             if (this->_fds[i].revents == 0)
                 continue;
 
             // Client disconnected
             if (this->_fds[i].revents & POLLHUP) {
-                this->handleClientDisconnection(this->_fds[i].fd, numFds);
+                this->handleClientDisconnection(this->_fds[i].fd);
                 continue;
             }
 
@@ -170,8 +170,8 @@ void Server::listenClients() {
                 throw ServerException(REVENTS_EXPT);
             
             if (this->_fds[i].fd == this->_socketFd) {
-                this->handleNewConnection(numFds);
-                numFds++;
+                this->handleNewConnection();
+                (this->_numFds)++;
             } else
                 this->handleExistingConnection(this->_fds[i].fd);
         }
@@ -182,14 +182,11 @@ void Server::listenClients() {
 
 /**
  * This function aims to handle a client disconnection.
- * 
  * It removes the user from all the channels and the server.
  * 
  * @param clientFd The file descriptor of the client.
- * @param numFds The number of file descriptors.
- * 
  */
-void Server::handleClientDisconnection(int clientFd, int numFds) {
+void Server::handleClientDisconnection(int clientFd) {
     User &user = this->getUserByFd(clientFd);
     std::vector<Channel> &channels = this->getChannels();
 
@@ -206,27 +203,25 @@ void Server::handleClientDisconnection(int clientFd, int numFds) {
     close(clientFd);
     
     int i = 0;
-    while (i < numFds && this->_fds[i].fd != clientFd)
+    while (i < this->_numFds && this->_fds[i].fd != clientFd)
         i++;
     
-    if (i == numFds)
+    if (i == this->_numFds)
         return;
     
-    for (int j = i; j < numFds - 1; j++) {
+    for (int j = i; j < this->_numFds - 1; j++) {
         _fds[j] = _fds[j + 1];
     }
-    numFds--;
+    (this->_numFds)--;
 }
 
 /**
  * This function aims to handle a new connection.
  * It accepts a new connection and adds the new socket to the array of poll_fds.
  * 
- * @param numFds The number of file descriptors.
- * 
  * @throws `ServerException` if the server can't accept a new connection.
  */
-void Server::handleNewConnection(int numFds) {
+void Server::handleNewConnection() {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
@@ -241,8 +236,8 @@ void Server::handleNewConnection(int numFds) {
 
     this->_users.push_back(User(clientSocket));
     // Add new socket to poll_fds array
-    this->_fds[numFds].fd = clientSocket;
-    this->_fds[numFds].events = POLLIN;
+    this->_fds[this->_numFds].fd = clientSocket;
+    this->_fds[this->_numFds].events = POLLIN;
 
     this->sendMessage(clientSocket, WELCOME_MSG);
 }
