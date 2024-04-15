@@ -222,6 +222,10 @@ void Server::handleExistingConnection(int clientFd) {
     int readBytes = recv(clientFd, buffer, BUFFER_SIZE, 0);
     if (readBytes < 0)
         throw ServerException(RECV_EXPT);
+    else if (readBytes == 0) {
+        QuitCommand quit("Client disconnected!");
+        quit.execute(clientFd);
+    }
     
     buffer[readBytes] = '\0';
 
