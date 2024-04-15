@@ -177,7 +177,6 @@ void Server::listenClients() {
         }
     }
     Logger::debug("Closing connections...");
-    this->closeConnections();
 }
 
 /**
@@ -197,11 +196,9 @@ void Server::handleClientDisconnection(int clientFd) {
         if (channel.isUserInChannel(nickname))
             channel.removeUser(nickname);
     }
-    this->removeUser(clientFd);
-    
     channels.clear();
-    close(clientFd);
-    
+    this->removeUser(clientFd);
+
     int i = 0;
     while (i < this->_numFds && this->_fds[i].fd != clientFd)
         i++;

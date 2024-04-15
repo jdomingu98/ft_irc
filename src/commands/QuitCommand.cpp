@@ -23,7 +23,7 @@ void QuitCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
 
     std::string nickname = user.getNickname();
-    std::vector<Channel> channels = server.getChannels();
+    std::vector<Channel> &channels = server.getChannels();
 
     for (size_t i = 0; i < channels.size(); i++) {
         std::vector<User> usersChannel = channels[i].getAllUsers();
