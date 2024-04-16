@@ -228,6 +228,7 @@ void Server::handleExistingConnection(int clientFd) {
 
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
+    Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
     size_t pos;
     while ((pos = this->_inputBuffer[clientFd].find_first_of("\r\n")) != std::string::npos) {
         std::string message = this->_inputBuffer[clientFd].substr(0, pos);
@@ -237,7 +238,6 @@ void Server::handleExistingConnection(int clientFd) {
             this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
         }
 
-        Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
         User &client = getUserByFd(clientFd);
 
         try {
