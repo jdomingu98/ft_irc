@@ -265,19 +265,28 @@ void Server::handleExistingConnection(int clientFd) {
     if (!buffer[0])
         return;
 
+    if (this->_inputBuffer.find(clientFd) == this->_inputBuffer.end())
+        this->_inputBuffer[clientFd] = "";
+
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
-    if (buffer[readBytes - 1] == '\n') {
+    size_t pos;
+    while ((pos = this->_inputBuffer[clientFd].find_first_of("\r\n")) != std::string::npos) {
+        std::string message = this->_inputBuffer[clientFd].substr(0, pos);
+        this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 1);
+        
+        if (!this->_inputBuffer[clientFd].empty() && this->_inputBuffer[clientFd][0] == '\n') {
+            this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
+        }
+
         User &client = getUserByFd(clientFd);
 
         try {
-            ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
+            ACommand* command = CommandParser::parse(message);
 
-            if (!command) {
-                this->_inputBuffer[clientFd].clear();
-                return;
-            }
+            if (!command)
+                continue;
 
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
@@ -285,7 +294,6 @@ void Server::handleExistingConnection(int clientFd) {
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
-        this->_inputBuffer[clientFd].clear();
     }
 }
 
