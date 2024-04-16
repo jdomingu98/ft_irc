@@ -12,7 +12,7 @@ class QuitCommand : public ACommand {
     private:
         std::string _message;
     public:
-        QuitCommand(std::string message);
+        QuitCommand(const std::string &message);
         ~QuitCommand();
 
         void execute(int clientFd);

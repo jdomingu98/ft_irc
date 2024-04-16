@@ -168,7 +168,7 @@ void Server::listenClients() {
 
             if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
-            
+
             if (this->_fds[i].fd == this->_socketFd) {
                 this->handleNewConnection();
                 (this->_numFds)++;

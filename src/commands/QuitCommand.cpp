@@ -5,7 +5,7 @@
  * 
  * @param msg The message
  */
-QuitCommand::QuitCommand(std::string message) : ACommand(false), _message(message) {}
+QuitCommand::QuitCommand(const std::string &message) : ACommand(false), _message(message) {}
 
 /**
  * QuitCommand destructor.
