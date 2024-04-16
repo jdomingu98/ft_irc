@@ -223,6 +223,9 @@ void Server::handleExistingConnection(int clientFd) {
     if (!buffer[0])
         return;
 
+    if (this->_inputBuffer.find(clientFd) == this->_inputBuffer.end())
+        this->_inputBuffer[clientFd] = "";
+
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     size_t pos;
@@ -230,7 +233,7 @@ void Server::handleExistingConnection(int clientFd) {
         std::string message = this->_inputBuffer[clientFd].substr(0, pos);
         this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 1);
         
-        if (this->_inputBuffer[clientFd][0] == '\n') {
+        if (!this->_inputBuffer[clientFd].empty() && this->_inputBuffer[clientFd][0] == '\n') {
             this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
         }
 
