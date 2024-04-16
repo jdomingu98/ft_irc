@@ -226,10 +226,14 @@ void Server::handleExistingConnection(int clientFd) {
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
     size_t pos;
-    while ((pos = this->_inputBuffer[clientFd].find("\r\n")) != std::string::npos) {
+    while ((pos = this->_inputBuffer[clientFd].find_first_of("\r\n")) != std::string::npos) {
         std::string message = this->_inputBuffer[clientFd].substr(0, pos);
-        this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 2);
-    
+        this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 1);
+        
+        if (this->_inputBuffer[clientFd][0] == '\n') {
+            this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
+        }
+
         Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
         User &client = getUserByFd(clientFd);
 
@@ -238,7 +242,7 @@ void Server::handleExistingConnection(int clientFd) {
 
             if (!command) {
                 //this->_inputBuffer[clientFd].clear();
-                return;
+                continue;
             }
 
             if (command->needsValidation() && !client.isRegistered())
@@ -249,7 +253,6 @@ void Server::handleExistingConnection(int clientFd) {
         }
         //this->_inputBuffer[clientFd].clear();
     }
-
 }
 
 /**
