@@ -313,7 +313,6 @@ void Channel::removeUser(const std::string &nickname) {
                 break;
             }	
         }
-        serverChannels.clear();
     }
 }
 

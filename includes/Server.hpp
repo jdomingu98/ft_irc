@@ -39,6 +39,7 @@ class Server {
         int                         _socketFd;
         struct sockaddr_in          _serverAddr;
         struct pollfd               _fds[MAX_CLIENTS];
+        int                         _numFds;
         std::map<int, std::string>  _inputBuffer;
         std::vector<User>           _users;
         std::vector<Channel>        _channels;
@@ -54,8 +55,8 @@ class Server {
         bool isValidPort(const std::string &port) const;
         void initServer();
         void listenClients();
-        void handleNewConnection(int numFds);
-        void handleExistingConnection(int fd);
+        void handleNewConnection();
+        void handleExistingConnection(int clientFd);
 
         // User Iterators
         std::vector<User>::iterator findUserByFd(int clientFd);
@@ -86,12 +87,16 @@ class Server {
         void    addChannel(Channel channel);
         void    removeChannel(std::string channelName);
 
+        // Disconnection
+        bool    isUserConnected(int clientFd) const;
+        void    handleClientDisconnection(int clientFd);
+        void	closeConnections();
+
         // Other Operations
         void    sendMessage(int clientFd, const std::string& message) const;
         void    sendExceptionMessage(int clientFd, const IRCException &e) const;
         bool    isValidPassword(const std::string& password) const;
         void	setSignalReceived();
-        void	closeConnections();
 
         // Channel Iterators
         std::vector<Channel>::iterator findChannel(const std::string &channelName);

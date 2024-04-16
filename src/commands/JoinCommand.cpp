@@ -74,7 +74,7 @@ void JoinCommand::sendMessages(int clientFd, const std::string &message, Channel
     Server &server = Server::getInstance();
 
     std::string channelName = channel.getName();
-        
+    
     server.sendMessage(clientFd, message);
     server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
     server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));

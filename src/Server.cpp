@@ -150,39 +150,73 @@ void Server::initServer() {
  *  the server can't send a message.
  */
 void Server::listenClients() {
-    int numFds = 1;
+    this->_numFds = 1;
     
     while (!this->_signalReceived) {
-        if (poll(this->_fds, numFds, -1) == -1 && !this->_signalReceived)
+        if (poll(this->_fds, this->_numFds, -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < numFds; i++) {
+        for (int i = 0; i < this->_numFds; i++) {
             if (this->_fds[i].revents == 0)
                 continue;
+
+            // Client disconnected
+            if (this->_fds[i].revents & POLLHUP) {
+                this->handleClientDisconnection(this->_fds[i].fd);
+                continue;
+            }
 
             if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
 
             if (this->_fds[i].fd == this->_socketFd) {
-                this->handleNewConnection(numFds);
-                numFds++;
+                this->handleNewConnection();
+                (this->_numFds)++;
             } else
                 this->handleExistingConnection(this->_fds[i].fd);
         }
     }
     Logger::debug("Closing connections...");
-    this->closeConnections();
+}
+
+/**
+ * This function aims to handle a client disconnection.
+ * It removes the user from all the channels and the server.
+ * 
+ * @param clientFd The file descriptor of the client.
+ */
+void Server::handleClientDisconnection(int clientFd) {
+    User &user = this->getUserByFd(clientFd);
+    std::vector<Channel> &channels = this->getChannels();
+
+    std::string nickname = user.getNickname();
+
+    for (size_t i = 0; i < channels.size(); i++) {
+        if (channels[i].isUserInChannel(nickname))
+            channels[i].removeUser(nickname);
+    }
+    this->removeUser(clientFd);
+
+    int i = 0;
+    while (i < this->_numFds && this->_fds[i].fd != clientFd)
+        i++;
+    
+    if (i == this->_numFds)
+        return;
+    
+    for (int j = i; j < this->_numFds - 1; j++) {
+        this->_fds[j] = this->_fds[j + 1];
+    }
+    (this->_numFds)--;
 }
 
 /**
  * This function aims to handle a new connection.
  * It accepts a new connection and adds the new socket to the array of poll_fds.
  * 
- * @param numFds The number of file descriptors.
- * 
  * @throws `ServerException` if the server can't accept a new connection.
  */
-void Server::handleNewConnection(int numFds) {
+void Server::handleNewConnection() {
     
     // Accept a new connection
     socklen_t size = sizeof(this->_serverAddr);
@@ -197,8 +231,8 @@ void Server::handleNewConnection(int numFds) {
 
     this->_users.push_back(User(clientSocket));
     // Add new socket to poll_fds array
-    this->_fds[numFds].fd = clientSocket;
-    this->_fds[numFds].events = POLLIN;
+    this->_fds[this->_numFds].fd = clientSocket;
+    this->_fds[this->_numFds].events = POLLIN;
 
     this->sendMessage(clientSocket, WELCOME_MSG);
 }
@@ -215,8 +249,16 @@ void Server::handleExistingConnection(int clientFd) {
     std::memset(buffer, '\0', BUFFER_SIZE);
 
     int readBytes = recv(clientFd, buffer, BUFFER_SIZE, 0);
-    if (readBytes < 0)
+    if (readBytes < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
         throw ServerException(RECV_EXPT);
+    }
+    else if (readBytes == 0) {
+        QuitCommand quit("Client disconnected!");
+        quit.execute(clientFd);
+        return;
+    }
     
     buffer[readBytes] = '\0';
 
@@ -320,6 +362,9 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
+    if (!this->isUserConnected(clientFd) && message != WELCOME_MSG)
+        return;
+
     int msgSignal = 0;
     std::string messageToSend = message + std::string("\r\n");
     
@@ -344,6 +389,7 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
+
     this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
@@ -516,4 +562,20 @@ Channel &Server::getChannelByName(const std::string &channelName) {
  */
 bool Server::channelExists(const std::string &channelName) const {
     return findChannel(channelName) != this->_channels.end();
+}
+
+/**
+ * This function aims to check if a user is connected.
+ * 
+ * @param clientFd The file descriptor of the user.
+ * 
+ * @return `true` if the user is connected, `false` otherwise.
+ */
+bool Server::isUserConnected(int clientFd) const {
+    for (int i = 0; i < this->_numFds; i++) {
+        if (this->_fds[i].fd == clientFd) {
+            return true;
+        }
+    }
+    return false;
 }
