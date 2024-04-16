@@ -4,11 +4,21 @@
  * Parses the command.
  * 
  * @param input The command to parse.
+ * @param client The client that sent the command.
  * 
  * @return The parsed command.
  */
-ACommand* CommandParser::parse(const std::string& input) {
+ACommand* CommandParser::parse(const std::string& input, const User &client) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
+    if (tokens.size >= 2 && tokens[0][0] == ':')
+    {
+        std::string nickname = client.getNickname();
+        if (tokens[0].substr(1) != nickname && tokens[0] != USER_ID(nickname, client.getUsername(), client.getHostname())) {
+            // throw new IRCException();
+        }
+        tokens.erase(tokens.begin());
+    }
+
     IParser *parser = CommandParser::getParser(tokens[0]);
     if (!parser)
         return NULL;

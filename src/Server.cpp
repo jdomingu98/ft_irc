@@ -283,7 +283,7 @@ void Server::handleExistingConnection(int clientFd) {
         User &client = getUserByFd(clientFd);
 
         try {
-            ACommand* command = CommandParser::parse(message);
+            ACommand* command = CommandParser::parse(message, client);
 
             if (!command)
                 continue;
