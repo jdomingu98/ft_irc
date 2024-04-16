@@ -362,7 +362,7 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
-    if (!this->isUserConnected(clientFd))
+    if (!this->isUserConnected(clientFd) && message != WELCOME_MSG)
         return;
 
     int msgSignal = 0;
