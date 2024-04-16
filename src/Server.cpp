@@ -243,10 +243,8 @@ void Server::handleExistingConnection(int clientFd) {
         try {
             ACommand* command = CommandParser::parse(message);
 
-            if (!command) {
-                //this->_inputBuffer[clientFd].clear();
+            if (!command)
                 continue;
-            }
 
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
@@ -254,7 +252,6 @@ void Server::handleExistingConnection(int clientFd) {
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
-        //this->_inputBuffer[clientFd].clear();
     }
 }
 
