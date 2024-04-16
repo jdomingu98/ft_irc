@@ -225,15 +225,19 @@ void Server::handleExistingConnection(int clientFd) {
 
     this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
 
-    Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
-    if (buffer[readBytes - 1] == '\n') {
+    size_t pos;
+    while ((pos = this->_inputBuffer[clientFd].find("\r\n")) != std::string::npos) {
+        std::string message = this->_inputBuffer[clientFd].substr(0, pos);
+        this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 2);
+    
+        Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
         User &client = getUserByFd(clientFd);
 
         try {
             ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
 
             if (!command) {
-                this->_inputBuffer[clientFd].clear();
+                //this->_inputBuffer[clientFd].clear();
                 return;
             }
 
@@ -243,8 +247,9 @@ void Server::handleExistingConnection(int clientFd) {
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         }
-        this->_inputBuffer[clientFd].clear();
+        //this->_inputBuffer[clientFd].clear();
     }
+
 }
 
 /**
