@@ -241,7 +241,7 @@ void Server::handleExistingConnection(int clientFd) {
         User &client = getUserByFd(clientFd);
 
         try {
-            ACommand* command = CommandParser::parse(this->_inputBuffer[clientFd]);
+            ACommand* command = CommandParser::parse(message);
 
             if (!command) {
                 //this->_inputBuffer[clientFd].clear();
