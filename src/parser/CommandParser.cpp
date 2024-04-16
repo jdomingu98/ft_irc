@@ -10,7 +10,7 @@
  */
 ACommand* CommandParser::parse(const std::string& input, const User &client) {
     std::vector<std::string> tokens = CommandParser::tokenize(input);
-    if (tokens.size >= 2 && tokens[0][0] == ':')
+    if (tokens.size() >= 2 && tokens[0][0] == ':')
     {
         std::string nickname = client.getNickname();
         if (tokens[0].substr(1) != nickname && tokens[0] != USER_ID(nickname, client.getUsername(), client.getHostname())) {
