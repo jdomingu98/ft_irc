@@ -5,7 +5,7 @@
  * 
  * @param channel The channel where the topic will be set, removed or requested
  */
-TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel), _topic(NONE), _newTopicProvide(false) {}
+TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel), _topic(NONE), _newTopicProvided(false) {}
 
 /**
  * Constructs a new TopicCommand.
@@ -13,7 +13,7 @@ TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel)
  * @param channel The channel where the topic will be set, removed or requested
  * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvide(true){}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvided(true){}
 
 /**
  * Destroys the TopicCommand.
@@ -42,18 +42,10 @@ void TopicCommand::execute(int clientFd) {
         throw NotOnChannelException(channelName);
     
     Logger::debug("User in channel " + channelName);
- 
-    if (_topic != NONE)
-        Logger::debug("Channel's topic not empty.");
-    else
-        Logger::debug("Channel's topic is empty.");
 
-    if (_newTopicProvide) {
-
+    if (_newTopicProvided) {
         if (_channel->isTopicProtected() && !_channel->isOper(nickname))
             throw ChanOPrivsNeededException(channelName);
-        if (_channel->isOper(nickname))
-            Logger::debug("User " + user.getNickname() + " is operator in channel " + channelName);
 
         Logger::debug("Setting the new channel topic to " + _topic);
         _channel->setTopic(_topic);
@@ -62,7 +54,6 @@ void TopicCommand::execute(int clientFd) {
         _channel->broadcastToChannel(TOPIC_MSG(nickname, username, hostname, channelName, _topic));
     }
     else {
-        
         Logger::debug("Sending topic to user");
         server.sendMessage(clientFd, RPL_TOPIC(channelName, _channel->getTopic()));
     }

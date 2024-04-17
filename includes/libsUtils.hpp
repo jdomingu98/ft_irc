@@ -82,6 +82,4 @@ bool isColonPresent(const std::vector<std::string> &msg);
 
 bool haveOnlySpaces(const std::vector<std::string> &msg);
 
-std::string firstWord(const std::vector<std::string> &msg, size_t initialMsgPosition);
-
 #endif

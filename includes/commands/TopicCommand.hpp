@@ -15,7 +15,7 @@ class TopicCommand : public ACommand {
     private:
         Channel     *_channel;
         std::string _topic;
-        bool _newTopicProvide;
+        bool        _newTopicProvided;
     
     public:
         TopicCommand(Channel *channel);
