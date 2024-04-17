@@ -13,7 +13,7 @@ TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel)
  * @param channel The channel where the topic will be set, removed or requested
  * @param topic The topic of the channel
  */
-TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvided(true){}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvided(true) {}
 
 /**
  * Destroys the TopicCommand.

@@ -411,6 +411,6 @@ void Channel::setTopicProtected(bool topicProtected) {
 void Channel::broadcastToChannel(const std::string &message) {
     Server& server = Server::getInstance();
     std::vector<User> allUsers = getAllUsers();
-    for (size_t i = 0; i < allUsers.size(); i++)
-            server.sendMessage(allUsers[i].getFd(), message);
+    for (std::vector<User>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
+        server.sendMessage(it->getFd(), message);
 }
