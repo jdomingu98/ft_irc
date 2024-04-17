@@ -10,10 +10,9 @@
  */
 class QuitCommand : public ACommand {
     private:
-        std::string _msg;
+        std::string _message;
     public:
-        QuitCommand();
-        QuitCommand(std::string msg);
+        QuitCommand(const std::string &message);
         ~QuitCommand();
 
         void execute(int clientFd);

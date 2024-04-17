@@ -20,7 +20,7 @@ class KickCommand : public ACommand {
         std::string           _comment;
 
     public:
-        KickCommand(std::vector<std::string> channels, const std::vector<User> &users, std::string comment);
+        KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, std::string comment);
         ~KickCommand();
 
         void execute(int clientFd);

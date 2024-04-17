@@ -7,7 +7,8 @@
  * @param users The users to kick
  * @param comment The comment for the kick
  */
-KickCommand::KickCommand(std::vector<std::string> channels, const std::vector<User> &users, std::string comment) : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
+KickCommand::KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, std::string comment)
+    : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
 
 /**
  * Destroys the KickCommand.
@@ -44,10 +45,11 @@ void KickCommand::execute(int clientFd) {
         
         std::vector<User> channelUsers = channel.getAllUsers();
         std::string comment = _comment.empty() ? nickname : _comment;
+
         for (size_t j = 0; j < channelUsers.size(); j++) {
             Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[j].getNickname().c_str());
             server.sendMessage(channelUsers[j].getFd(),
-                                KICK_MSG(nickname, user.getUsername(), user.getHostname(),
+                                    KICK_MSG(nickname, user.getUsername(), user.getHostname(),
                                         this->_channels[i], kickedUser, comment));
         }
         channelUsers.clear();
