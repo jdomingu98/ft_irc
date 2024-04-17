@@ -66,7 +66,7 @@
 # define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN " + ":" + channelName //??
 # define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + channelName
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + channelName + " " + kickedUser + " :" + comment
-# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + channelName + " :" + topic
+# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + channelName + " " +topic
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + destination + " :" + message
 
 std::string trim(const std::string& str);
@@ -79,5 +79,7 @@ const std::string join(const std::vector<std::string> &msg, size_t initialMsgPos
 bool isColonPresent(const std::vector<std::string> &msg);
 
 bool haveOnlySpaces(const std::vector<std::string> &msg);
+
+std::string firstWord(const std::vector<std::string> &msg, size_t initialMsgPosition);
 
 #endif

@@ -113,3 +113,21 @@ bool haveOnlySpaces(const std::vector<std::string> &msg) {
     }
     return true;
 }
+
+/**
+*  Searches for the first letter or word in the message and returns it. 
+* 
+* @param msg The vector of strings.
+* @param initialMsgPosition The position where the message begins
+* 
+* @return The first word of the message.
+*/
+std::string firstWord(const std::vector<std::string> &msg, size_t initialMsgPosition) {
+    if (msg.empty() || initialMsgPosition >= msg.size())
+        return NONE;
+    for (size_t i = initialMsgPosition; i < msg.size(); i++) {
+        if (msg[i] != " ")
+            return msg[i];
+    }
+    return NONE;
+}

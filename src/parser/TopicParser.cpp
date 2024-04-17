@@ -24,9 +24,11 @@ ACommand *TopicParser::parse(const std::vector<std::string>& tokens) {
         return new TopicCommand(&channel);
     }
     
-    if (!isColonPresent(tokens))
-        throw NeedMoreParamsException("TOPIC");
-    
-    Logger::debug("TOPIC with comment");
+    if (!isColonPresent(tokens)) {
+        Logger::debug("TOPIC with comment and no colon");
+        return new TopicCommand(&channel, firstWord(tokens, 2));
+    }
+
+    Logger::debug("TOPIC with comment and colon");
     return new TopicCommand(&channel, join(tokens, 2));
 }
