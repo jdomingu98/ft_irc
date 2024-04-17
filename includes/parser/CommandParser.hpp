@@ -46,7 +46,7 @@ class CommandParser {
         static IParser* getParser(std::string command);
     
     public:
-        static ACommand* parse(const std::string& command);
+        static ACommand* parse(const std::string& command, const User &client);
 };
 
 #endif
