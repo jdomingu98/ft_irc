@@ -18,11 +18,9 @@ ACommand *TopicParser::parse(const std::vector<std::string>& tokens) {
         throw NeedMoreParamsException("TOPIC");
     
     Channel &channel = Server::getInstance().getChannelByName(tokens[1]);
-    
-    if (tokens.size() == 2 || haveOnlySpaces(tokens)) {
-        Logger::debug("TOPIC without comment");
+    if (tokens.size() == 2 || haveOnlySpaces(tokens))
         return new TopicCommand(&channel);
-    }
-    
-   return new TopicCommand(&channel, isColonPresent(tokens) ? join(tokens, 2) : tokens[2]);
+
+    Logger::debug("Calling TopicCommand to change the topic of channel " + tokens[1]);
+    return new TopicCommand(&channel, isColonPresent(tokens) ? join(tokens, 2) : tokens[2]);
 }

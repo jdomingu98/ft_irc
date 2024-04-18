@@ -9,7 +9,6 @@ class Channel;
 
 /**
  * An ACommand implementation that is responsible for setting the topic of a channel.
- * 
  */
 class TopicCommand : public ACommand {
     private:
