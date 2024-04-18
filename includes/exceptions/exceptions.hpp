@@ -32,6 +32,7 @@
 # define ERR_USER_ON_CHANNEL(user, channel) (user) + " " + (channel) + " :is already on channel"
 # define ERR_USER_NOT_IN_CHANNEL(user, channel) (user) + " " + (channel) + " :They aren't on that channel"
 
+# define ERR_NO_TOPIC(channelName) (channelName) + " :No topic is set"
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
 # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
@@ -242,6 +243,15 @@ class CannotSendToChanException : public IRCException {
 class UnknownCommandException : public IRCException {
     public:
         UnknownCommandException(const std::string &command) : IRCException("421", ERR_UNKNOWN_COMMAND(command)) {}
+};
+
+/**
+ * This exception is thrown when there is no topic set for a channel.
+ */
+class NoTopicSetException : public IRCException {
+    public:
+        NoTopicSetException(const std::string &channelName)
+        : IRCException("331", ERR_NO_TOPIC(channelName)) {}
 };
 
 #endif

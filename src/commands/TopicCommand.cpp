@@ -55,7 +55,10 @@ void TopicCommand::execute(int clientFd) {
     }
     else {
         Logger::debug("Sending topic to user");
-        server.sendMessage(clientFd, RPL_TOPIC(channelName, _channel->getTopic()));
+        if (_channel->getTopic().empty())
+            throw NoTopicSetException(channelName);
+        else
+            server.sendMessage(clientFd, RPL_TOPIC(channelName, _channel->getTopic()));
     }
     
     Logger::debug("Channel's topic is: " + _channel->getTopic());
