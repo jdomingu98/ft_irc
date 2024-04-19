@@ -9,7 +9,7 @@
  * @return The parsed command.
  */
 ACommand* CommandParser::parse(const std::string& input, const User &client) {
-    std::vector<std::string> tokens = split(input);//CommandParser::tokenize(input);
+    std::vector<std::string> tokens = split(input, ' '); //CommandParser::tokenize(input);
     if (tokens.size() >= 2 && tokens[0][0] == ':')
     {
         std::string nickname = client.getNickname();
