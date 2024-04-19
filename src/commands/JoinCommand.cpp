@@ -124,7 +124,7 @@ void JoinCommand::execute(int clientFd) {
             this->printUsers(channel);
             
             sendMessages(clientFd, RPL_NO_TOPIC(channelName), channel);
-            return;
+            continue;
         }
 
         Logger::debug("CHANNEL NOW EXISTS");
