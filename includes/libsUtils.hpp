@@ -68,7 +68,7 @@
 # define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + (channelName)
 # define QUIT_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " QUIT :" + (message)
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
-# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " :" + (topic)
+# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " " + (topic)
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
 
 std::string trim(const std::string& str);
