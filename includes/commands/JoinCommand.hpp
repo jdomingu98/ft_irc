@@ -23,7 +23,7 @@ class JoinCommand : public ACommand {
                                 std::vector<User> const &opers,
                                 std::vector<User> const &users) const;
         void printUsers(Channel &channel) const;
-        void sendMessages(int clientFd, const std::string &message, Channel &channel) const;
+        void sendMessages(int clientFd, Channel &channel) const;
 
     public:
         JoinCommand(std::map<std::string, std::string> channelMap);
