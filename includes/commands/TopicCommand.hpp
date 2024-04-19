@@ -9,12 +9,12 @@ class Channel;
 
 /**
  * An ACommand implementation that is responsible for setting the topic of a channel.
- * 
  */
 class TopicCommand : public ACommand {
     private:
         Channel     *_channel;
         std::string _topic;
+        bool        _newTopicProvided;
     
     public:
         TopicCommand(Channel *channel);

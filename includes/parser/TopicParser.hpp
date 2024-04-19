@@ -9,7 +9,6 @@
 
 # include "libsUtils.hpp"
 
-
 /**
  * An IParser implementation that is responsible for parsing the TOPIC command.
  */
