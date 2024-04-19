@@ -74,6 +74,7 @@ const std::string join(const std::vector<std::string> &msg, size_t initialMsgPos
     if (strJoined.size() > 0 && strJoined[0] == ':') {
         for (size_t i = 1; i < msgTokens.size(); i++)
             strJoined += " " + msgTokens[i];
+        strJoined = strJoined.substr(1);
     }
 
     Logger::debug(strJoined); 
