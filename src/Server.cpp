@@ -255,7 +255,7 @@ void Server::handleExistingConnection(int clientFd) {
         throw ServerException(RECV_EXPT);
     }
     else if (readBytes == 0) {
-        QuitCommand quit("Client disconnected!");
+        QuitCommand quit("connection closed");
         quit.execute(clientFd);
         return;
     }
