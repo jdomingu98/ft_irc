@@ -45,7 +45,9 @@ std::vector<std::string> split(const std::string &s, char delim) {
  */
 bool isNumber(const std::string& s) {
     std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
+    
+    while (it != s.end() && std::isdigit(*it))
+        ++it;
     return !s.empty() && it == s.end();
 }
 
@@ -69,15 +71,13 @@ const std::string join(const std::vector<std::string> &msg, size_t initialMsgPos
         return NONE;
 
     strJoined = msgTokens[0];
+    if (strJoined.size() > 0 && strJoined[0] == ':') {
+        for (size_t i = 1; i < msgTokens.size(); i++)
+            strJoined += " " + msgTokens[i];
+    }
 
-    if (strJoined.size() < 2 || strJoined[0] != ':' || strJoined[1] == ' ')
-        return NONE;
-
-    for (size_t i = 1; i < msgTokens.size(); i++)
-        strJoined += " " + msgTokens[i];
-
-    Logger::debug(strJoined.substr(1)); 
-    return strJoined.substr(1);
+    Logger::debug(strJoined); 
+    return strJoined.empty() ? " " : strJoined;
 }
 
 /**
