@@ -35,13 +35,13 @@ std::string JoinCommand::rplNamReply(std::string const &channelName, std::vector
         }
 
         for (size_t i = 0; i < users.size(); i++) {
-            msg += " +" + users[i].getNickname();
+            msg += " " + users[i].getNickname();
         }
     } else if (users.size() > 0) {
-        msg += "+" + users[0].getNickname();
+        msg += users[0].getNickname();
 
         for (size_t i = 1; i < users.size(); i++) {
-            msg += " +" + users[i].getNickname();
+            msg += " " + users[i].getNickname();
         }
     }
 
@@ -70,12 +70,17 @@ void JoinCommand::printUsers(Channel &channel) const {
  * @param channel The channel to send the message to
  * 
  */
-void JoinCommand::sendMessages(int clientFd, const std::string &message, Channel &channel) const {
+void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     Server &server = Server::getInstance();
 
     std::string channelName = channel.getName();
+    std::vector<User> channelUsers = channel.getAllUsers();
     
-    server.sendMessage(clientFd, message);
+    for (size_t i = 0; i < channelUsers.size(); i++) {
+        server.sendMessage(channelUsers[i].getFd(),
+                            JOIN_MSG(channelUsers[i].getNickname(), channelUsers[i].getUsername(),
+                                    channelUsers[i].getHostname(), channelName));
+    }
     server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
     server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
 }
@@ -117,13 +122,11 @@ void JoinCommand::execute(int clientFd) {
 
             server.addChannel(Channel(channelName, user));
             Channel &channel = server.getChannelByName(channelName);
-            if (!channelKey.empty())
-                channel.setPassword(channelKey);
 
             user.addChannel(channel);
             this->printUsers(channel);
             
-            sendMessages(clientFd, RPL_NO_TOPIC(channelName), channel);
+            sendMessages(clientFd, channel);
             return;
         }
 
@@ -159,9 +162,7 @@ void JoinCommand::execute(int clientFd) {
         Logger::debug("--- POST SAVE ---");
         this->printUsers(channel);
 
-        //5. Send JOIN message to all users in channel[i]
-        std::string topic = channel.getTopic();
-        const std::string message = topic.empty() ? RPL_NO_TOPIC(channelName) : RPL_TOPIC(channelName, topic);
-        sendMessages(clientFd, message, channel);
+        //5. Send JOIN messages
+        sendMessages(clientFd, channel);
     }
 }
