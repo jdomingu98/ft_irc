@@ -80,10 +80,8 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
     std::string token;
     
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
-        if (*it == NONE)
-            tokens.erase(it);
-        else if (it->size() > 0 && it->at(0) == ':') {
-            token = join(tokens, it - tokens.begin(), true);
+        if (it->size() > 0 && it->at(0) == ':') {
+            token = join(tokens, it - tokens.begin());
             *it = token;
             tokens.erase(it + 1, tokens.end());
             break;
