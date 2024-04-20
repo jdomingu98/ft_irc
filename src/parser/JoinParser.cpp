@@ -22,26 +22,20 @@ ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> channelsVec = split(tokens[1], ',');
     std::vector<std::string> keysVec;
 
-    if (tokens.size() != 2)
+    if (tokens.size() == 3)
         keysVec = split(tokens[2], ',');
 
     for (size_t i = 0; i < channelsVec.size(); i++) {
-        if (!channelsVec[i].empty() && (channelsVec[i][0] != '#' && channelsVec[i][0] != '&'))
+        if (channelsVec[i].empty())
+            continue;
+
+        if (channelsVec[i][0] != '#' && channelsVec[i][0] != '&')
             throw BadChannelMaskException(channelsVec[i]);
         
-        if (tokens.size() != 2) {
-            if (channelsVec[i].empty() && keysVec[i].empty())
-                continue;
-            if (channelsVec[i].empty()) {
-                // throw IRCException(); 
-            }
-            channels[channelsVec[i]] = (i < keysVec.size() && !keysVec[i].empty()) ? keysVec[i] : NONE;
-        } else if (!channelsVec[i].empty())
-            channels[channelsVec[i]] = NONE;
+        channels[channelsVec[i]] = (!keysVec.empty() && !keysVec[i].empty()) ? keysVec[i] : NONE;
     }
-
-    channelsVec.clear();
-    if (tokens.size() > 2)
+    if (!keysVec.empty())
         keysVec.clear();
+    channelsVec.clear();
     return new JoinCommand(channels);
 }
