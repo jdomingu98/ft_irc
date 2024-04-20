@@ -25,18 +25,22 @@ void QuitCommand::execute(int clientFd) {
     std::string nickname = user.getNickname();
     std::vector<Channel> &channels = server.getChannels();
     
+    std::set<User> allUsers;
+    std::set<User>::iterator it;
     for (size_t i = 0; i < channels.size(); i++) {
+        if (!channels[i].isUserInChannel(nickname))
+            continue;
+
         std::vector<User> usersChannel = channels[i].getAllUsers();
-
-        for (size_t j = 0; j < usersChannel.size(); j++) {
-            if (!channels[i].isUserInChannel(usersChannel[j].getNickname()))
-                continue;
-            server.sendMessage(usersChannel[j].getFd(), 
-                                    QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
-                                        _message.empty() ? nickname : _message));
-        }
-
+        for (size_t j = 0; j < usersChannel.size(); j++)
+            allUsers.insert(usersChannel[j]);
         usersChannel.clear();
+    }
+
+    for (it = allUsers.begin(); it != allUsers.end(); it++) {
+        server.sendMessage(it->getFd(), 
+                            QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
+                                    _message.empty() ? nickname : _message));
     }
     server.handleClientDisconnection(clientFd);
 }
