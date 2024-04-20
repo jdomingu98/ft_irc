@@ -385,8 +385,11 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
         msgSignal = MSG_NOSIGNAL;
     #endif
     
-    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0)
+    if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
         throw ServerException(SEND_EXPT);
+    }
 }
 
 /**
