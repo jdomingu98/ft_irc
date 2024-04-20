@@ -38,11 +38,10 @@ void NickCommand::execute(int clientFd) {
 
     User &user = server.getUserByFd(clientFd);
 
-    if (server.isNicknameInUse(this->_nickname)) {
+    if (server.isNicknameInUse(this->_nickname))
         user.isRegistered()
             ? throw NicknameInUseException(this->_nickname)
             : throw NickCollisionException(this->_nickname);
-    }
 
     if (!NickCommand::isValidNickname())
         throw ErroneousNicknameException(this->_nickname);
@@ -59,9 +58,8 @@ void NickCommand::execute(int clientFd) {
  * @return `true` if the nickname is valid, `false` otherwise
  */
 bool NickCommand::isValidNickname() {
-    for (size_t i = 0; i < this->_nickname.size(); i++) {
-        if (!std::isalnum(this->_nickname[i]) && this->_nickname[i] != '_' )
+    for (std::string::iterator it = this->_nickname.begin(); it != this->_nickname.end(); it++)
+        if (!std::isalnum(*it) && *it != '_' )
             return false;
-    }
     return true;
 }

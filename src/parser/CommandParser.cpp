@@ -9,19 +9,14 @@
  * @return The parsed command.
  */
 ACommand* CommandParser::parse(const std::string& input, const User &client) {
-    std::vector<std::string> tokens = CommandParser::tokenize(input);
-    if (tokens.size() >= 2 && tokens[0][0] == ':')
-    {
-        std::string nickname = client.getNickname();
-        if (tokens[0].substr(1) != nickname && tokens[0] != USER_ID(nickname, client.getUsername(), client.getHostname())) {
-            // throw new IRCException();
-        }
-        tokens.erase(tokens.begin());
-    }
+    std::string command(input);
+    CommandParser::validateUserPrefix(command, client);
+    std::vector<std::string> tokens = CommandParser::tokenize(command);
+
+    if (tokens.empty())
+        return NULL;
 
     IParser *parser = CommandParser::getParser(tokens[0]);
-    if (!parser)
-        return NULL;
     try {
         ACommand *command = parser->parse(tokens);
         delete parser;
@@ -64,7 +59,7 @@ IParser* CommandParser::getParser(std::string command) {
     if (command == "MODE")
         return new ModeParser();
     if (command == NONE)
-        return NULL;
+        throw IgnoreCommandException();
     throw UnknownCommandException(command);
 }
 
@@ -76,14 +71,112 @@ IParser* CommandParser::getParser(std::string command) {
  * @return The tokens of the command.
  */
 std::vector<std::string> CommandParser::tokenize(const std::string& command) {
-    std::vector<std::string> tokens;
+    std::vector<std::string> tokens(split(command, ' '));
     std::string token;
-    std::istringstream tokenStream(command);
-    
-    while (std::getline(tokenStream, token, ' ')) {
-        if (token.empty())
-            continue;
-        tokens.push_back(trim(token));
-    }
+
+    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++)
+        if (it->size() > 0 && it->at(0) == ':') {
+            token = CommandParser::join(tokens, it - tokens.begin());
+            *it = token;
+            tokens.erase(it + 1, tokens.end());
+            break;
+        }
     return tokens;
+}
+
+/**
+ * This function asserts that the user prefix is correct.
+ * If the prefix is incorrect, an exception is thrown.
+ * When the prefix is detected, it is removed from the command to avoid parsing it at command level.
+ * 
+ * Format: nick [!user] [@hostname]
+ * 
+ * @param command The command to validate.
+ * @param client The client that sent the command.
+ * 
+ * @throws `IRCException` if the prefix is incorrect.
+ * 
+ */
+void CommandParser::validateUserPrefix(std::string &command, const User &client) {
+    if (command.empty() || command[0] != ':')
+        throw IgnoreCommandException();
+    if (command.size() < 2)
+        throw IgnoreCommandException();
+
+    size_t spaceIndex = command.find(' ');
+    std::string prefix(NONE);
+    if (spaceIndex == std::string::npos)
+        prefix = command.substr(1);
+    else
+        prefix = command.substr(1, spaceIndex - 1);
+    
+    if (spaceIndex + 1 >= command.size())
+        throw IgnoreCommandException();
+    command = command.substr(spaceIndex + 1);
+
+    size_t userIndex = prefix.find('!');
+    size_t hostIndex = prefix.find('@');
+    bool hasUser = userIndex != std::string::npos;
+    bool hasHostname = hostIndex != std::string::npos;
+
+    // Nick parsing
+    std::string nick(NONE);
+    if (hasUser)
+        nick = prefix.substr(0, userIndex);
+    else if (hasHostname)
+        nick = prefix.substr(0, hostIndex);
+    else
+        nick = prefix;
+    if (nick.empty())
+        throw IgnoreCommandException();
+
+
+    // Username parsing
+    std::string username(NONE);
+    if (hasUser) {
+        if (hasHostname)
+            username = prefix.substr(userIndex + 1, hostIndex - userIndex - 1);
+        else
+            username = prefix.substr(userIndex + 1);
+    }
+
+    // Hostname parsing
+    std::string hostname(NONE);
+    if (hasHostname) {
+        hostname = prefix.substr(prefix.find('@') + 1);
+    }
+    if (nick != client.getNickname() || (hasUser && username != client.getUsername()) || (hasHostname && hostname != client.getHostname()))
+        throw IgnoreCommandException();
+}
+
+/**
+ * Joins the vector of strings.
+ * 
+ * @param msg The vector of strings to be joined.
+ * @param initialMsgPosition The position where the message begins
+ * @param appendColon If `true`, the colon will be appended to the joined string. Default is `false`.
+ * 
+ * @return The joined string.
+ */
+const std::string CommandParser::join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
+    // TODO: Check if we need to call join at every command. In case we don't, we can remove the default value of appendColon.
+    // and suppose that the colon will be appended to the joined string always.
+    if (msg.empty() || initialMsgPosition >= msg.size())
+        return NONE;
+    
+    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    std::string strJoined;
+
+    if (msgTokens.empty())
+        return NONE;
+
+    strJoined = msgTokens[0];
+    if (strJoined.size() > 0 && strJoined[0] == ':') {
+        for (size_t i = 1; i < msgTokens.size(); i++)
+            strJoined += " " + msgTokens[i];
+        strJoined = strJoined.substr(1);
+    }
+
+    Logger::debug(strJoined); 
+    return strJoined.empty() ? " " : strJoined;
 }
