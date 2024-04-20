@@ -72,12 +72,16 @@ void JoinCommand::printUsers(Channel &channel) const {
  */
 void JoinCommand::sendMessages(int clientFd, const std::string &message, Channel &channel) const {
     Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
 
     std::string channelName = channel.getName();
+    std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
     
     server.sendMessage(clientFd, message);
     server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
-    server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
+    server.sendMessage(clientFd, RPL_END_OF_NAMES(nickname, username, hostname, channelName));
 }
 
 /** ----------------TESTING-------------
@@ -101,6 +105,8 @@ void JoinCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
     
     std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
     Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
@@ -123,7 +129,7 @@ void JoinCommand::execute(int clientFd) {
             user.addChannel(channel);
             this->printUsers(channel);
             
-            sendMessages(clientFd, RPL_NO_TOPIC(channelName), channel);
+            sendMessages(clientFd,  RPL_NO_TOPIC(nickname, username, hostname, channelName), channel);
             return;
         }
 
@@ -161,7 +167,8 @@ void JoinCommand::execute(int clientFd) {
 
         //5. Send JOIN message to all users in channel[i]
         std::string topic = channel.getTopic();
-        const std::string message = topic.empty() ? RPL_NO_TOPIC(channelName) : RPL_TOPIC(channelName, topic);
+        const std::string message = topic.empty() ? RPL_NO_TOPIC(nickname, username, hostname, channelName)
+                                                  : RPL_TOPIC(nickname, username, hostname, channelName, topic);
         sendMessages(clientFd, message, channel);
     }
 }

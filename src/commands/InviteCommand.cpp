@@ -33,6 +33,9 @@ void InviteCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &me = server.getUserByFd(clientFd);
     
+    std::string username = me.getUsername();
+    std::string hostname = me.getHostname();
+    
     if (!server.isNicknameInUse(this->_nickname))
         throw NoSuchNickException(this->_nickname);
     
@@ -48,5 +51,5 @@ void InviteCommand::execute(int clientFd) {
         throw ChanOPrivsNeededException(this->_channelName);
     
     channel.inviteUser(this->_nickname);
-    server.sendMessage(clientFd, RPL_INVITING(this->_channelName, this->_nickname));
+    server.sendMessage(clientFd, RPL_INVITING( this->_nickname, username, hostname, this->_channelName));
 }

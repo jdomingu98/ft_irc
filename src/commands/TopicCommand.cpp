@@ -34,6 +34,8 @@ void TopicCommand::execute(int clientFd) {
 
     std::string channelName = _channel->getName();
     std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
 
     if (!user.isOnChannel(channelName))
         throw NotOnChannelException(channelName);
@@ -51,8 +53,8 @@ void TopicCommand::execute(int clientFd) {
         _channel->broadcastToChannel(TOPIC_MSG(nickname, user.getUsername(),
                                                 user.getHostname(), channelName, _topic));
     } else {
-        std::string message = _channel->getTopic().empty()  ? RPL_NO_TOPIC(channelName)
-                                                            : RPL_TOPIC(channelName, _channel->getTopic());
+        std::string message = _channel->getTopic().empty()  ? RPL_NO_TOPIC(nickname, username, hostname, channelName)
+                                                            : RPL_TOPIC(nickname, username, hostname, channelName, _channel->getTopic());
         Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
         server.sendMessage(clientFd, message);
     }

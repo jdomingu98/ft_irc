@@ -54,12 +54,12 @@
 
 //RPL_XXX -> Reply messages (Command Response)
 
-# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
-# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
-# define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
+# define RPL_TOPIC(nickname, username, hostname, channel, topic) USER_ID(nickname, username, hostname) + " " + (channel) + " :" + (topic)
+# define RPL_NO_TOPIC(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :No topic is set"
+# define RPL_INVITING(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (nickname)
 // # define RPL_AWAY(nickname, awayMessage) (nickname) + " :" + (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_END_OF_NAMES(channel) (channel) + " :End of /NAMES list."
+# define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of /NAMES list."
 
 # define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
