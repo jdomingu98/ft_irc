@@ -32,8 +32,8 @@ class User {
         User(int fd);
         ~User();
 
-        // Equals operator
-        bool operator==(const User& other) const;
+        // Less than operator
+        bool operator<(const User& other) const;
 
         // Getters
         int getFd() const;
