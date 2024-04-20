@@ -35,7 +35,7 @@ std::string JoinCommand::rplNamReply(const std::string &nickname,
 
     std::vector<User> users = channel.getUsers();
     std::vector<User> opers = channel.getOperators();
-    
+
     if (opers.size() > 0) {
         msg += "@" + opers[0].getNickname();
 
@@ -59,7 +59,7 @@ void JoinCommand::printUsers(Channel &channel) const {
     std::vector<User> opers = channel.getOperators();
     for (size_t i = 0; i < opers.size(); i++)
         Logger::debug(opers[i].getNickname());
-    
+
     Logger::debug("USERS:");
     std::vector<User> users = channel.getUsers();
     for (size_t i = 0; i < users.size(); i++)
@@ -80,11 +80,11 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
 
     std::string channelName = channel.getName();
     std::vector<User> channelUsers = channel.getAllUsers();
-    
+
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
-    
+
     for (size_t i = 0; i < channelUsers.size(); i++) {
         server.sendMessage(channelUsers[i].getFd(),
                             JOIN_MSG(channelUsers[i].getNickname(), channelUsers[i].getUsername(),
@@ -113,10 +113,8 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
 void JoinCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
-    
+
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
     Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
@@ -136,7 +134,7 @@ void JoinCommand::execute(int clientFd) {
 
             user.addChannel(channel);
             this->printUsers(channel);
-            
+
             sendMessages(clientFd, channel);
             continue;
         }
@@ -144,7 +142,7 @@ void JoinCommand::execute(int clientFd) {
         Logger::debug("CHANNEL NOW EXISTS");
         Channel &channel = server.getChannelByName(channelName);
         Logger::debug("CHANNEL NAME: " + channelName);
-        
+
         if (channel.isUserInChannel(nickname))
             throw UserOnChannelException(nickname, channelName); //Provisional
 

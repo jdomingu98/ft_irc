@@ -39,7 +39,7 @@ void TopicCommand::execute(int clientFd) {
 
     if (!user.isOnChannel(channelName))
         throw NotOnChannelException(channelName);
-    
+
     Logger::debug("User " + nickname + " in channel " + channelName);
 
     if (_newTopicProvided && _channel->isTopicProtected() && !_channel->isOper(nickname))
