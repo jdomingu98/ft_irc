@@ -122,8 +122,6 @@ void JoinCommand::execute(int clientFd) {
 
             server.addChannel(Channel(channelName, user));
             Channel &channel = server.getChannelByName(channelName);
-            if (!channelKey.empty())
-                channel.setPassword(channelKey);
 
             user.addChannel(channel);
             this->printUsers(channel);
