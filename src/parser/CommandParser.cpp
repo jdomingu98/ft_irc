@@ -17,8 +17,6 @@ ACommand* CommandParser::parse(const std::string& input, const User &client) {
         return NULL;
 
     IParser *parser = CommandParser::getParser(tokens[0]);
-    if (!parser)
-        return NULL;
     try {
         ACommand *command = parser->parse(tokens);
         delete parser;
@@ -61,7 +59,7 @@ IParser* CommandParser::getParser(std::string command) {
     if (command == "MODE")
         return new ModeParser();
     if (command == NONE)
-        return NULL;
+        throw IgnoreCommandException();
     throw UnknownCommandException(command);
 }
 
@@ -101,17 +99,19 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
  */
 void CommandParser::validateUserPrefix(std::string &command, const User &client) {
     if (command.empty() || command[0] != ':')
-        return;
+        throw IgnoreCommandException();
     if (command.size() < 2)
-        throw IRCException("-42", "IDK what error to throw here. I'm just a comment. I'm not even a real exception.");
+        throw IgnoreCommandException();
 
     size_t spaceIndex = command.find(' ');
     std::string prefix(NONE);
     if (spaceIndex == std::string::npos)
         prefix = command.substr(1);
     else
-        prefix = command.substr(1, command.find(' ') - 1);
-
+        prefix = command.substr(1, spaceIndex - 1);
+    
+    if (spaceIndex + 1 >= command.size())
+        throw IgnoreCommandException();
     command = command.substr(spaceIndex + 1);
 
     size_t userIndex = prefix.find('!');
@@ -127,6 +127,8 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
         nick = prefix.substr(0, hostIndex);
     else
         nick = prefix;
+    if (nick.empty())
+        throw IgnoreCommandException();
 
 
     // Username parsing
@@ -143,10 +145,8 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
     if (hasHostname) {
         hostname = prefix.substr(prefix.find('@') + 1);
     }
-    if (nick != client.getNickname() || (hasUser && username != client.getUsername()) || (hasHostname && hostname != client.getHostname())) {
-        throw IRCException("-42", "IDK what error to throw here. I'm just a comment. I'm not even a real exception.");
-    }
-
+    if (nick != client.getNickname() || (hasUser && username != client.getUsername()) || (hasHostname && hostname != client.getHostname()))
+        throw IgnoreCommandException();
 }
 
 /**

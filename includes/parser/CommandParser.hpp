@@ -45,7 +45,7 @@ class CommandParser {
         static std::vector<std::string> tokenize(const std::string& command);
         static IParser* getParser(std::string command);
         static void validateUserPrefix(std::string& command, const User &client);
-        static const std::string CommandParser::join(const std::vector<std::string> &msg, size_t initialMsgPosition);
+        static const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition);
     
     public:
         static ACommand* parse(const std::string& command, const User &client);

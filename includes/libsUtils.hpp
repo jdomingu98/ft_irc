@@ -20,6 +20,7 @@
 # include "Logger.hpp"
 
 # include "exceptions.hpp"
+# include "IgnoreCommandException.hpp"
 
 // =================================================================================
 
