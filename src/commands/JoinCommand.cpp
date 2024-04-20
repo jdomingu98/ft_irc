@@ -24,25 +24,31 @@ JoinCommand::~JoinCommand() {
  * 
  * @return The RPL_NAMREPLY message
  */
-std::string JoinCommand::rplNamReply(std::string const &channelName, std::vector<User> const &opers, std::vector<User> const &users) const {
-    std::string msg = channelName + " :";
+std::string JoinCommand::rplNamReply(const std::string &nickname,
+                                        const std::string &username,
+                                        const std::string &hostname,
+                                        const Channel &channel) const {
+
+    std::string channelName = channel.getName();
+    std::string msg = USER_ID(nickname, username, hostname) + " " + channelName + " :";
+
+
+    std::vector<User> users = channel.getUsers();
+    std::vector<User> opers = channel.getOperators();
     
     if (opers.size() > 0) {
         msg += "@" + opers[0].getNickname();
 
-        for (size_t i = 1; i < opers.size(); i++) {
+        for (size_t i = 1; i < opers.size(); i++)
             msg += " @" + opers[i].getNickname();
-        }
 
-        for (size_t i = 0; i < users.size(); i++) {
+        for (size_t i = 0; i < users.size(); i++)
             msg += " " + users[i].getNickname();
-        }
     } else if (users.size() > 0) {
         msg += users[0].getNickname();
 
-        for (size_t i = 1; i < users.size(); i++) {
+        for (size_t i = 1; i < users.size(); i++)
             msg += " " + users[i].getNickname();
-        }
     }
 
     return msg;
@@ -51,15 +57,13 @@ std::string JoinCommand::rplNamReply(std::string const &channelName, std::vector
 void JoinCommand::printUsers(Channel &channel) const {
     Logger::debug("OPERATORS:");
     std::vector<User> opers = channel.getOperators();
-    for (size_t i = 0; i < opers.size(); i++) {
+    for (size_t i = 0; i < opers.size(); i++)
         Logger::debug(opers[i].getNickname());
-    }
     
     Logger::debug("USERS:");
     std::vector<User> users = channel.getUsers();
-    for (size_t i = 0; i < users.size(); i++) {
+    for (size_t i = 0; i < users.size(); i++)
         Logger::debug(users[i].getNickname());
-    }
 }
 
 /**
@@ -86,7 +90,7 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
                             JOIN_MSG(channelUsers[i].getNickname(), channelUsers[i].getUsername(),
                                     channelUsers[i].getHostname(), channelName));
     }
-    server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
+    server.sendMessage(clientFd, rplNamReply(nickname, username, hostname, channel));
     server.sendMessage(clientFd, RPL_END_OF_NAMES(nickname, username, hostname, channelName));
 }
 
