@@ -34,6 +34,7 @@ void QuitCommand::execute(int clientFd) {
         std::vector<User> usersChannel = channels[i].getAllUsers();
         for (size_t j = 0; j < usersChannel.size(); j++)
             allUsers.insert(usersChannel[j]);
+        usersChannel.clear();
     }
 
     for (it = allUsers.begin(); it != allUsers.end(); it++) {
@@ -41,6 +42,5 @@ void QuitCommand::execute(int clientFd) {
                             QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
                                     _message.empty() ? nickname : _message));
     }
-    usersChannel.clear();
     server.handleClientDisconnection(clientFd);
 }
