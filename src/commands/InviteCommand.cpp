@@ -32,21 +32,24 @@ InviteCommand::~InviteCommand() {}
 void InviteCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &me = server.getUserByFd(clientFd);
-    
+
     if (!server.isNicknameInUse(this->_nickname))
         throw NoSuchNickException(this->_nickname);
-    
+
     if (!me.isOnChannel(this->_channelName))
         throw NotOnChannelException(this->_channelName);
-    
+
     Channel &channel = server.getChannelByName(this->_channelName);
-    
+
     if (channel.isUserInChannel(this->_nickname))
         throw UserOnChannelException(this->_nickname, this->_channelName);
-    
+
     if (channel.isInviteOnly() && !channel.isOper(me.getNickname()))
         throw ChanOPrivsNeededException(this->_channelName);
-    
+
     channel.inviteUser(this->_nickname);
-    server.sendMessage(clientFd, RPL_INVITING(this->_channelName, this->_nickname));
+    server.sendMessage(clientFd, RPL_INVITING(this->_nickname,
+                                                me.getUsername(),
+                                                me.getHostname(),
+                                                this->_channelName));
 }
