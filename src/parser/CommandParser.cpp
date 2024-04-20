@@ -11,7 +11,7 @@
 ACommand* CommandParser::parse(const std::string& input, const User &client) {
     std::string command(input);
     CommandParser::validateUserPrefix(command, client);
-    std::vector<std::string> tokens = CommandParser::tokenize(input);
+    std::vector<std::string> tokens = CommandParser::tokenize(command);
 
     if (tokens.empty())
         return NULL;
