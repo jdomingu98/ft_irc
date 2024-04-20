@@ -13,6 +13,17 @@ User::User(int fd) : _fd(fd) {}
 User::~User() {}
 
 /**
+ * This function aims to compare two users.
+ * 
+ * @param other The other user to compare.
+ * 
+ * @return `true` if the users are the same, `false` otherwise.
+ */
+bool operator==(const User& other) const {
+    return this->nickname == other.nickname;
+}
+
+/**
  * This function aims to find a channel by the name.
  * 
  * @param channelName The name of the channel.
@@ -59,7 +70,6 @@ bool User::isUserInMaxChannels() const {
  * @return `true` if the user is on the channel, `false` otherwise.
  */
 bool User::isOnChannel(const std::string &channelName) const {
-    
     std::vector<Channel>::const_iterator it = findChannel(channelName);
     return it != this->_channels.end();
 }
