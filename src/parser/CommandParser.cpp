@@ -13,8 +13,6 @@ ACommand* CommandParser::parse(const std::string& input, const User &client) {
     CommandParser::validateUserPrefix(command, client);
     std::vector<std::string> tokens = CommandParser::tokenize(input);
 
-    // Let see all tokens for debugging purposes
-    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) Logger::debug(*it);
     if (tokens.empty())
         return NULL;
 
