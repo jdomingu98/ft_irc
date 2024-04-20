@@ -71,15 +71,7 @@
 # define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " " + (topic)
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
 
-std::string trim(const std::string& str);
-
 std::vector<std::string> split(const std::string &s, char delim);
 bool isNumber(const std::string& s);
-
-const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition);
-
-bool isColonPresent(const std::vector<std::string> &msg);
-
-bool haveOnlySpaces(const std::vector<std::string> &msg);
 
 #endif

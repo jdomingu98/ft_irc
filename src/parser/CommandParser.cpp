@@ -73,18 +73,16 @@ IParser* CommandParser::getParser(std::string command) {
  * @return The tokens of the command.
  */
 std::vector<std::string> CommandParser::tokenize(const std::string& command) {
-    
     std::vector<std::string> tokens(split(command, ' '));
     std::string token;
-    
-    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
+
+    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++)
         if (it->size() > 0 && it->at(0) == ':') {
-            token = join(tokens, it - tokens.begin());
+            token = CommandParser::join(tokens, it - tokens.begin());
             *it = token;
             tokens.erase(it + 1, tokens.end());
             break;
         }
-    }
     return tokens;
 }
 
@@ -92,6 +90,8 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
  * This function asserts that the user prefix is correct.
  * If the prefix is incorrect, an exception is thrown.
  * When the prefix is detected, it is removed from the command to avoid parsing it at command level.
+ * 
+ * Format: nick [!user] [@hostname]
  * 
  * @param command The command to validate.
  * @param client The client that sent the command.
@@ -121,22 +121,21 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
 
     // Nick parsing
     std::string nick(NONE);
-    if (hasUser) {
+    if (hasUser)
         nick = prefix.substr(0, userIndex);
-    } else if (hasHostname) {
+    else if (hasHostname)
         nick = prefix.substr(0, hostIndex);
-    } else {
+    else
         nick = prefix;
-    }
+
 
     // Username parsing
     std::string username(NONE);
     if (hasUser) {
-        if (hasHostname) {
+        if (hasHostname)
             username = prefix.substr(userIndex + 1, hostIndex - userIndex - 1);
-        } else {
+        else
             username = prefix.substr(userIndex + 1);
-        }
     }
 
     // Hostname parsing
@@ -148,4 +147,36 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
         throw IRCException("-42", "IDK what error to throw here. I'm just a comment. I'm not even a real exception.");
     }
 
+}
+
+/**
+ * Joins the vector of strings.
+ * 
+ * @param msg The vector of strings to be joined.
+ * @param initialMsgPosition The position where the message begins
+ * @param appendColon If `true`, the colon will be appended to the joined string. Default is `false`.
+ * 
+ * @return The joined string.
+ */
+const std::string CommandParser::join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
+    // TODO: Check if we need to call join at every command. In case we don't, we can remove the default value of appendColon.
+    // and suppose that the colon will be appended to the joined string always.
+    if (msg.empty() || initialMsgPosition >= msg.size())
+        return NONE;
+    
+    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    std::string strJoined;
+
+    if (msgTokens.empty())
+        return NONE;
+
+    strJoined = msgTokens[0];
+    if (strJoined.size() > 0 && strJoined[0] == ':') {
+        for (size_t i = 1; i < msgTokens.size(); i++)
+            strJoined += " " + msgTokens[i];
+        strJoined = strJoined.substr(1);
+    }
+
+    Logger::debug(strJoined); 
+    return strJoined.empty() ? " " : strJoined;
 }

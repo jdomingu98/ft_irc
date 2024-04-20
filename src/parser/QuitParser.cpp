@@ -13,5 +13,5 @@
  * @return The parsed command.
  */
 ACommand *QuitParser::parse(const std::vector<std::string>& tokens) {
-    return new QuitCommand(tokens.size() > 1 ? join(tokens, 1) : NONE);
+    return new QuitCommand(tokens.size() > 1 ? tokens[1] : NONE);
 }
