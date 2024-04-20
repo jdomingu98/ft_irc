@@ -26,6 +26,7 @@ void QuitCommand::execute(int clientFd) {
     std::vector<Channel> &channels = server.getChannels();
     
     std::set<User> allUsers;
+    std::set<User>::iterator it;
     for (size_t i = 0; i < channels.size(); i++) {
         if (!channels[i].isUserInChannel(nickname))
             continue;
@@ -35,8 +36,8 @@ void QuitCommand::execute(int clientFd) {
             allUsers.insert(usersChannel[j]);
     }
 
-    for (size_t j = 0; j < allUsers.size(); j++) {
-        server.sendMessage(allUsers[j].getFd(), 
+    for (it = allUsers.begin(); it != allUsers.end(); it++) {
+        server.sendMessage(it->getFd(), 
                             QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
                                     _message.empty() ? nickname : _message));
     }
