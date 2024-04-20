@@ -61,7 +61,7 @@ bool isNumber(const std::string& s) {
  * 
  * @return The joined string.
  */
-const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition, bool appendColon /*= false*/) {
+const std::string join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
     // TODO: Check if we need to call join at every command. In case we don't, we can remove the default value of appendColon.
     // and suppose that the colon will be appended to the joined string always.
     if (msg.empty() || initialMsgPosition >= msg.size())
@@ -75,7 +75,7 @@ const std::string join(const std::vector<std::string> &msg, size_t initialMsgPos
 
     strJoined = msgTokens[0];
     if (strJoined.size() > 0 && strJoined[0] == ':') {
-        for (size_t i = appendColon ? 0 : 1; i < msgTokens.size(); i++)
+        for (size_t i = 1; i < msgTokens.size(); i++)
             strJoined += " " + msgTokens[i];
         strJoined = strJoined.substr(1);
     }
