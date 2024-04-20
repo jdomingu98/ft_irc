@@ -19,7 +19,7 @@ User::~User() {}
  * 
  * @return `true` if the users are the same, `false` otherwise.
  */
-bool operator==(const User& other) const {
+bool User::operator==(const User& other) const {
     return this->nickname == other.nickname;
 }
 
