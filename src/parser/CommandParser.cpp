@@ -98,8 +98,10 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
  * 
  */
 void CommandParser::validateUserPrefix(std::string &command, const User &client) {
-    if (command.empty() || command[0] != ':')
+    if (command.empty())
         throw IgnoreCommandException();
+    if (command[0] != ':')
+        return;
     if (command.size() < 2)
         throw IgnoreCommandException();
 
