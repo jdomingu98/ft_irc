@@ -127,7 +127,7 @@ void JoinCommand::execute(int clientFd) {
             this->printUsers(channel);
             
             sendMessages(clientFd, channel);
-            return;
+            continue;
         }
 
         Logger::debug("CHANNEL NOW EXISTS");
