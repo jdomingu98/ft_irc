@@ -72,9 +72,14 @@ void JoinCommand::printUsers(Channel &channel) const {
  */
 void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     Server &server = Server::getInstance();
+    User &user = server.getUserByFd(clientFd);
 
     std::string channelName = channel.getName();
     std::vector<User> channelUsers = channel.getAllUsers();
+    
+    std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
     
     for (size_t i = 0; i < channelUsers.size(); i++) {
         server.sendMessage(channelUsers[i].getFd(),
@@ -82,7 +87,7 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
                                     channelUsers[i].getHostname(), channelName));
     }
     server.sendMessage(clientFd, rplNamReply(channelName, channel.getOperators(), channel.getUsers()));
-    server.sendMessage(clientFd, RPL_END_OF_NAMES(channelName));
+    server.sendMessage(clientFd, RPL_END_OF_NAMES(nickname, username, hostname, channelName));
 }
 
 /** ----------------TESTING-------------
@@ -106,6 +111,8 @@ void JoinCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
     
     std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+    std::string hostname = user.getHostname();
     Logger::debug("JOINING CHANNELS");
 
     std::string channelName;
