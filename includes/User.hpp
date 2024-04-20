@@ -32,6 +32,9 @@ class User {
         User(int fd);
         ~User();
 
+        // Less than operator
+        bool operator<(const User& other) const;
+
         // Getters
         int getFd() const;
         std::string getNickname() const;
