@@ -22,6 +22,12 @@ void QuitCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
 
+ if (!user.isRegistered()) {
+        server.sendMessage(clientFd, QUIT_MSG(std::string(""), std::string(""),std::string(""),
+                                                _message.empty() ? std::string("") : _message));
+        server.handleClientDisconnection(clientFd);
+    }
+
     std::string nickname = user.getNickname();
     std::vector<Channel> &channels = server.getChannels();
     
