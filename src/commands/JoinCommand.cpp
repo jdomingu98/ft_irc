@@ -94,16 +94,6 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     server.sendMessage(clientFd, RPL_END_OF_NAMES(nickname, username, hostname, channelName));
 }
 
-/** ----------------TESTING-------------
- * JOIN (#/&)channel password -> joins channel with password if it's correct
- * JOIN #c1,#c2 password -> password for c1, none for c2
- * JOIN #c1,#c2 password, -> password for c1, none for c2 ???
- * JOIN #c1,#c2 password1,password2 -> password1 for c1, password2 for c2
- * JOIN #c1,#c2 ,password -> none for c1, password for c2??
- * JOIN #c1,,#c2 password1,,password2 -> ignored "channel" between commas
- * JOIN #c1,,#c2 password1,password2 -> idk what happens here ¿¿¿???
- */
-
 /**
  * Executes the command JOIN.
  * 
