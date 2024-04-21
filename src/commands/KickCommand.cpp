@@ -51,7 +51,7 @@ void KickCommand::execute(int clientFd) {
     }
 }
 
-void KickCommand::kickUserFromChannel(const Channel &channel, const User &user,
+void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
     Server &server = Server::getInstance();
 

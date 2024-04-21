@@ -19,7 +19,7 @@ class KickCommand : public ACommand {
         const std::vector<User>   _users;
         const std::string         _comment;
 
-        void kickUserFromChannel(const Channel &channel, const User &user, const std::string &kickedUser, const std::string &comment);
+        void kickUserFromChannel(Channel &channel, const User &user, const std::string &kickedUser, const std::string &comment);
 
     public:
         KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, const std::string &comment);
