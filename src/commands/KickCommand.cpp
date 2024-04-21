@@ -7,7 +7,7 @@
  * @param users The users to kick
  * @param comment The comment for the kick
  */
-KickCommand::KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, std::string comment)
+KickCommand::KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, const std::string &comment)
     : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
 
 /**
@@ -43,15 +43,15 @@ void KickCommand::execute(int clientFd) {
         if (this->_channels.size() == 1 && this->_users.size() > 1) {
             for (size_t j = 0; j < this->_users.size(); j++) {
                 kickedUser = this->_users[j].getNickname();
-                kickUserFromChannel(channel, nickname, kickedUser, comment);
+                kickUserFromChannel(channel, user, kickedUser, comment);
             }
             continue;
         }
-        kickUserFromChannel(channel, nickname, kickedUser, comment);
+        kickUserFromChannel(channel, user, kickedUser, comment);
     }
 }
 
-void KickCommand::kickUserFromChannel(const Channel &channel, const std::string &nickname,
+void KickCommand::kickUserFromChannel(const Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
     Server &server = Server::getInstance();
 
@@ -63,7 +63,7 @@ void KickCommand::kickUserFromChannel(const Channel &channel, const std::string 
     for (size_t j = 0; j < channelUsers.size(); j++) {
         Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[j].getNickname().c_str());
         server.sendMessage(channelUsers[j].getFd(),
-                            KICK_MSG(nickname, user.getUsername(), user.getHostname(),
+                            KICK_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
                                     channel.getName(), kickedUser, comment));
     }
     channelUsers.clear();
