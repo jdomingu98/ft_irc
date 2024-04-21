@@ -28,6 +28,8 @@ class Channel;
 
 class User;
 
+class IRCException;
+
 /**
  * A class that represents the server.
  */
