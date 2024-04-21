@@ -93,6 +93,6 @@ std::vector<std::string> split(const std::string &s, char delim);
 
 bool isNumber(const std::string& s);
 
-const std::string &rplNamesReply(const std::string &nickname, const Channel &channel);
+const std::string rplNamesReply(const std::string &nickname, const Channel &channel);
 
 #endif
