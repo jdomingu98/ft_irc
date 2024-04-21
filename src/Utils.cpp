@@ -1,4 +1,4 @@
-#include "libsUtils.hpp"
+#include "Utils.hpp"
 
 /**
  * Splits the string by the delimiter.
@@ -64,5 +64,5 @@ const std::string &rplNamesReply(const std::string &nickname, const Channel &cha
             msg += " " + users[i].getNickname();
     }
 
-    return std::string(CODE_MSG(RPL_NAMES_REPLY_CODE, nickname, msg));
+    return CODE_MSG(RPL_NAMES_REPLY_CODE, nickname, msg);
 }

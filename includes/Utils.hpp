@@ -1,5 +1,5 @@
-#ifndef LIBS_UTILS_HPP
-# define LIBS_UTILS_HPP
+#ifndef UTILS_HPP
+# define UTILS_HPP
 
 /**
  * A file that contains utility consts and libraries that are used along the project.
@@ -22,8 +22,7 @@
 # include "Logger.hpp"
 # include "User.hpp"
 
-# include "exceptions.hpp"
-# include "IgnoreCommandException.hpp"
+# include "Exceptions.hpp"
 
 class Channel;
 
@@ -57,7 +56,7 @@ class User;
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define CODE_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
+# define CODE_MSG(errorCode, nickname, errorMsg) std::string(":irc.ft_messenger.net ") + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
 //RPL_XXX -> Reply messages (Command Response)
 

@@ -1,6 +1,7 @@
 #ifndef EXCEPTIONS_HPP
 # define EXCEPTIONS_HPP
 
+# include "IgnoreCommandException.hpp"
 # include "IRCException.hpp"
 # include "ServerException.hpp"
 
