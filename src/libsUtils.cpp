@@ -64,5 +64,5 @@ const std::string &rplNamesReply(const std::string &nickname, const Channel &cha
             msg += " " + users[i].getNickname();
     }
 
-    return CODE_MSG(RPL_NAMES_REPLY_CODE, nickname, msg);
+    return std::string(CODE_MSG(RPL_NAMES_REPLY_CODE, nickname, msg));
 }
