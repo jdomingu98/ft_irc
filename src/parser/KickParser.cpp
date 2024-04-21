@@ -31,8 +31,12 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
         User &user = Server::getInstance().getUserByNickname(usersList[i]);
         users.push_back(user);
     }
+    usersList.clear();
+
+    if (channels.size() != users.size() && (channels.size() > 1 || users.size() > 1))
+        throw NeedMoreParamsException("KICK");
     
     const std::string comment = tokens.size() > 3 ? tokens[3] : NONE;
-    usersList.clear();
+
     return new KickCommand(channels, users, comment);
 }

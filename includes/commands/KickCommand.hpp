@@ -15,12 +15,14 @@ class User;
  */
 class KickCommand : public ACommand {
     private:
-        std::vector<std::string>    _channels;
-        const std::vector<User>     _users;
-        std::string           _comment;
+        const std::vector<std::string>  _channels;
+        const std::vector<User>         _users;
+        const std::string               _comment;
+
+        void kickUserFromChannel(const Channel &channel, const std::string &nickname, const std::string &kickedUser, const std::string &comment);
 
     public:
-        KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, std::string comment);
+        KickCommand(const std::vector<std::string> &channels, const std::vector<User> &users, const std::string &comment);
         ~KickCommand();
 
         void execute(int clientFd);
