@@ -40,7 +40,7 @@ void KickCommand::execute(int clientFd) {
 
         kickedUser = this->_channels.size() == this->_users.size()  ? this->_users[i].getNickname()
                                                                     : this->_users[0].getNickname();
-        if (this->_channels.size() == 1 && this->_users.size() > 1) {
+        if (this->_channels.size() == 1) {
             for (size_t j = 0; j < this->_users.size(); j++) {
                 kickedUser = this->_users[j].getNickname();
                 kickUserFromChannel(channel, user, kickedUser, comment);
@@ -66,6 +66,5 @@ void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                             KICK_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
                                     channel.getName(), kickedUser, comment));
     }
-    channelUsers.clear();
     channel.removeUser(kickedUser);
 }
