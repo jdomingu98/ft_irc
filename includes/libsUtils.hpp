@@ -25,6 +25,10 @@
 # include "exceptions.hpp"
 # include "IgnoreCommandException.hpp"
 
+class Channel;
+
+class User;
+
 // =================================================================================
 
 # define SUCCESS 0
