@@ -18,7 +18,9 @@
 # include <vector>
 # include <unistd.h>
 
+# include "Channel.hpp"
 # include "Logger.hpp"
+# include "User.hpp"
 
 # include "exceptions.hpp"
 # include "IgnoreCommandException.hpp"
@@ -51,21 +53,32 @@
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
-# define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
+# define CODE_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
 //RPL_XXX -> Reply messages (Command Response)
 
-# define RPL_TOPIC(nickname, username, hostname, channel, topic) USER_ID(nickname, username, hostname) + " " + (channel) + " :" + (topic)
-# define RPL_NO_TOPIC(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :No topic is set"
-# define RPL_INVITING(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (nickname)
-// # define RPL_AWAY(nickname, username, hostname, awayMessage) USER_ID(nickname, username, hostname) + " " + (nickname) + " :" + (awayMessage)
-// # define RPL_CHANNEL_MODE_IS(nickname, username, hostname, channel, mode, modeParams) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of /NAMES list."
+# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
+# define RPL_TOPIC_CODE "332"
 
-# define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
+# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
+# define RPL_NO_TOPIC_CODE "331"
+
+# define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
+# define RPL_INVITING_CODE "341"
+
+/*# define RPL_AWAY(nickname, awayMessage) (nickname) + " :" + (awayMessage)
+# define RPL_AWAY_CODE "301"*/
+
+/*# define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
+# define RPL_CHANNEL_MODE_IS_CODE "324"*/
+
+# define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
+# define RPL_END_OF_NAMES_CODE "366"
+
+# define RPL_NAMES_REPLY_CODE "353"
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
+
 # define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN :" + (channelName)
 # define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + (channelName)
 # define QUIT_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " QUIT :" + (message)
@@ -74,6 +87,9 @@
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
 
 std::vector<std::string> split(const std::string &s, char delim);
+
 bool isNumber(const std::string& s);
+
+const std::string &rplNamesReply(const std::string &nickname, const Channel &channel);
 
 #endif

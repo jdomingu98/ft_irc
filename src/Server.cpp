@@ -400,7 +400,7 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
 
-    this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+    this->sendMessage(clientFd, CODE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**
@@ -522,9 +522,8 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  */
 void Server::addChannel(Channel channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
-    if (it != this->_channels.end())
-        throw ServerException(CHANNEL_ALREADY_ADDED_ERR);
-    this->_channels.push_back(channel);
+    if (it == this->_channels.end())
+        this->_channels.push_back(channel);
 }
 
 /**

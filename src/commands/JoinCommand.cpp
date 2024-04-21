@@ -15,45 +15,6 @@ JoinCommand::~JoinCommand() {
     this->_channels.clear();
 }
 
-/**
- * Returns the RPL_NAMREPLY message.
- * 
- * @param channelName The name of the channel
- * @param opers The vector of operators in the channel
- * @param users The vector of users in the channel
- * 
- * @return The RPL_NAMREPLY message
- */
-std::string JoinCommand::rplNamReply(const std::string &nickname,
-                                        const std::string &username,
-                                        const std::string &hostname,
-                                        const Channel &channel) const {
-
-    std::string channelName = channel.getName();
-    std::string msg = USER_ID(nickname, username, hostname) + " " + channelName + " :";
-
-
-    std::vector<User> users = channel.getUsers();
-    std::vector<User> opers = channel.getOperators();
-
-    if (opers.size() > 0) {
-        msg += "@" + opers[0].getNickname();
-
-        for (size_t i = 1; i < opers.size(); i++)
-            msg += " @" + opers[i].getNickname();
-
-        for (size_t i = 0; i < users.size(); i++)
-            msg += " " + users[i].getNickname();
-    } else if (users.size() > 0) {
-        msg += users[0].getNickname();
-
-        for (size_t i = 1; i < users.size(); i++)
-            msg += " " + users[i].getNickname();
-    }
-
-    return msg;
-}
-
 void JoinCommand::printUsers(Channel &channel) const {
     Logger::debug("OPERATORS:");
     std::vector<User> opers = channel.getOperators();
@@ -80,18 +41,15 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
 
     std::string channelName = channel.getName();
     std::vector<User> channelUsers = channel.getAllUsers();
-
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
 
     for (size_t i = 0; i < channelUsers.size(); i++) {
         server.sendMessage(channelUsers[i].getFd(),
                             JOIN_MSG(channelUsers[i].getNickname(), channelUsers[i].getUsername(),
                                     channelUsers[i].getHostname(), channelName));
     }
-    server.sendMessage(clientFd, rplNamReply(nickname, username, hostname, channel));
-    server.sendMessage(clientFd, RPL_END_OF_NAMES(nickname, username, hostname, channelName));
+    server.sendMessage(clientFd, rplNamReply(nickname, user.getUsername(), user.getHostname(), channel));
+    server.sendMessage(clientFd, CODE_MSG(RPL_END_OF_NAMES_CODE, nickname, RPL_END_OF_NAMES(channel)));
 }
 
 /**

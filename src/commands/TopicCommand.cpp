@@ -53,10 +53,11 @@ void TopicCommand::execute(int clientFd) {
         _channel->broadcastToChannel(TOPIC_MSG(nickname, user.getUsername(),
                                                 user.getHostname(), channelName, _topic));
     } else {
-        std::string message = _channel->getTopic().empty()  ? RPL_NO_TOPIC(nickname, username, hostname, channelName)
-                                                            : RPL_TOPIC(nickname, username, hostname, channelName, _channel->getTopic());
+        std::string message = _channel->getTopic().empty()  ? RPL_NO_TOPIC(channelName)
+                                                            : RPL_TOPIC(channelName, _channel->getTopic());
+        std::string code = _channel->getTopic().empty() ? RPL_NO_TOPIC_CODE : RPL_TOPIC_CODE;
         Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
-        server.sendMessage(clientFd, message);
+        server.sendMessage(clientFd, CODE_MSG(code, nickname, message));
     }
     Logger::debug("Channel " + channelName + " topic is: " + _channel->getTopic());
 }
