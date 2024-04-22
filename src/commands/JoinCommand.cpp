@@ -49,7 +49,7 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
                                     channelUsers[i].getHostname(), channelName));
     }
     server.sendMessage(clientFd, RPLNamesReplyResponse(nickname, channel).getResponse());
-    server.sendMessage(clientFd, RPLEndOfNamesResponse(nickname, channelName).getResponse();
+    server.sendMessage(clientFd, RPLEndOfNamesResponse(nickname, channelName).getResponse());
 }
 
 /**
