@@ -3,6 +3,12 @@
 
 # include <string>
 
+# include "Server.hpp"
+
+# define CODE_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
+
+class Channel;
+
 /**
  * A class that represents a response to a command.
  */
