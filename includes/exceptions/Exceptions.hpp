@@ -48,7 +48,6 @@
 
 // ==================================================================================
 
-
 /**
  * This exception is thrown when an user attempts to register with the server when it is already registered.
  */

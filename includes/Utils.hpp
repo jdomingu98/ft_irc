@@ -23,6 +23,7 @@
 # include "User.hpp"
 
 # include "Exceptions.hpp"
+# include "Responses.hpp"
 
 class Channel;
 
@@ -39,8 +40,8 @@ class User;
 # define DEFAULT_PASS "1234"
 
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
-# define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
 
+# define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
 # define WELCOME_MSG "Welcome to the ft_messenger server! Please enter your password: "
@@ -56,30 +57,7 @@ class User;
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
 
-# define CODE_MSG(errorCode, nickname, errorMsg) std::string(":irc.ft_messenger.net ") + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
-
-//RPL_XXX -> Reply messages (Command Response)
-
-# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
-# define RPL_TOPIC_CODE "332"
-
-# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
-# define RPL_NO_TOPIC_CODE "331"
-
-# define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
-# define RPL_INVITING_CODE "341"
-
-/*# define RPL_AWAY(nickname, awayMessage) (nickname) + " :" + (awayMessage)
-# define RPL_AWAY_CODE "301"*/
-
-/*# define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_CHANNEL_MODE_IS_CODE "324"*/
-
-# define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
-# define RPL_END_OF_NAMES_CODE "366"
-
-# define RPL_NAMES_REPLY_CODE "353"
-
+# define CODE_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
 # define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN :" + (channelName)
@@ -92,7 +70,5 @@ class User;
 std::vector<std::string> split(const std::string &s, char delim);
 
 bool isNumber(const std::string& s);
-
-const std::string rplNamesReply(const std::string &nickname, const Channel &channel);
 
 #endif

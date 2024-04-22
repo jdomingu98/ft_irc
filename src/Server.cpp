@@ -399,8 +399,7 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
-
-    this->sendMessage(clientFd, CODE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+    this->sendMessage(clientFd, std::string(CODE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what())));
 }
 
 /**

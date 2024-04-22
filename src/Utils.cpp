@@ -42,7 +42,7 @@ bool isNumber(const std::string& s) {
  * 
  * @return The RPL_NAMES_REPLY message
  */
-const std::string rplNamesReply(const std::string &nickname, const Channel &channel) {
+const std::string RPLNamesReplyResponse::replyMessage(const std::string &nickname, const Channel &channel) {
     std::string channelName = channel.getName();
     std::string msg = channelName + " :";
 
@@ -64,5 +64,5 @@ const std::string rplNamesReply(const std::string &nickname, const Channel &chan
             msg += " " + users[i].getNickname();
     }
 
-    return CODE_MSG(RPL_NAMES_REPLY_CODE, nickname, msg);
+    return msg;
 }

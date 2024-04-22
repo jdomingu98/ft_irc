@@ -48,8 +48,8 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
                             JOIN_MSG(channelUsers[i].getNickname(), channelUsers[i].getUsername(),
                                     channelUsers[i].getHostname(), channelName));
     }
-    server.sendMessage(clientFd, rplNamReply(nickname, user.getUsername(), user.getHostname(), channel));
-    server.sendMessage(clientFd, CODE_MSG(RPL_END_OF_NAMES_CODE, nickname, RPL_END_OF_NAMES(channel)));
+    server.sendMessage(clientFd, RPLNamesReplyResponse(nickname, channel).getResponse());
+    server.sendMessage(clientFd, RPLEndOfNamesResponse(nickname, channelName).getResponse();
 }
 
 /**
