@@ -9,7 +9,7 @@ PASS	?= 1234
 # =================================================================================
 
 INCLUDES_PATH		= includes
-INCLUDES_SUBDIRS	= commands parser exceptions
+INCLUDES_SUBDIRS	= commands parser exceptions responses
 INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
 HEADERS				= $(addprefix -I, $(INCLUDES_DIRS))
