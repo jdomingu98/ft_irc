@@ -22,12 +22,6 @@ void QuitCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
 
- if (!user.isRegistered()) {
-        server.sendMessage(clientFd, QUIT_MSG(std::string(""), std::string(""),std::string(""),
-                                                _message.empty() ? std::string("") : _message));
-        server.handleClientDisconnection(clientFd);
-    }
-
     std::string nickname = user.getNickname();
     std::vector<Channel> &channels = server.getChannels();
     
@@ -43,10 +37,17 @@ void QuitCommand::execute(int clientFd) {
         usersChannel.clear();
     }
 
+    if (allUsers.empty() && user.isRegistered()) {
+        server.sendMessage(clientFd,
+                            QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
+                                    _message.empty() ? nickname : _message));
+    }
+
     for (it = allUsers.begin(); it != allUsers.end(); it++) {
         server.sendMessage(it->getFd(), 
                             QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
                                     _message.empty() ? nickname : _message));
     }
+
     server.handleClientDisconnection(clientFd);
 }
