@@ -67,10 +67,10 @@ class RPLInvitingResponse : public IRCResponse {
  */
 class RPLNamesReplyResponse : public IRCResponse {
     private:
-        std::string replyMessage(const std::string &nickname, Channel &channel);
+        std::string replyMessage(Channel &channel);
     public:
-        RPLNamesReplyResponse(const std::string &nickname, Channel &channel)
-            : IRCResponse("353", nickname, replyMessage(nickname, channel)) {}
+        RPLNamesReplyResponse(Channel &channel)
+            : IRCResponse("353", nickname, replyMessage(channel)) {}
 };
 
 /**
