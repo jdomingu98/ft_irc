@@ -1,6 +1,6 @@
 NAME	= ircserv
 CXX		= c++
-FLAGS	= -Wall -Werror -Wextra -std=c++98 #-g
+FLAGS	= -Wall -Werror -Wextra -std=c++98# -g
 RM 		= rm -rf
 
 PORT	?= 6666
@@ -12,7 +12,7 @@ INCLUDES_PATH		= includes
 INCLUDES_SUBDIRS	= commands parser exceptions responses
 INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
-HEADERS				= $(addprefix -I, $(INCLUDES_DIRS))
+HEADERS				= $(addprefix -I , $(INCLUDES_DIRS))
 
 # =================================================================================
 
