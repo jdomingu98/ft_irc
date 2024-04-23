@@ -27,6 +27,9 @@ void QuitCommand::execute(int clientFd) {
     
     std::set<User> allUsers;
     std::set<User>::iterator it;
+
+    if (user.isRegistered())
+        allUsers.insert(user);
     for (size_t i = 0; i < channels.size(); i++) {
         if (!channels[i].isUserInChannel(nickname))
             continue;
@@ -37,14 +40,10 @@ void QuitCommand::execute(int clientFd) {
         usersChannel.clear();
     }
 
-    if (allUsers.empty() && user.isRegistered())
-        allUsers.insert(user);
-
     for (it = allUsers.begin(); it != allUsers.end(); it++) {
         server.sendMessage(it->getFd(), 
                             QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
                                     _message.empty() ? nickname : _message));
     }
-
     server.handleClientDisconnection(clientFd);
 }
