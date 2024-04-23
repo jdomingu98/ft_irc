@@ -5,7 +5,7 @@
  * 
  * @param fd The file descriptor of the user
  */
-User::User(int fd) : _fd(fd) {}
+User::User(int fd) : _fd(fd), _registered(false) {}
 
 /**
  * User destructor 
