@@ -27,6 +27,9 @@ void QuitCommand::execute(int clientFd) {
     
     std::set<User> allUsers;
     std::set<User>::iterator it;
+
+    if (user.isRegistered())
+        allUsers.insert(user);
     for (size_t i = 0; i < channels.size(); i++) {
         if (!channels[i].isUserInChannel(nickname))
             continue;
