@@ -37,11 +37,8 @@ void QuitCommand::execute(int clientFd) {
         usersChannel.clear();
     }
 
-    if (allUsers.empty() && user.isRegistered()) {
-        server.sendMessage(clientFd,
-                            QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
-                                    _message.empty() ? nickname : _message));
-    }
+    if (allUsers.empty() && user.isRegistered())
+        allUsers.insert(user);
 
     for (it = allUsers.begin(); it != allUsers.end(); it++) {
         server.sendMessage(it->getFd(), 
