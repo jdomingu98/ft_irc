@@ -25,15 +25,15 @@ PartCommand::~PartCommand() {
 void PartCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
+    Channel channel;
 
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
-        
         try {
-            Channel &channel = server.getChannelByName(this->_channels[i]);
+            channel = server.getChannelByName(this->_channels[i]);
         } catch (NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_channels[i] + " does not exist.");
             continue;

@@ -18,15 +18,21 @@ PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers,
 void PrivateMessageCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &sender = server.getUserByFd(clientFd);
-    Logger::debug("Sending private message from " + sender.getNickname());
+    Channel destinationChannel;
 
+    Logger::debug("Sending private message from " + sender.getNickname());
     for (size_t i = 0; i < this->_receivers.size(); i++) {
         try {
             if (this->_receivers[i][0] == '#') {
                 Logger::debug("Sending private message to channel " + this->_receivers[i]);
                 if (!server.channelExists(this->_receivers[i]))
                     throw CannotSendToChanException(this->_receivers[i]);
-                Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
+                try {
+                    destinationChannel = server.getChannelByName(this->_receivers[i]);
+                } catch (NoSuchChannelException &e) {
+                    Logger::debug("Channel " + this->_receivers[i] + " does not exist.");
+                    continue;
+                }
                 if (!destinationChannel.isUserInChannel(sender.getNickname()))
                     throw CannotSendToChanException(this->_receivers[i]);
                 sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
