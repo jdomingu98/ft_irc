@@ -28,6 +28,7 @@ void KickCommand::execute(int clientFd) {
     std::string nickname = user.getNickname();
     std::string comment = this->_comment.empty() ? nickname : this->_comment;
     std::string kickedUser;
+    size_t pos;
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
         Channel &channel = server.getChannelByName(this->_channels[i]);
@@ -38,8 +39,8 @@ void KickCommand::execute(int clientFd) {
         if (!channel.isOper(nickname))
             throw ChanOPrivsNeededException(this->_channels[i]);
 
-        kickedUser = this->_channels.size() == this->_users.size()  ? this->_users[i].getNickname()
-                                                                    : this->_users[0].getNickname();
+        pos = this->_channels.size() == this->_users.size() ? i : 0;
+        kickedUser = this->_users[pos].getNickname();
         if (this->_channels.size() == 1) {
             for (size_t j = 0; j < this->_users.size(); j++) {
                 kickedUser = this->_users[j].getNickname();
