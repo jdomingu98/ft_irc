@@ -16,16 +16,12 @@
  */
 ACommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> receivers;
-    std::string message;
 
-    if (tokens.size() < 2 || tokens[1][0] == ':')
+    if (tokens.size() < 2)
         throw NoRecipientGivenException("PRIVMSG");
     receivers = split(tokens[1], ',');
-    if (tokens.size() < 3 || tokens[2][0] != ':')
+    if (tokens.size() < 3)
         throw NoTextToSendException();
-    message = tokens[2].substr(1);
-    for (size_t i = 2; i < tokens.size(); i++)
-        message += " " + tokens[i];
 
-    return new PrivateMessageCommand(receivers, message);
+    return new PrivateMessageCommand(receivers, tokens[2]);
 }
