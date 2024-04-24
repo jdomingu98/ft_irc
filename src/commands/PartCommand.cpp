@@ -32,7 +32,12 @@ void PartCommand::execute(int clientFd) {
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
         
-        Channel &channel = server.getChannelByName(this->_channels[i]);
+        try {
+            Channel &channel = server.getChannelByName(this->_channels[i]);
+        } catch (NoSuchChannelException &e) {
+            Logger::debug("Channel " + this->_channels[i] + " does not exist.");
+            continue;
+        }
 
         if (!user.isOnChannel(this->_channels[i]))
             throw NotOnChannelException(this->_channels[i]);
