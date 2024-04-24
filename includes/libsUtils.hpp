@@ -61,12 +61,12 @@
 # define RPL_INVITING(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (nickname)
 // # define RPL_AWAY(nickname, username, hostname, awayMessage) USER_ID(nickname, username, hostname) + " " + (nickname) + " :" + (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(nickname, username, hostname, channel, mode, modeParams) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of /NAMES list."
+# define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of NAMES list."
 
 # define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
-# define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN :" + (channelName)
+# define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN " + (channelName)
 # define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + (channelName)
 # define QUIT_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " QUIT :" + (message)
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
