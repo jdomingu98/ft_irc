@@ -56,26 +56,28 @@
 
 //RPL_XXX -> Reply messages (Command Response)
 
+# define RESPONSE_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
+
 # define RPL_TOPIC(nickname, username, hostname, channel, topic) USER_ID(nickname, username, hostname) + " " + (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :No topic is set"
 # define RPL_INVITING(nickname, username, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (nickname)
-// # define RPL_AWAY(nickname, username, hostname, awayMessage) USER_ID(nickname, username, hostname) + " " + (nickname) + " :" + (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(nickname, username, hostname, channel, mode, modeParams) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (mode) + " " + (modeParams)
 # define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of NAMES list."
 
-# define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
+# define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + (message)
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
-# define JOIN_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " JOIN " + (channelName)
-# define PART_MSG(nickname, username, hostname, channelName) USER_ID(nickname, username, hostname) + " PART " + (channelName)
-# define QUIT_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " QUIT :" + (message)
-# define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
-# define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " " + (topic)
-# define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
-# define INVITE_MSG(nickname, username, hostname, invitedUser, channel) USER_ID(nickname, username, hostname) + " INVITE " + (invitedUser) + " " + (channel)
 
+# define JOIN_MSG(channelName) " JOIN " + (channelName)
+# define PART_MSG(channelName) " PART " + (channelName)
+# define QUIT_MSG(message) " QUIT :" + (message)
+# define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
+# define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
+# define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
+# define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
 
 std::vector<std::string> split(const std::string &s, char delim);
+
 bool isNumber(const std::string& s);
 
 #endif

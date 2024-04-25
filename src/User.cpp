@@ -225,7 +225,7 @@ void User::removeChannel(const std::string &channelName) {
  */
 void User::sendPrivateMessageToUser(const User &destination, const std::string& message) const {
     Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
-    std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getNickname(), message);
+    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, PRIVMSG_MSG(destination.getNickname(), message));
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
 
@@ -248,7 +248,7 @@ Channel *User::getChannelByName(std::string &channelName) {
  */
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
-    std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getName(), message);
+    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, PRIVMSG_MSG(destination.getName(), message));
     std::vector<User> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
         if (users[i].getNickname() != this->_nickname)
