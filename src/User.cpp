@@ -251,5 +251,6 @@ void User::sendPrivateMessageToChannel(const Channel &destination, const std::st
     std::string response = PRIVMSG_MSG(this->_nickname, this->_username, this->_hostname, destination.getName(), message);
     std::vector<User> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
-        Server::getInstance().sendMessage(users[i].getFd(), response);
+        if (users[i].getNickname() != this->_nickname)
+            Server::getInstance().sendMessage(users[i].getFd(), response);
 }
