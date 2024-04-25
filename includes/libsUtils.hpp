@@ -17,6 +17,8 @@
 # include <string>
 # include <vector>
 # include <unistd.h>
+# include <ctime>
+#include <iomanip>
 
 # include "Logger.hpp"
 
@@ -62,6 +64,10 @@
 // # define RPL_AWAY(nickname, username, hostname, awayMessage) USER_ID(nickname, username, hostname) + " " + (nickname) + " :" + (awayMessage)
 // # define RPL_CHANNEL_MODE_IS(nickname, username, hostname, channel, mode, modeParams) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (mode) + " " + (modeParams)
 # define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of NAMES list."
+# define RPL_WELCOME(nickname, username, hostname) std::string("Welcome to the Internet Relay Network ") + USER_ID(nickname, username, hostname)
+# define RPL_YOURHOST(servername)"Your host is " + servername + ", running version ft_messenger-v1.0.0"
+# define RPL_CREATED(date)"This server was create: " + (date)
+# define RPL_MYINFO(servername, userModes, channelModes) servername + " " + "ft_messenger-v1.0.0 " + "Available user modes: \"" + (userModes) + "\", Available channel modes: " + (channelModes)
 
 # define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 
@@ -75,5 +81,6 @@
 
 std::vector<std::string> split(const std::string &s, char delim);
 bool isNumber(const std::string& s);
+std::string getCurrentDate();
 
 #endif
