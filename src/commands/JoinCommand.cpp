@@ -87,7 +87,7 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
 
     for (size_t i = 0; i < channelUsers.size(); i++) {
         server.sendMessage(channelUsers[i].getFd(),
-                            CMD_MSG(nickname, username, hostname, JOIN_MSG(channelName));
+                            CMD_MSG(nickname, username, hostname, JOIN_MSG(channelName)));
     }
     if (!channel.getTopic().empty())
         server.sendMessage(clientFd, RPL_TOPIC(nickname, username, hostname, channelName, channel.getTopic()));
