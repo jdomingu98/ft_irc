@@ -190,16 +190,11 @@ void User::makeRegistration() {
     std::string date = getCurrentDate();
     std::string channelModes = "iklot";
 
-    std::string welcome = RPL_WELCOME(_nickname, _username, _hostname) + "\r\n";
-    std::string yourHost = RPL_YOURHOST(_serverName) + "\r\n";
-    std::string created = RPL_CREATED(date) + "\r\n";
-    std::string myInfo = RPL_MYINFO(_serverName, channelModes) + "\r\n";
-
     Server& server = Server::getInstance();
-    server.sendMessage(this->getFd(), welcome);
-    server.sendMessage(this->getFd(), yourHost);
-    server.sendMessage(this->getFd(), created);
-    server.sendMessage(this->getFd(), myInfo);
+    server.sendMessage(this->getFd(), RPL_WELCOME(_nickname, _username, _hostname));
+    server.sendMessage(this->getFd(), RPL_YOURHOST(_serverName));
+    server.sendMessage(this->getFd(), RPL_CREATED(date));
+    server.sendMessage(this->getFd(), RPL_MYINFO(_serverName, channelModes));
 }
 
 /**
