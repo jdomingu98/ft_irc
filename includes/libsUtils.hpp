@@ -18,7 +18,6 @@
 # include <vector>
 # include <unistd.h>
 # include <ctime>
-#include <iomanip>
 
 # include "Logger.hpp"
 
@@ -34,6 +33,7 @@
 
 # define DEFAULT_PORT "6666"
 # define DEFAULT_PASS "1234"
+# define DEFAULT_SERVER_VERSION "ft_messenger-v1.0.0"
 
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
 # define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
@@ -65,9 +65,9 @@
 // # define RPL_CHANNEL_MODE_IS(nickname, username, hostname, channel, mode, modeParams) USER_ID(nickname, username, hostname) + " " + (channel) + " " + (mode) + " " + (modeParams)
 # define RPL_END_OF_NAMES(nickname, usermane, hostname, channel) USER_ID(nickname, username, hostname) + " " + (channel) + " :End of NAMES list."
 # define RPL_WELCOME(nickname, username, hostname) std::string("Welcome to the Internet Relay Network ") + USER_ID(nickname, username, hostname)
-# define RPL_YOURHOST(servername)"Your host is " + servername + ", running version ft_messenger-v1.0.0"
-# define RPL_CREATED(date)"This server was create: " + (date)
-# define RPL_MYINFO(servername, userModes, channelModes) servername + " " + "ft_messenger-v1.0.0 " + "Available user modes: \"" + (userModes) + "\", Available channel modes: " + (channelModes)
+# define RPL_YOURHOST(servername) "Your host is " + (servername) + ", running version " + (DEFAULT_SERVER_VERSION)
+# define RPL_CREATED(date) "This server was create: " + (date)
+# define RPL_MYINFO(servername, channelModes) (servername) + " " + (DEFAULT_SERVER_VERSION) + " Available user modes: " + ", Available channel modes: " + (channelModes)
 
 # define ERROR_MSG(errorCode, nickname, errorMsg) ":irc.ft_messenger.net " + (errorCode) +  " " + (nickname) + " " + (errorMsg) + "."
 

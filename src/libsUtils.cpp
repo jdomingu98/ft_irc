@@ -41,18 +41,8 @@ bool isNumber(const std::string& s) {
 std::string getCurrentDate() {
     std::time_t t = std::time(0);
     std::tm* now = std::localtime(&t);
-    std::ostringstream oss;
-    const char* weekDays[7] = {"Sunday", "Monday", "Tuesday",
-                                "Wednesday", "Thursday", "Friday", "Saturday"};   
-    const char* months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                "Aug", "Sep", "Oct", "Nov", "Dec"};
+    char buffer[100];
 
-    oss << weekDays[now->tm_wday] << ", " 
-        << std::setfill('0') << std::setw(2) << now->tm_mday << ' ' 
-        << months[now->tm_mon] << ' ' 
-        << (now->tm_year + 1900) << ' '
-        << std::setfill('0') << std::setw(2) << now->tm_hour << ':' 
-        << std::setfill('0') << std::setw(2) << now->tm_min << ':' 
-        << std::setfill('0') << std::setw(2) << now->tm_sec << " UTC";
-    return oss.str();
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S UTC", now);
+    return std::string(buffer);
 }
