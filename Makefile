@@ -1,24 +1,25 @@
 NAME	= ircserv
 CXX		= c++
-FLAGS	= -Wall -Werror -Wextra -std=c++98 #-g
+FLAGS	= -Wall -Werror -Wextra -std=c++98# -g
 RM 		= rm -rf
 
-PORT	?= 6666
-PASS	?= 1234
+PORT	?= 6667
+PASS	?= 1111
 
 # =================================================================================
 
 INCLUDES_PATH		= includes
-INCLUDES_SUBDIRS	= commands parser exceptions
+INCLUDES_SUBDIRS	= commands parser exceptions responses
 INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
-HEADERS				= $(addprefix -I, $(INCLUDES_DIRS))
+HEADERS				= $(addprefix -I , $(INCLUDES_DIRS))
 
 # =================================================================================
 
 SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
+RPL_DIR		= $(SRC_DIR)/responses/
 
 CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
@@ -27,6 +28,10 @@ CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mode Kick Topic
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
+
+RPL_PREFIXS		= A Topic #NoTopic Inviting ChannelModeIs NamesReply EndOfNamesReply
+RPL_FILES		= $(addsuffix Response, $(RPL_PREFIXS))
+RPL_SRCS		= $(addprefix $(RPL_DIR), $(RPL_FILES))
 
 FILES 			= main Server User Channel libsUtils Logger
 
