@@ -72,6 +72,8 @@
 # define KICK_MSG(nickname, username, hostname, channelName, kickedUser, comment) USER_ID(nickname, username, hostname) + " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
 # define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " " + (topic)
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
+# define INVITE_MSG(nickname, username, hostname, invitedUser, channel) USER_ID(nickname, username, hostname) + " INVITE " + (invitedUser) + " " + (channel)
+
 
 std::vector<std::string> split(const std::string &s, char delim);
 bool isNumber(const std::string& s);

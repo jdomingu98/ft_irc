@@ -52,4 +52,10 @@ void InviteCommand::execute(int clientFd) {
                                                 me.getUsername(),
                                                 me.getHostname(),
                                                 this->_channelName));
+    server.sendMessage(server.getUserByNickname(this->_nickname).getFd(),
+                        INVITE_MSG(me.getNickname(),
+                                    me.getUsername(),
+                                    me.getHostname(),
+                                    this->_nickname,
+                                    this->_channelName));
 }
