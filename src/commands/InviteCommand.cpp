@@ -36,8 +36,11 @@ void InviteCommand::execute(int clientFd) {
     if (!server.isNicknameInUse(this->_nickname))
         throw NoSuchNickException(this->_nickname);
 
-    if (!me.isOnChannel(this->_channelName))
+    if (!server.channelExists(this->_channelName))
         throw NoSuchChannelException(this->_channelName);
+
+    if (!me.isOnChannel(this->_channelName))
+        throw NotOnChannelException(this->_channelName);
 
     Channel &channel = server.getChannelByName(this->_channelName);
 
