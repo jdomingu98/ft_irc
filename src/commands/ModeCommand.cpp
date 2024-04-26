@@ -32,24 +32,30 @@ void ModeCommand::execute(int clientFd) {
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
 
+    std::string flag;
     for (size_t i = 0; i < _modes.size(); i++) {
         switch (_modes[i]) {
             case INVITE_ONLY:
                 ModeCommand::inviteOnly();
+                flag = _plus ? "+i" : "-i";
                 break;
             case TOPIC_PROTECTED:
                 ModeCommand::topicProtected();
+                flag = _plus ? "+t" : "-t";
                 break;
             case CHANNEL_KEY:
                 ModeCommand::channelKey();
+                flag = _plus ? "+k" : "-k";
                 break;
             case CHANNEL_OPERATOR:
                 if (!channel.isOper(me.getNickname()))
                     throw ChanOPrivsNeededException(_channel);
                 ModeCommand::channelOperator();
+                flag = _plus ? "+o" : "-o";
                 break;
             case USER_LIMIT:
                 ModeCommand::userLimit();
+                flag = _plus ? "+l" : "-l";
                 break;
             default:
                 // Aquí habrá que hacer algo digo yo.
@@ -62,6 +68,8 @@ void ModeCommand::execute(int clientFd) {
                 break;
         }
     }
+    channel.broadcastToChannel(MODE_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
+                                            channel.getName(), flag, _modeParams));
 }
 
 /**
