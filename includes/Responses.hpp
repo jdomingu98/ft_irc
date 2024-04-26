@@ -5,6 +5,8 @@
 
 # include "Server.hpp"
 
+class Channel;
+
 // ========================================= IRC COMMAND REPLY MESSAGES =========================================
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)

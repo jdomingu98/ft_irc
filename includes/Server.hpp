@@ -24,6 +24,8 @@
 
 # define NONE ""
 
+# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
+
 class Channel;
 
 class User;

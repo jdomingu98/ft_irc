@@ -54,7 +54,6 @@
 # define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 
-# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
 # define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + (message)
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
