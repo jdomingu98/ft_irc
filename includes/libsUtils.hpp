@@ -34,11 +34,9 @@
 # define DEFAULT_PASS "1111"
 
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
+
 # define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
-
 # define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
-
-# define WELCOME_MSG "Welcome to the ft_messenger server! Please enter your password: "
 
 # define SOCKET_EXPT "[ERROR] Unable to open server socket."
 # define REUSE_ADDR_EXPT "[ERROR] Failed to set SO_REUSEADDR option on server"
@@ -50,9 +48,6 @@
 # define REVENTS_EXPT "[ERROR] Poll revents value different from POLLIN."
 # define RECV_EXPT "[ERROR] Unable to receive message."
 # define SEND_EXPT "[ERROR] Unable to send message."
-
-# define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
-# define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 
 # define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + (message)
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)

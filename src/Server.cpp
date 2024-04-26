@@ -233,8 +233,6 @@ void Server::handleNewConnection() {
     // Add new socket to poll_fds array
     this->_fds[this->_numFds].fd = clientSocket;
     this->_fds[this->_numFds].events = POLLIN;
-
-    this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -369,7 +367,7 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
-    if (!this->isUserConnected(clientFd) && message != WELCOME_MSG)
+    if (!this->isUserConnected(clientFd))
         return;
 
     int msgSignal = 0;
@@ -522,9 +520,8 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  */
 void Server::addChannel(Channel channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
-    if (it != this->_channels.end())
-        throw ServerException(CHANNEL_ALREADY_ADDED_ERR);
-    this->_channels.push_back(channel);
+    if (it == this->_channels.end())
+        this->_channels.push_back(channel);
 }
 
 /**

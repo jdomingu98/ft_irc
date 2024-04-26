@@ -272,10 +272,9 @@ bool Channel::isFull() const {
  */
 void Channel::addUser(User user) {
     std::vector<User>::iterator it = findUser(user.getNickname());
-    if (it != this->_users.end()) {
-        //throw ChannelException(USER_ALREADY_IN_CHANNEL_ERR);
-    }
-    this->_users.push_back(user);
+    if (it == this->_users.end())
+        this->_users.push_back(user);
+
 }
 
 /**
