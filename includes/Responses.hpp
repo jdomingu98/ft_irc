@@ -1,6 +1,8 @@
 #ifndef RESPONSES_HPP
 # define RESPONSES_HPP
 
+# include <string>
+
 # include "Server.hpp"
 
 // ========================================= IRC COMMAND REPLY MESSAGES =========================================
