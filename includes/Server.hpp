@@ -12,6 +12,7 @@
 # include "CommandParser.hpp"
 
 # include "Channel.hpp"
+# include "Responses.hpp"
 # include "User.hpp"
 
 # include "libsUtils.hpp"
@@ -23,8 +24,6 @@
 # define MAX_CLIENTS 42
 
 # define NONE ""
-
-# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
 
 class Channel;
 

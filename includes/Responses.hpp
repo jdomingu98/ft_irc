@@ -3,11 +3,13 @@
 
 # include <string>
 
-# include "Server.hpp"
+# include "Channel.hpp"
 
 class Channel;
 
 // ========================================= IRC COMMAND REPLY MESSAGES =========================================
+
+# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
