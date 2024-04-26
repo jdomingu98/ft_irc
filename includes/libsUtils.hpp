@@ -30,8 +30,8 @@
 
 # define NONE ""
 
-# define DEFAULT_PORT "6666"
-# define DEFAULT_PASS "1234"
+# define DEFAULT_PORT "6667"
+# define DEFAULT_PASS "1111"
 
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
 # define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
@@ -54,17 +54,7 @@
 # define USER_ALREADY_IN_CHANNEL_ERR "[ERROR] User already in channel."
 # define CHANNEL_ALREADY_ADDED_ERR "[ERROR] Channel already added."
 
-//RPL_XXX -> Reply messages (Command Response)
-
 # define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
-
-# define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
-# define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
-# define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
-// # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
-
-
 # define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + (message)
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 

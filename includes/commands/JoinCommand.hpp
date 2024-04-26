@@ -19,10 +19,6 @@ class JoinCommand : public ACommand {
     private:
         std::map<std::string, std::string> _channels; //key: channelName, value: channelPassword
 
-        std::string rplNamReply(const std::string &nickname,
-                                    const std::string &username,
-                                    const std::string &hostname,
-                                    const Channel &channel) const;
         void printUsers(Channel &channel) const;
         void sendMessages(int clientFd, Channel &channel) const;
 
