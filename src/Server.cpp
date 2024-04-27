@@ -597,7 +597,7 @@ void Server::generateDate() const {
     char buffer[100];
 
     strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S UTC", now);
-    this->creationDate = std::string(buffer);
+    this->_creationDate = std::string(buffer);
 }
 
 /**

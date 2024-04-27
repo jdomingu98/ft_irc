@@ -1,6 +1,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include <algorithm>
 # include <arpa/inet.h>
 # include <cerrno>
 # include <csignal>
