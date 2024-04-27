@@ -78,6 +78,8 @@ class Channel {
         void setInviteOnly(bool inviteOnly);
         bool isTopicProtected() const;
         void setTopicProtected(bool topicProtected);
+        std::string getModes() const;
+        std::string getModeParams() const;
 
         // Password
         void setPassword(const std::string &password);
