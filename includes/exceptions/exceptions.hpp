@@ -14,7 +14,6 @@
 # define ERR_NO_NICKNAME_GIVEN ":No nickname given"
 # define ERR_ERRONEUS_NICKNAME(nick)  (nick) + " :Erroneus nickname"
 # define ERR_NICKNAME_IN_USE(nick) (nick) + " :Nickname is already in use"
-# define ERR_NICK_COLLISION(nick) (nick) + " :Nickname collision KILL"
 # define ERR_PASSWD_MISMATCH ":Password incorrect"
 
 # define ERR_INVITE_ONLY_CHAN(channel) (channel) + " :Cannot join channel (+i)"
@@ -72,14 +71,6 @@ class NeedMoreParamsException : public IRCException {
         NeedMoreParamsException(const std::string &command) : IRCException("461", ERR_NEED_MORE_PARAMS(command)) {}
 };
 
-/**
- * This exception is thrown when a nickname is already in use. (Nickname collision)
- * It is thrown when a user tries to set a nickname the first time, and it is already in use.
- */
-class NickCollisionException : public IRCException {
-    public:
-        NickCollisionException(const std::string &nickname) : IRCException("436", ERR_NICK_COLLISION(nickname)) {}
-};
 
 /**
  * This exception is thrown when a nickname is already in use.
