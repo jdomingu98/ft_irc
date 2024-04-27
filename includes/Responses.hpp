@@ -107,7 +107,7 @@ class ChannelModeIsResponse : public Responses {
  */
 class WelcomeResponse : public Responses {
     public:
-        WelcomeResponse(std::string const &nickname, std::string const &username, std::string const &hostname) : Responses("001", nickname, RPL_WELCOME + USER_ID(nickname, username, hostname)) {}
+        WelcomeResponse(std::string const &nickname, std::string const &username, std::string const &hostname) : Responses("001", nickname, std::string(RPL_WELCOME) + USER_ID(nickname, username, hostname)) {}
 };
 
 /**
