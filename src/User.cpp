@@ -187,7 +187,7 @@ void User::makeRegistration() {
         throw PasswordMismatchException();
     this->_registered = true;
 
-    std::string date = Utils::getInstance().getCurrentDate();
+    std::string date = Utils::getCurrentDate();
     std::string channelModes = "iklot";
 
     Server& server = Server::getInstance();

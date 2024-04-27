@@ -1,17 +1,8 @@
 #include "Utils.hpp"
 
-Utils* Utils::_utils = NULL;
+Utils::Utils() {}
 
-/**
- * Gets the instance of the Utils class.
- * 
- * @return The instance of the Utils class.
- */
-Utils& Utils::getInstance() {
-    if(_utils == NULL)
-        _utils = new Utils();
-    return *_utils;
-}
+Utils::~Utils() {}
 
 /**
  * Splits the string by the delimiter.
@@ -21,7 +12,7 @@ Utils& Utils::getInstance() {
  * 
  * @return The vector of strings.
  */
-std::vector<std::string> Utils::split(const std::string &s, char delim) const {
+std::vector<std::string> Utils::split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
@@ -39,7 +30,7 @@ std::vector<std::string> Utils::split(const std::string &s, char delim) const {
  * 
  * @return `true` if the string is a number, `false` otherwise.
  */
-bool Utils::isNumber(const std::string& s) const {
+bool Utils::isNumber(const std::string& s) {
     std::string::const_iterator it = s.begin();
     
     while (it != s.end() && std::isdigit(*it))
@@ -52,7 +43,7 @@ bool Utils::isNumber(const std::string& s) const {
  * 
  * @return The string with the current date.
  */
-std::string Utils::getCurrentDate() const {
+std::string Utils::getCurrentDate() {
     std::time_t t = std::time(0);
     std::tm* now = std::localtime(&t);
     char buffer[100];

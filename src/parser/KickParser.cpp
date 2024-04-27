@@ -17,9 +17,9 @@
 ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3 || tokens[1].empty() || tokens[2].empty())
         throw NeedMoreParamsException("KICK");
-    Utils& utils = Utils::getInstance();
-    std::vector<std::string> channels = utils.split(tokens[1], ',');
-    std::vector<std::string> usersList = utils.split(tokens[2], ',');
+
+    std::vector<std::string> channels = Utils::split(tokens[1], ',');
+    std::vector<std::string> usersList = Utils::split(tokens[2], ',');
     std::vector<User> users;
     
     for (size_t i = 0; i < channels.size(); i++) {
