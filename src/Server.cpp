@@ -135,8 +135,11 @@ void Server::initServer() {
         throw ServerException(LISTEN_EXPT);
 
     // Configure the first element of the pollfd structure array for the server socket
-    this->_fds[0].fd = this->_socketFd;
-    this->_fds[0].events = POLLIN;
+    struct pollfd socketPoll;
+    
+    socketPoll.fd = this->_socketFd;
+    socketPoll.events = POLLIN;
+    this->_fds.push_back(socketPoll);
 }
 
 /**
@@ -152,10 +155,10 @@ void Server::initServer() {
  */
 void Server::listenClients() {
     while (!this->_signalReceived) {
-        if (poll(&fds[0], _fds.size(), -1) == -1 && !this->_signalReceived)
+        if (poll(&_fds[0], _fds.size(), -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < _fds.size(); i++) {
+        for (size_t i = 0; i < _fds.size(); i++) {
             if (this->_fds[i].revents == 0)
                 continue;
 
@@ -196,7 +199,7 @@ void Server::handleClientDisconnection(int clientFd) {
 
     close(clientFd);
     
-    for (int i = 0; i < _fds.size(); i++) {
+    for (size_t i = 0; i < _fds.size(); i++) {
         if (this->_fds[i].fd == clientFd) {
             this->_fds.erase(this->_fds.begin() + i);
             break;
@@ -578,7 +581,7 @@ bool Server::channelExists(const std::string &channelName) const {
  * @return `true` if the user is connected, `false` otherwise.
  */
 bool Server::isUserConnected(int clientFd) const {
-    for (int i = 0; i < _fds.size(); i++) {
+    for (size_t i = 0; i < _fds.size(); i++) {
         if (this->_fds[i].fd == clientFd) {
             return true;
         }
