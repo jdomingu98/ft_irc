@@ -43,7 +43,6 @@ class Server {
         std::map<int, std::string>  _inputBuffer;
         std::vector<User>           _users;
         std::vector<Channel>        _channels;
-        Utils&                      utils;
 
         // Singleton Pattern
         static Server           *_server;

@@ -84,16 +84,17 @@ class Utils {
     private:
         Utils() {}
         ~Utils() {}
+        static Utils* _utils;
+
     public:
 
         //Singleton Pattern
         static Utils& getInstance();
 
-
         // Utils
-        std::vector<std::string> split(const std::string &s, char delim);
-        bool isNumber(const std::string& s);
-        std::string getCurrentDate();
+        std::vector<std::string> split(const std::string &s, char delim) const;
+        bool isNumber(const std::string& s) const;
+        std::string getCurrentDate() const;
 };
 
 #endif
