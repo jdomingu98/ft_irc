@@ -1,41 +1,18 @@
 #ifndef COMMAND_PARSER_HPP
 # define COMMAND_PARSER_HPP
 
-# include "ACommand.hpp"
-# include "IParser.hpp"
-
-# include "UserCommand.hpp"
-# include "UserParser.hpp"
-# include "PassParser.hpp"
-# include "NickParser.hpp"
-# include "QuitParser.hpp"
-# include "PrivateMessageParser.hpp"
-# include "JoinParser.hpp"
-# include "PartParser.hpp"
 # include "InviteParser.hpp"
-# include "TopicParser.hpp"
-# include "ModeParser.hpp"
+# include "IParser.hpp"
+# include "JoinParser.hpp"
 # include "KickParser.hpp"
-
-# include "libsUtils.hpp"
-
-/**
- * Enumerates the commands that the server can receive.
- */
-enum Commands {
-    USER,
-    PASS,
-    NICK,
-    QUIT,
-    JOIN,
-    PART,
-    PRIVMSG,
-    TOPIC,
-    MODE,
-    KICK,
-    INVITE,
-    OPER
-};
+# include "ModeParser.hpp"
+# include "NickParser.hpp"
+# include "PartParser.hpp"
+# include "PassParser.hpp"
+# include "PrivateMessageParser.hpp"
+# include "QuitParser.hpp"
+# include "TopicParser.hpp"
+# include "UserParser.hpp"
 
 /**
  * A class that is responsible for parsing strings to commands.

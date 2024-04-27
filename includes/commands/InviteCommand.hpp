@@ -1,11 +1,11 @@
 #ifndef INVITE_COMMAND_HPP
 # define INVITE_COMMAND_HPP
 
-# include "ACommand.hpp"
 # include "Server.hpp"
 
 /**
- * A class that represents the command INVITE.
+ * An ACommand implementation that is responsible for inviting a user to a channel.
+ * 
  */
 class InviteCommand : public ACommand {
     private:

@@ -1,7 +1,7 @@
 #ifndef A_COMMAND_HPP
 # define A_COMMAND_HPP
 
-# include "Responses.hpp"
+# include <string>
 
 /**
  * An abstract class which represents a command that can be executed by the server.

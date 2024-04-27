@@ -2,7 +2,6 @@
 # define EXCEPTIONS_HPP
 
 # include "IRCException.hpp"
-# include "ServerException.hpp"
 
 // ========================================= IRC COMMAND ERROR MESSAGES =========================================
 

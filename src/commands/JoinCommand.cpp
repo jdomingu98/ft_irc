@@ -15,6 +15,11 @@ JoinCommand::~JoinCommand() {
     this->_channels.clear();
 }
 
+/**
+ * Prints the users in the channel.
+ * 
+ * @param channel The channel to print the users from
+ */
 void JoinCommand::printUsers(Channel &channel) const {
     Logger::debug("OPERATORS:");
     std::vector<User> opers = channel.getOperators();
@@ -52,9 +57,9 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     }
 
     if (!channel.getTopic().empty())
-        server.sendMessage(clientFd, TopicResponse(nickname, channelName, channel.getTopic()).getResponse());
-    server.sendMessage(clientFd, NamesReplyResponse(nickname, channel).getResponse());
-    server.sendMessage(clientFd, EndOfNamesResponse(nickname, channelName).getResponse());
+        server.sendMessage(clientFd, TopicResponse(nickname, channelName, channel.getTopic()).getReply());
+    server.sendMessage(clientFd, NamesReplyResponse(nickname, channel).getReply());
+    server.sendMessage(clientFd, EndOfNamesResponse(nickname, channelName).getReply());
 }
 
 /**

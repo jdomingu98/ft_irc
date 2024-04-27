@@ -19,7 +19,6 @@ HEADERS				= $(addprefix -I , $(INCLUDES_DIRS))
 SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
-RPL_DIR		= $(SRC_DIR)/responses/
 
 CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
@@ -29,7 +28,7 @@ PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mod
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= main Server User Channel libsUtils Logger
+FILES 			= main Server User Channel libsUtils Logger Responses
 
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
 SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))

@@ -1,15 +1,9 @@
 #ifndef JOIN_COMMAND_HPP
 # define JOIN_COMMAND_HPP
 
-# include <map>
-
-# include "ACommand.hpp"
-
-# include "Server.hpp"
+# include "Channel.hpp"
 
 class Channel;
-
-class User;
 
 /**
  * An ACommand implementation that is responsible for the binding and creation of a channel.

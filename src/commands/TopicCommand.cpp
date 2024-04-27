@@ -53,8 +53,8 @@ void TopicCommand::execute(int clientFd) {
         _channel->broadcastToChannel(CMD_MSG(nickname, user.getUsername(),
                                                 user.getHostname(), TOPIC_MSG(channelName, _topic)));
     } else {
-        std::string message = _channel->getTopic().empty()  ? NoTopicResponse(nickname, channelName).getResponse()
-                                                            : TopicResponse(nickname, channelName, _channel->getTopic()).getResponse();
+        std::string message = _channel->getTopic().empty()  ? NoTopicResponse(nickname, channelName).getReply()
+                                                            : TopicResponse(nickname, channelName, _channel->getTopic()).getReply();
         Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
         server.sendMessage(clientFd, message);
     }

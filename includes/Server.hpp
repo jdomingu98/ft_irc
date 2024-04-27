@@ -2,28 +2,55 @@
 # define SERVER_HPP
 
 # include <arpa/inet.h>
+# include <cerrno>
+# include <csignal>
+# include <cstdlib>
+# include <cstring>
 # include <fcntl.h>
+# include <map>
 # include <netinet/in.h>
 # include <poll.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <unistd.h>
+# include <vector>
 
 # include "ACommand.hpp"
 # include "CommandParser.hpp"
-
-# include "Channel.hpp"
+# include "exceptions.hpp"
+# include "IgnoreCommandException.hpp"
+# include "Logger.hpp"
+# include "QuitCommand.hpp"
 # include "Responses.hpp"
-# include "User.hpp"
+# include "ServerException.hpp"
 
-# include "libsUtils.hpp"
+# define SUCCESS 0
+# define EXIT 1
 
 # define MIN_PORT 1
 # define MAX_PORT 65535
+
+# define DEFAULT_PORT "6667"
+# define DEFAULT_PASS "1111"
 
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
 
 # define NONE ""
+
+# define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
+# define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
+
+# define SOCKET_EXPT "[ERROR] Unable to open server socket."
+# define REUSE_ADDR_EXPT "[ERROR] Failed to set SO_REUSEADDR option on server"
+# define FCNTL_EXPT "[ERROR] Unable to set server socket as non-blocking."
+# define BIND_EXPT "[ERROR] Unable to link server socket."
+# define LISTEN_EXPT "[ERROR] unable to start listening on server socket."
+# define POLL_EXPT "[ERROR] Unexpected failure on poll function."
+# define ACCEPT_EXPT "[ERROR] Unable to accept connection."
+# define REVENTS_EXPT "[ERROR] Poll revents value different from POLLIN."
+# define RECV_EXPT "[ERROR] Unable to receive message."
+# define SEND_EXPT "[ERROR] Unable to send message."
 
 class Channel;
 
@@ -46,11 +73,11 @@ class Server {
         std::vector<Channel>        _channels;
 
         // Singleton Pattern
-        static Server           *_server;
+        static Server               *_server;
         Server(const std::string port, const std::string password);
 
         // Signal Handler
-        bool _signalReceived;
+        bool                        _signalReceived;
 
         // Server logic
         bool isValidPort(const std::string &port) const;

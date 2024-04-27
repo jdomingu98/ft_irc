@@ -1,11 +1,7 @@
 #ifndef PART_COMMAND_HPP
 # define PART_COMMAND_HPP
 
-# include "ACommand.hpp"
-
 # include "Server.hpp"
-
-class Channel;
 
 /**
  * An ACommand implementation that is responsible for the leaving of a channel.
