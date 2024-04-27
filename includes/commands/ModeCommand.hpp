@@ -22,20 +22,22 @@ class ModeCommand : public ACommand {
     private:
 
         bool _plus;
-        std::string _channel;
-        std::vector<Mode> _modes;
-        std::string _modeParams;
+        Channel &_channel;
+        std::vector<Mode> &_modes;
+        std::vector<std::string> &_modeParams;
+
+        bool modeNeedsParam(Mode mode);
 
     public:
         void execute(int clientFd);
-        ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, const std::string& modeParams);
+        ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, std::vector<std::string>& modeParams);
         ~ModeCommand();
 
         void inviteOnly();
         void topicProtected();
-        void channelKey();
-        void channelOperator();
-        void userLimit();
+        void channelKey(const std::string & param);
+        void channelOperator(const User &me, const std::string & param);
+        void userLimit(const std::string & param);
 };
 
 #endif

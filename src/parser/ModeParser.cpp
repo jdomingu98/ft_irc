@@ -22,24 +22,35 @@ ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
 
     std::string channel = tokens[1];
     std::string modesStr = tokens[2];
-    std::string modeParams = tokens.size() > 3 ? tokens[3] : NONE;
     bool plus = modesStr[0] != '-';
 
-    std::vector<Mode> modes;
-    for (size_t i = 0; i < modesStr.size(); i++) {
-        if ((i == 0 && modesStr[i] == '+') || modesStr[i] == '-')
-            continue;
-        if (modesStr[i] == 'i')
-            modes.push_back(INVITE_ONLY);
-        else if (modesStr[i] == 't')
-            modes.push_back(TOPIC_PROTECTED);
-        else if (modesStr[i] == 'k')
-            modes.push_back(CHANNEL_KEY);
-        else if (modesStr[i] == 'o')
-            modes.push_back(CHANNEL_OPERATOR);
-        else if (modesStr[i] == 'l')
-            modes.push_back(USER_LIMIT);
-        else throw UnknownModeException(std::string(1, modesStr[i]));
+    std::vector<Mode> &modes = parseModes(modesStr);
+
+    std::vector<std::string> modeParams;
+    for (size_t i = 3; i < tokens.size(); i++) {
+        modeParams.push_back(tokens[i]);
     }
     return new ModeCommand(plus, channel, modes, modeParams);
+}
+
+/**
+ * Parses the modes of the MODE command.
+ */
+std::vector<Mode> &ModeParser::parseModes(const std::string& modesStr) {
+    std::vector<Mode> modes;
+    for (std::string::const_iterator it = modesStr.begin(); it != modesStr.end(); it++) {
+        if (it == modesStr.begin() && (*it == '+' || *it == '-'))
+            continue;
+        if (!ModeParser::isValidMode(*it))
+            throw UnknownModeException(std::string(1, *it));
+        modes.push_back(static_cast<Mode>(*it));
+    }
+    return modes;
+}
+
+/**
+ * Checks if the mode is valid.
+ */
+bool ModeParser::isValidMode(char mode) {
+    return mode == INVITE_ONLY || mode == TOPIC_PROTECTED || mode == CHANNEL_KEY || mode == CHANNEL_OPERATOR || mode == USER_LIMIT;
 }
