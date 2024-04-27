@@ -31,24 +31,29 @@ void KickCommand::execute(int clientFd) {
     size_t pos;
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
-        Channel &channel = server.getChannelByName(this->_channels[i]);
+        try {
+            Channel &channel = server.getChannelByName(this->_channels[i]);
+        
+            if (!channel.isUserInChannel(nickname))
+                throw NotOnChannelException(this->_channels[i]);
 
-        if (!channel.isUserInChannel(nickname))
-            throw NotOnChannelException(this->_channels[i]);
+            if (!channel.isOper(nickname))
+                throw ChanOPrivsNeededException(this->_channels[i]);
 
-        if (!channel.isOper(nickname))
-            throw ChanOPrivsNeededException(this->_channels[i]);
-
-        pos = this->_channels.size() == this->_users.size() ? i : 0;
-        kickedUser = this->_users[pos].getNickname();
-        if (this->_channels.size() == 1) {
-            for (size_t j = 0; j < this->_users.size(); j++) {
-                kickedUser = this->_users[j].getNickname();
-                kickUserFromChannel(channel, user, kickedUser, comment);
+            pos = this->_channels.size() == this->_users.size() ? i : 0;
+            kickedUser = this->_users[pos].getNickname();
+            if (this->_channels.size() == 1) {
+                for (size_t j = 0; j < this->_users.size(); j++) {
+                    kickedUser = this->_users[j].getNickname();
+                    kickUserFromChannel(channel, user, kickedUser, comment);
+                }
+                continue;
             }
-            continue;
+            kickUserFromChannel(channel, user, kickedUser, comment);
+        } catch (NoSuchChannelException &e) {
+            Logger::debug("Channel " + this->_channels[i] + " does not exist.");
         }
-        kickUserFromChannel(channel, user, kickedUser, comment);
+
     }
 }
 
