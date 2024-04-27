@@ -1,8 +1,6 @@
 #ifndef RESPONSES_HPP
 # define RESPONSES_HPP
 
-# include <ctime>
-
 # include "Channel.hpp"
 
 class Channel;
@@ -21,18 +19,19 @@ class Channel;
 
 # define RPL_WELCOME(nickname, username, hostname) "Welcome to the Internet Relay Network " + USER_ID(nickname, username, hostname)
 # define RPL_YOUR_HOST(servername) "Your host is " + (servername) + ", running version " + (SERVER_VERSION)
-# define RPL_CREATED(date) "This server was create: " + (date)
-# define RPL_MY_INFO(servername, channelModes) (servername) + " " + (SERVER_VERSION) + " Available user modes: " + ", Available channel modes: " + (channelModes)
+# define RPL_CREATED(date) "This server was created " + (date)
+# define RPL_MY_INFO(servername, channelModes) (servername) + " " + (SERVER_VERSION) + " Available user modes: , Available channel modes: " + (channelModes)
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
 # define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
-# define PART_MSG(channelName) " PART " + (channelName)
-# define QUIT_MSG(message) " QUIT :" + (message)
 # define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
-# define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
+# define MODE_MSG(channel, flag, modeParams) " MODE " + (channel) + " " + (flag) + " " + (modeParams)
+# define PART_MSG(channelName) " PART " + (channelName)
 # define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
+# define QUIT_MSG(message) " QUIT :" + (message)
+# define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
 
 /**
  * This class represents the responses to the IRC commands.
@@ -137,7 +136,5 @@ class MyInfoResponse : public Responses {
     public:
         MyInfoResponse(std::string const &nickname, std::string const &servername, std::string const &channelModes) : Responses("004", nickname, RPL_MY_INFO(servername, channelModes)) {}
 }
-
-
 
 #endif
