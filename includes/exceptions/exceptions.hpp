@@ -33,9 +33,8 @@
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
 # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
-// # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
 
-// #define ERR_KEYSET(channel) (channel) " :Channel key already set"
+# define ERR_KEYSET(channel) (channel) + " :Channel key already set"
 # define ERR_UNKOWN_MODE(modeChar) (modeChar) + " :is unknown mode char to me"
 
 // ==================================================================================
@@ -227,6 +226,14 @@ class CannotSendToChanException : public IRCException {
 class UnknownCommandException : public IRCException {
     public:
         UnknownCommandException(const std::string &command) : IRCException("421", ERR_UNKNOWN_COMMAND(command)) {}
+};
+
+/**
+ * This exception is thrown when the user tries to set a key that is already set.
+ */
+class KeySetException : public IRCException {
+    public:
+        KeySetException(const std::string &channel) : IRCException("467", ERR_KEYSET(channel)) {}
 };
 
 #endif

@@ -17,29 +17,36 @@
  *
  */
 ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
-    if (tokens.size() <3)
+    if (tokens.size() < 2)
         throw NeedMoreParamsException("MODE");
+    if (tokens.size() == 2)
+        return new ModeCommand(tokens[1]);
 
     std::string channel = tokens[1];
     std::string modesStr = tokens[2];
-    std::string modeParams = tokens.size() > 3 ? tokens[3] : NONE;
     bool plus = modesStr[0] != '-';
 
     std::vector<Mode> modes;
-    for (size_t i = 0; i < modesStr.size(); i++) {
-        if ((i == 0 && modesStr[i] == '+') || modesStr[i] == '-')
+    for (std::string::const_iterator it = modesStr.begin(); it != modesStr.end(); it++) {
+        if (it == modesStr.begin() && (*it == '+' || *it == '-'))
             continue;
-        if (modesStr[i] == 'i')
+        if (*it == 'i')
             modes.push_back(INVITE_ONLY);
-        else if (modesStr[i] == 't')
+        else if (*it == 't')
             modes.push_back(TOPIC_PROTECTED);
-        else if (modesStr[i] == 'k')
+        else if (*it == 'k')
             modes.push_back(CHANNEL_KEY);
-        else if (modesStr[i] == 'o')
+        else if (*it == 'o')
             modes.push_back(CHANNEL_OPERATOR);
-        else if (modesStr[i] == 'l')
+        else if (*it == 'l')
             modes.push_back(USER_LIMIT);
-        else throw UnknownModeException(std::string(1, modesStr[i]));
+        else
+            throw UnknownModeException(std::string(1, *it));
+    }
+
+    std::vector<std::string> modeParams;
+    for (size_t i = 3; i < tokens.size(); i++) {
+        modeParams.push_back(tokens[i]);
     }
     return new ModeCommand(plus, channel, modes, modeParams);
 }

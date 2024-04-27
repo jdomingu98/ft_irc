@@ -400,6 +400,34 @@ void Channel::setTopicProtected(bool topicProtected) {
 }
 
 /**
+ * This function aims to get the modes of the channel.
+ * 
+ * @return The modes of the channel.
+*/
+std::string Channel::getModes() const {
+    std::string modes = "";
+    if (this->isInviteOnly())
+        modes += "i";
+    if (this->isTopicProtected())
+        modes += "t";
+    if (this->isPasswordSet())
+        modes += "k";
+    if (this->hasLimit())
+        modes += "l";
+    return modes;
+}
+
+std::string Channel::getModeParams() const {
+    std::stringstream params;
+    if (this->isPasswordSet())
+        params << this->_password << " ";
+    if (this->hasLimit())
+        params << this->_limit << " ";
+    // remove the last space
+    return params.str().substr(0, params.str().size() - 1);
+}
+
+/**
  * This function aims to broadcast a message to all the users in the channel.
  * 
  * @param message The message to broadcast.
