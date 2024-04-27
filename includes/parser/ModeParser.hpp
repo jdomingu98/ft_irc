@@ -11,7 +11,7 @@ class ModeParser : public IParser {
     private:
         std::vector<Mode> &parseModes(const std::string& modesStr);
 
-        static bool ModeParser::isValidMode(char mode);
+        static bool isValidMode(char mode);
 
     public:
         ACommand *parse(const std::vector<std::string>& tokens);
