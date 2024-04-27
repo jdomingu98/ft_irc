@@ -17,12 +17,12 @@ class Channel;
 # define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
 # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
 
-# define RPL_WELCOME(nickname, username, hostname) "Welcome to the Internet Relay Network " + USER_ID(nickname, username, hostname)
+# define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
+
+# define RPL_WELCOME "Welcome to the Internet Relay Network "
 # define RPL_YOUR_HOST(servername) "Your host is " + (servername) + ", running version " + (SERVER_VERSION)
 # define RPL_CREATED(date) "This server was created " + (date)
 # define RPL_MY_INFO(servername, channelModes) (servername) + " " + (SERVER_VERSION) + " Available user modes: , Available channel modes: " + (channelModes)
-
-# define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
 # define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
@@ -107,7 +107,7 @@ class ChannelModeIsResponse : public Responses {
  */
 class WelcomeResponse : public Responses {
     public:
-        WelcomeResponse(std::string const &nickname, std::string const &username, std::string const &hostname) : Responses("001", nickname, RPL_WELCOME(nickname, username, hostname)) {}
+        WelcomeResponse(std::string const &nickname, std::string const &username, std::string const &hostname) : Responses("001", nickname, RPL_WELCOME + USER_ID(nickname, username, hostname)) {}
 };
 
 /**
@@ -117,7 +117,7 @@ class WelcomeResponse : public Responses {
 class YourHostResponse : public Responses {
     public:
         YourHostResponse(std::string const &nickname, std::string const &servername) : Responses("002", nickname, RPL_YOUR_HOST(servername)) {}
-}
+};
 
 /**
  * This class represents the response to the welcome message.
@@ -126,7 +126,7 @@ class YourHostResponse : public Responses {
 class CreatedResponse : public Responses {
     public:
         CreatedResponse(std::string const &nickname, std::string const &date) : Responses("003", nickname, RPL_CREATED(date)) {}
-}
+};
 
 /**
  * This class represents the response to the welcome message.
@@ -135,6 +135,6 @@ class CreatedResponse : public Responses {
 class MyInfoResponse : public Responses {
     public:
         MyInfoResponse(std::string const &nickname, std::string const &servername, std::string const &channelModes) : Responses("004", nickname, RPL_MY_INFO(servername, channelModes)) {}
-}
+};
 
 #endif
