@@ -6,6 +6,7 @@
 # include <csignal>
 # include <cstdlib>
 # include <cstring>
+# include <ctime>
 # include <fcntl.h>
 # include <map>
 # include <netinet/in.h>
@@ -58,6 +59,7 @@ class Server {
         struct pollfd               _fds[MAX_CLIENTS];
         int                         _numFds;
         std::map<int, std::string>  _inputBuffer;
+        std::string                 _creationDate;
         std::vector<User>           _users;
         std::vector<Channel>        _channels;
 
@@ -109,10 +111,12 @@ class Server {
         void	closeConnections();
 
         // Other Operations
-        void    sendMessage(int clientFd, const std::string& message) const;
-        void    sendExceptionMessage(int clientFd, const IRCException &e) const;
-        bool    isValidPassword(const std::string& password) const;
-        void	setSignalReceived();
+        void        sendMessage(int clientFd, const std::string& message) const;
+        void        sendExceptionMessage(int clientFd, const IRCException &e) const;
+        bool        isValidPassword(const std::string& password) const;
+        void	    setSignalReceived();
+        void        generateDate() const;
+        std::string getCreationDate() const;
 
         // Channel Iterators
         std::vector<Channel>::iterator findChannel(const std::string &channelName);

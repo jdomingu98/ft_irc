@@ -30,6 +30,7 @@ Server::Server(const std::string port, const std::string password) : _password(p
     if (!this->isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
+    this->generateDate();
     this->initServer();
 }
 
@@ -587,4 +588,25 @@ bool Server::isUserConnected(int clientFd) const {
         }
     }
     return false;
+}
+
+/**
+ * This function aims to generate the server creation date.
+*/
+void Server::generateDate() const {
+    std::time_t t = std::time(0);
+    std::tm* now = std::localtime(&t);
+    char buffer[100];
+
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S UTC", now);
+    this->creationDate = std::string(buffer);
+}
+
+/**
+ * Gets the current date.
+ * 
+ * @return The string with the current date.
+ */
+std::string Server::getCreationDate() const {
+    return this->_creationDate;
 }
