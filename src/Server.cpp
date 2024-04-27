@@ -205,7 +205,9 @@ void Server::handleClientDisconnection(int clientFd) {
     if (i == this->_numFds)
         return;
     
-    _fds.erase(_fds.begin() + i);
+    for(size_t j = 0; j < this->_numFds - 1; j++)
+        this->_fds[j] = this->_fds[j + 1];
+    this->_fds[this->numFds - 1] = 0;
     this->_numFds--;
 }
 
@@ -249,6 +251,8 @@ void Server::handleExistingConnection(int clientFd) {
     if (readBytes < 0) {
         //if (errno == EAGAIN || errno == EWOULDBLOCK)
         //    return;
+        this->handleClientDisconnection(clientFd);
+        close(clientFd);
         throw ServerException(RECV_EXPT);
     } else if (readBytes == 0) {
         QuitCommand quit("connection closed");
@@ -386,6 +390,8 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
         //if (errno == EAGAIN || errno == EWOULDBLOCK)
         //    return;
+        this->handleClientDisconnection(clientFd);
+        close(clientFd);
         throw ServerException(SEND_EXPT);
     }
 }
