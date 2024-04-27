@@ -32,30 +32,26 @@ void ModeCommand::execute(int clientFd) {
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
 
+    std::string flag = _plus ? "+" : "-";
     for (size_t i = 0; i < _modes.size(); i++) {
-        std::string flag = _plus ? "+" : "-";
+        flag += _modes[i];
         switch (_modes[i]) {
             case INVITE_ONLY:
                 ModeCommand::inviteOnly();
-                flag +=  "i";
                 break;
             case TOPIC_PROTECTED:
                 ModeCommand::topicProtected();
-                flag += "t";
                 break;
             case CHANNEL_KEY:
                 ModeCommand::channelKey();
-                flag += "k";
                 break;
             case CHANNEL_OPERATOR:
                 if (!channel.isOper(me.getNickname()))
                     throw ChanOPrivsNeededException(_channel);
                 ModeCommand::channelOperator();
-                flag += "o";
                 break;
             case USER_LIMIT:
                 ModeCommand::userLimit();
-                flag += "l";
                 break;
             default:
                 // Aquí habrá que hacer algo digo yo.
