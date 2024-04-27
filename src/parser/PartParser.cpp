@@ -18,7 +18,7 @@ ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
         throw NeedMoreParamsException("PART");
 
-    std::vector<std::string> channels = split(tokens[1], ',');
+    std::vector<std::string> channels = Utils::split(tokens[1], ',');
 
     for (size_t i = 0; i < channels.size(); i++) {
         if (channels[i][0]  != '#' && channels[i][0] != '&')

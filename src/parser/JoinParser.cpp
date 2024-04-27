@@ -19,11 +19,11 @@ ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {
         throw NeedMoreParamsException("JOIN");
 
     std::map<std::string, std::string> channels;
-    std::vector<std::string> channelsVec = split(tokens[1], ',');
+    std::vector<std::string> channelsVec = Utils::split(tokens[1], ',');
     std::vector<std::string> keysVec;
 
     if (tokens.size() == 3)
-        keysVec = split(tokens[2], ',');
+        keysVec = Utils::split(tokens[2], ',');
 
     for (size_t i = 0; i < channelsVec.size(); i++) {
         if (channelsVec[i].empty())
