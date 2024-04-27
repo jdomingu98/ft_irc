@@ -24,7 +24,6 @@ KickCommand::~KickCommand() {}
 void KickCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
-    Channel channel;
 
     std::string nickname = user.getNickname();
     std::string comment = this->_comment.empty() ? nickname : this->_comment;
@@ -33,7 +32,7 @@ void KickCommand::execute(int clientFd) {
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
         try {
-            channel = server.getChannelByName(this->_channels[i]);
+            Channel &channel = server.getChannelByName(this->_channels[i]);
         } catch (NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_channels[i] + " does not exist.");
             continue;

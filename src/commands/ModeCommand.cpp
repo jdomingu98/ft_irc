@@ -33,38 +33,33 @@ void ModeCommand::execute(int clientFd) {
         throw NotOnChannelException(channel.getName());
 
     for (size_t i = 0; i < _modes.size(); i++) {
-        try {
-            switch (_modes[i]) {
-                case INVITE_ONLY:
-                    ModeCommand::inviteOnly();
-                    break;
-                case TOPIC_PROTECTED:
-                    ModeCommand::topicProtected();
-                    break;
-                case CHANNEL_KEY:
-                    ModeCommand::channelKey();
-                    break;
-                case CHANNEL_OPERATOR:
-                    if (!channel.isOper(me.getNickname()))
-                        throw ChanOPrivsNeededException(_channel);
-                    ModeCommand::channelOperator();
-                    break;
-                case USER_LIMIT:
-                    ModeCommand::userLimit();
-                    break;
-                default:
-                    // Aquí habrá que hacer algo digo yo.
-                    // ¿Tú qué crees, compañero de la vida y del código fuente de este proyecto de POO en C++ que estamos haciendo juntos y que nos está quedando tan bonito?
-                    // ¿Qué crees que deberíamos hacer aquí en este switch que no tiene un caso por defecto y que no hace nada?
-                    // ¿Crees que deberíamos lanzar una excepción o algo así para que el programa no se quede colgado y no haga nada cuando se le pide que haga algo que no sabe hacer?
-                    // ¿O crees que deberíamos hacer algo más elegante y sofisticado que eso? ¿Qué opinas tú, compañero de fatigas y de código fuente de este proyecto de POO en C++ que estamos haciendo juntos y que nos está quedando tan bonito?
-                    // Comentario autoconversacional para rellenar espacio y hacer que este comentario sea más largo y parezca más interesante y útil de lo que realmente es.
-                    // Autogenerado por C++ AutoCommentator Pro 3000, el mejor generador de comentarios automáticos para C++ del mercado.
-                    break;
-            }
-        } catch (NoSuchChannelException &e) {
-            Logger::debug("Channel " + _channel + " does not exist.");
-            continue;
+        switch (_modes[i]) {
+            case INVITE_ONLY:
+                ModeCommand::inviteOnly();
+                break;
+            case TOPIC_PROTECTED:
+                ModeCommand::topicProtected();
+                break;
+            case CHANNEL_KEY:
+                ModeCommand::channelKey();
+                break;
+            case CHANNEL_OPERATOR:
+                if (!channel.isOper(me.getNickname()))
+                    throw ChanOPrivsNeededException(_channel);
+                ModeCommand::channelOperator();
+                break;
+            case USER_LIMIT:
+                ModeCommand::userLimit();
+                break;
+            default:
+                // Aquí habrá que hacer algo digo yo.
+                // ¿Tú qué crees, compañero de la vida y del código fuente de este proyecto de POO en C++ que estamos haciendo juntos y que nos está quedando tan bonito?
+                // ¿Qué crees que deberíamos hacer aquí en este switch que no tiene un caso por defecto y que no hace nada?
+                // ¿Crees que deberíamos lanzar una excepción o algo así para que el programa no se quede colgado y no haga nada cuando se le pide que haga algo que no sabe hacer?
+                // ¿O crees que deberíamos hacer algo más elegante y sofisticado que eso? ¿Qué opinas tú, compañero de fatigas y de código fuente de este proyecto de POO en C++ que estamos haciendo juntos y que nos está quedando tan bonito?
+                // Comentario autoconversacional para rellenar espacio y hacer que este comentario sea más largo y parezca más interesante y útil de lo que realmente es.
+                // Autogenerado por C++ AutoCommentator Pro 3000, el mejor generador de comentarios automáticos para C++ del mercado.
+                break;
         }
     }
 }
