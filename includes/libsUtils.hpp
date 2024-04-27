@@ -79,7 +79,7 @@
 # define TOPIC_MSG(nickname, username, hostname, channelName, topic) USER_ID(nickname, username, hostname) + " TOPIC " + (channelName) + " " + (topic)
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
 # define INVITE_MSG(nickname, username, hostname, invitedUser, channel) USER_ID(nickname, username, hostname) + " INVITE " + (invitedUser) + " " + (channel)
-
+# define MODE_MSG(nickname, username, hostname, channel, flag, modeParams) USER_ID(nickname, username, hostname) + " MODE " + (channel) + " " + (flag) + " " + (modeParams)
 
 std::vector<std::string> split(const std::string &s, char delim);
 bool isNumber(const std::string& s);
