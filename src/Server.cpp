@@ -151,29 +151,25 @@ void Server::initServer() {
  *  the server can't send a message.
  */
 void Server::listenClients() {
-    this->_numFds = 1;
-    
     while (!this->_signalReceived) {
-        if (poll(this->_fds, this->_numFds, -1) == -1 && !this->_signalReceived)
+        if (poll(&fds[0], _fds.size(), -1) == -1 && !this->_signalReceived)
             throw ServerException(POLL_EXPT);
 
-        for (int i = 0; i < this->_numFds; i++) {
+        for (int i = 0; i < _fds.size(); i++) {
             if (this->_fds[i].revents == 0)
                 continue;
 
             // Client disconnected
-            if (this->_fds[i].revents & POLLHUP) {
+            if (this->_fds[i].revents & POLLHUP || this->_fds[i].revents & POLLERR || this->_fds[i].revents & POLLNVAL) {
                 this->handleClientDisconnection(this->_fds[i].fd);
                 continue;
             }
 
             if (this->_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
-
-            if (this->_fds[i].fd == this->_socketFd) {
+            if (this->_fds[i].fd == this->_socketFd)
                 this->handleNewConnection();
-                (this->_numFds)++;
-            } else
+            else
                 this->handleExistingConnection(this->_fds[i].fd);
         }
     }
@@ -198,17 +194,14 @@ void Server::handleClientDisconnection(int clientFd) {
     }
     this->removeUser(clientFd);
 
-    int i = 0;
-    while (i < this->_numFds && this->_fds[i].fd != clientFd)
-        i++;
+    close(clientFd);
     
-    if (i == this->_numFds)
-        return;
-    
-    for(size_t j = 0; j < this->_numFds - 1; j++)
-        this->_fds[j] = this->_fds[j + 1];
-    this->_fds[this->numFds - 1] = 0;
-    this->_numFds--;
+    for (int i = 0; i < _fds.size(); i++) {
+        if (this->_fds[i].fd == clientFd) {
+            this->_fds.erase(this->_fds.begin() + i);
+            break;
+        }
+    }
 }
 
 /**
@@ -232,8 +225,10 @@ void Server::handleNewConnection() {
 
     this->_users.push_back(User(clientSocket));
     // Add new socket to poll_fds array
-    this->_fds[this->_numFds].fd = clientSocket;
-    this->_fds[this->_numFds].events = POLLIN;
+    struct pollfd newPoll;
+    newPoll.fd = clientSocket;
+    newPoll.events = POLLIN;
+    this->_fds.push_back(newPoll);
 }
 
 /**
@@ -251,9 +246,8 @@ void Server::handleExistingConnection(int clientFd) {
     if (readBytes < 0) {
         //if (errno == EAGAIN || errno == EWOULDBLOCK)
         //    return;
-        this->handleClientDisconnection(clientFd);
-        close(clientFd);
-        throw ServerException(RECV_EXPT);
+        handleClientDisconnection(clientFd);
+        //throw ServerException(RECV_EXPT);
     } else if (readBytes == 0) {
         QuitCommand quit("connection closed");
         quit.execute(clientFd);
@@ -371,7 +365,7 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * 
  * @throws `ServerException` if the server can't send the message.
 */
-void Server::sendMessage(int clientFd, const std::string& message) const {
+void Server::sendMessage(int clientFd, const std::string& message) {
     if (!this->isUserConnected(clientFd))
         return;
 
@@ -390,9 +384,8 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
         //if (errno == EAGAIN || errno == EWOULDBLOCK)
         //    return;
-        this->handleClientDisconnection(clientFd);
-        close(clientFd);
-        throw ServerException(SEND_EXPT);
+        handleClientDisconnection(clientFd);
+        //throw ServerException(SEND_EXPT);
     }
 }
 
@@ -402,9 +395,8 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
  * @param clientFd The file descriptor of the client.
  * @param e The exception to send.
  */
-void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
+void Server::sendExceptionMessage(int clientFd, const IRCException &e) {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
-
     this->sendMessage(clientFd, RESPONSE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
@@ -586,7 +578,7 @@ bool Server::channelExists(const std::string &channelName) const {
  * @return `true` if the user is connected, `false` otherwise.
  */
 bool Server::isUserConnected(int clientFd) const {
-    for (int i = 0; i < this->_numFds; i++) {
+    for (int i = 0; i < _fds.size(); i++) {
         if (this->_fds[i].fd == clientFd) {
             return true;
         }
@@ -597,7 +589,7 @@ bool Server::isUserConnected(int clientFd) const {
 /**
  * This function aims to generate the server creation date.
 */
-void Server::generateDate() const {
+void Server::generateDate() {
     std::time_t t = std::time(0);
     std::tm* now = std::localtime(&t);
     char buffer[100];

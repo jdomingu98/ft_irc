@@ -190,7 +190,7 @@ void User::makeRegistration() {
 
     server.sendMessage(this->getFd(), WelcomeResponse(_nickname, _username, _hostname).getReply());
     server.sendMessage(this->getFd(), YourHostResponse(_nickname, _serverName).getReply());
-    server.sendMessage(this->getFd(), CreatedResponse(_nickname, server.getCreationDate()).getReply();
+    server.sendMessage(this->getFd(), CreatedResponse(_nickname, server.getCreationDate()).getReply());
     server.sendMessage(this->getFd(), MyInfoResponse(_nickname, _serverName).getReply());
 
     this->_registered = true;

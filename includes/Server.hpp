@@ -57,8 +57,7 @@ class Server {
         std::string                 _password;
         int                         _socketFd;
         struct sockaddr_in          _serverAddr;
-        struct pollfd               _fds[MAX_CLIENTS];
-        int                         _numFds;
+        std::vector<struct pollfd>  _fds; //MAX_CLIENTS
         std::map<int, std::string>  _inputBuffer;
         std::string                 _creationDate;
         std::vector<User>           _users;
@@ -112,11 +111,11 @@ class Server {
         void	closeConnections();
 
         // Other Operations
-        void        sendMessage(int clientFd, const std::string& message) const;
-        void        sendExceptionMessage(int clientFd, const IRCException &e) const;
+        void        sendMessage(int clientFd, const std::string& message);
+        void        sendExceptionMessage(int clientFd, const IRCException &e);
         bool        isValidPassword(const std::string& password) const;
         void	    setSignalReceived();
-        void        generateDate() const;
+        void        generateDate();
         std::string getCreationDate() const;
 
         // Channel Iterators
