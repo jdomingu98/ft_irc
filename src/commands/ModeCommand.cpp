@@ -32,7 +32,9 @@ void ModeCommand::execute(int clientFd) {
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
 
+    std::string flag = _plus ? "+" : "-";
     for (size_t i = 0; i < _modes.size(); i++) {
+        flag += _modes[i];
         switch (_modes[i]) {
             case INVITE_ONLY:
                 ModeCommand::inviteOnly();
@@ -61,6 +63,10 @@ void ModeCommand::execute(int clientFd) {
                 // Autogenerado por C++ AutoCommentator Pro 3000, el mejor generador de comentarios automáticos para C++ del mercado.
                 break;
         }
+        if (!_plus && (_modes[i] == CHANNEL_OPERATOR || _modes[i] == CHANNEL_KEY || _modes[i] == USER_LIMIT))
+            _modeParams = "*";
+        channel.broadcastToChannel(MODE_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
+                                            channel.getName(), flag, _modeParams));
     }
 }
 
