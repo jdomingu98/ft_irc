@@ -71,7 +71,7 @@ IParser* CommandParser::getParser(std::string command) {
  * @return The tokens of the command.
  */
 std::vector<std::string> CommandParser::tokenize(const std::string& command) {
-    std::vector<std::string> tokens(split(command, ' '));
+    std::vector<std::string> tokens(Utils::getInstance().split(command, ' '));
     std::string token;
 
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++)

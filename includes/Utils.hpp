@@ -1,5 +1,5 @@
-#ifndef LIBS_UTILS_HPP
-# define LIBS_UTILS_HPP
+#ifndef UTILS_HPP
+# define UTILS_HPP
 
 /**
  * A file that contains utility consts and libraries that are used along the project.
@@ -74,8 +74,18 @@
 # define PRIVMSG_MSG(nickname, username, hostname, destination, message) USER_ID(nickname, username, hostname) + " PRIVMSG " + (destination) + " :" + (message)
 # define INVITE_MSG(nickname, username, hostname, invitedUser, channel) USER_ID(nickname, username, hostname) + " INVITE " + (invitedUser) + " " + (channel)
 
+class Utils {
+    private:
+        Utils() {}
+        ~Utils() {}
+    public:
 
-std::vector<std::string> split(const std::string &s, char delim);
-bool isNumber(const std::string& s);
+        //Singleton Pattern
+        static Utils& getInstance();
+
+        // Utils
+        std::vector<std::string> split(const std::string &s, char delim);
+        bool isNumber(const std::string& s);
+};
 
 #endif

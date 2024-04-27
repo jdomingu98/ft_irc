@@ -14,7 +14,7 @@
 # include "Channel.hpp"
 # include "User.hpp"
 
-# include "libsUtils.hpp"
+# include "Utils.hpp"
 
 # define MIN_PORT 1
 # define MAX_PORT 65535
@@ -43,6 +43,7 @@ class Server {
         std::map<int, std::string>  _inputBuffer;
         std::vector<User>           _users;
         std::vector<Channel>        _channels;
+        Utils&                      utils;
 
         // Singleton Pattern
         static Server           *_server;

@@ -1,4 +1,9 @@
-#include "libsUtils.hpp"
+#include "Utils.hpp"
+
+Utils& Utils::getInstance() {
+    static Utils instance;
+    return instance;
+}
 
 /**
  * Splits the string by the delimiter.
@@ -8,7 +13,7 @@
  * 
  * @return The vector of strings.
  */
-std::vector<std::string> split(const std::string &s, char delim) {
+std::vector<std::string> Utils::split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
@@ -25,7 +30,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
  * 
  * @return `true` if the string is a number, `false` otherwise.
  */
-bool isNumber(const std::string& s) {
+bool Utils::isNumber(const std::string& s) {
     std::string::const_iterator it = s.begin();
     
     while (it != s.end() && std::isdigit(*it))

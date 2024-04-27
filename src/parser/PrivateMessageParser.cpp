@@ -19,7 +19,7 @@ ACommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
 
     if (tokens.size() < 2)
         throw NoRecipientGivenException("PRIVMSG");
-    receivers = split(tokens[1], ',');
+    receivers = Utils::getInstance().split(tokens[1], ',');
     if (tokens.size() < 3)
         throw NoTextToSendException();
 

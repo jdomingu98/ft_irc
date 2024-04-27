@@ -122,7 +122,7 @@ void ModeCommand::channelOperator() {
 void ModeCommand::userLimit() {
     if (_modeParams == NONE && _plus)
         throw NeedMoreParamsException("MODE");
-    if (!isNumber(_modeParams))
+    if (!Utils::getInstance().isNumber(_modeParams))
         return ;
 
     int numUsers = std::atoi(_modeParams.c_str());
