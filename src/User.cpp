@@ -183,15 +183,17 @@ bool User::canRegister() const {
  * 
  */
 void User::makeRegistration() {
-    if (!Server::getInstance().isValidPassword(this->_password))
-        throw PasswordMismatchException();
-    this->_registered = true;
+    Server &server = Server::getInstance();
 
-    Server& server = Server::getInstance();
+    if (!server.isValidPassword(this->_password))
+        throw PasswordMismatchException();
+
     server.sendMessage(this->getFd(), WelcomeResponse(_nickname, _username, _hostname).getReply());
     server.sendMessage(this->getFd(), YourHostResponse(_nickname, _serverName).getReply());
-    server.sendMessage(this->getFd(), CreatedResponse(_nickname, Utils::getCurrentDate()).getReply());
+    server.sendMessage(this->getFd(), CreatedResponse(_nickname, server.getCreationDate()).getReply());
     server.sendMessage(this->getFd(), MyInfoResponse(_nickname, _serverName).getReply());
+
+    this->_registered = true;
 }
 
 /**

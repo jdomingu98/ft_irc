@@ -5,7 +5,6 @@
  * A file that contains utility functions that are used along the project.
 */
 
-# include <ctime>
 # include <sstream>
 # include <vector>
 
@@ -16,7 +15,6 @@ class Utils {
     public:
         static std::vector<std::string> split(const std::string &s, char delim);
         static bool isNumber(const std::string& s);
-        static std::string getCurrentDate();
 };
 
 #endif

@@ -1,7 +1,6 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-# include <algorithm>
 # include <string>
 # include <vector>
 
