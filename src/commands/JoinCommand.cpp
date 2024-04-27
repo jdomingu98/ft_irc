@@ -88,7 +88,7 @@ void JoinCommand::execute(int clientFd) {
             Logger::debug("CHANNEL DOES NOT EXIST");
 
             server.addChannel(Channel(channelName, user));
-            Channel &channel = server.getChannelByName(channelName);
+            Channel &channel = server.getChannelByName(channelName); //No need to catch exception
 
             user.addChannel(channel);
             this->printUsers(channel);
@@ -98,7 +98,7 @@ void JoinCommand::execute(int clientFd) {
         }
 
         Logger::debug("CHANNEL NOW EXISTS");
-        Channel &channel = server.getChannelByName(channelName);
+        Channel &channel = server.getChannelByName(channelName); //No need to catch exception
         Logger::debug("CHANNEL NAME: " + channelName);
 
         if (channel.isUserInChannel(nickname))
