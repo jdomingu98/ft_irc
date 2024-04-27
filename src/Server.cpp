@@ -247,10 +247,8 @@ void Server::handleExistingConnection(int clientFd) {
 
     int readBytes = recv(clientFd, buffer, BUFFER_SIZE, 0);
     if (readBytes < 0) {
-        //if (errno == EAGAIN || errno == EWOULDBLOCK)
-        //    return;
         handleClientDisconnection(clientFd);
-        //throw ServerException(RECV_EXPT);
+        Logger::debug(RECV_EXPT);
     } else if (readBytes == 0) {
         QuitCommand quit("connection closed");
         quit.execute(clientFd);
@@ -385,10 +383,8 @@ void Server::sendMessage(int clientFd, const std::string& message) {
     #endif
     
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
-        //if (errno == EAGAIN || errno == EWOULDBLOCK)
-        //    return;
         handleClientDisconnection(clientFd);
-        //throw ServerException(SEND_EXPT);
+        Logger::debug(SEND_EXPT);
     }
 }
 
