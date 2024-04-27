@@ -233,8 +233,6 @@ void Server::handleNewConnection() {
     // Add new socket to poll_fds array
     this->_fds[this->_numFds].fd = clientSocket;
     this->_fds[this->_numFds].events = POLLIN;
-
-    this->sendMessage(clientSocket, WELCOME_MSG);
 }
 
 /**
@@ -253,8 +251,7 @@ void Server::handleExistingConnection(int clientFd) {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
         throw ServerException(RECV_EXPT);
-    }
-    else if (readBytes == 0) {
+    } else if (readBytes == 0) {
         QuitCommand quit("connection closed");
         quit.execute(clientFd);
         return;
@@ -372,7 +369,7 @@ User &Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) const {
-    if (!this->isUserConnected(clientFd) && message != WELCOME_MSG)
+    if (!this->isUserConnected(clientFd))
         return;
 
     int msgSignal = 0;
@@ -403,7 +400,7 @@ void Server::sendMessage(int clientFd, const std::string& message) const {
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) const {
     std::string clientNickname = getUserByFd(clientFd).getNickname();
 
-    this->sendMessage(clientFd, ERROR_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+    this->sendMessage(clientFd, RESPONSE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**
@@ -525,9 +522,8 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  */
 void Server::addChannel(Channel channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
-    if (it != this->_channels.end())
-        throw ServerException(CHANNEL_ALREADY_ADDED_ERR);
-    this->_channels.push_back(channel);
+    if (it == this->_channels.end())
+        this->_channels.push_back(channel);
 }
 
 /**

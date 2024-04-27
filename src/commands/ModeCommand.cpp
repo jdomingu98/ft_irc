@@ -65,8 +65,8 @@ void ModeCommand::execute(int clientFd) {
         }
         if (!_plus && (_modes[i] == CHANNEL_OPERATOR || _modes[i] == CHANNEL_KEY || _modes[i] == USER_LIMIT))
             _modeParams = "*";
-        channel.broadcastToChannel(MODE_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
-                                            channel.getName(), flag, _modeParams));
+        channel.broadcastToChannel(CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
+                                    MODE_MSG(channel.getName(), flag, _modeParams)));
     }
 }
 

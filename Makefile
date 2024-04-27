@@ -1,10 +1,10 @@
 NAME	= ircserv
 CXX		= c++
-FLAGS	= -Wall -Werror -Wextra -std=c++98 #-g
+FLAGS	= -Wall -Werror -Wextra -std=c++98
 RM 		= rm -rf
 
-PORT	?= 6666
-PASS	?= 1234
+PORT	?= 6667
+PASS	?= 1111
 
 # =================================================================================
 
@@ -12,7 +12,7 @@ INCLUDES_PATH		= includes
 INCLUDES_SUBDIRS	= commands parser exceptions
 INCLUDES_DIRS		= $(INCLUDES_PATH) $(addprefix $(INCLUDES_PATH)/, $(INCLUDES_SUBDIRS))
 
-HEADERS				= $(addprefix -I, $(INCLUDES_DIRS))
+HEADERS				= $(addprefix -I , $(INCLUDES_DIRS))
 
 # =================================================================================
 
@@ -28,7 +28,7 @@ PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mod
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
-FILES 			= main Server User Channel Utils Logger
+FILES 			= main Server User Channel Utils Logger Responses
 
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
 SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))
@@ -50,16 +50,15 @@ clean:
 
 fclean:		clean
 	$(RM) $(NAME)
-#	$(RM) $(NAME).dSYM
 
 re: 		fclean all
 
 e:			re
 	clear
 	./$(NAME) $(PORT) $(PASS)
-	make fclean
 
-a: $(NAME)
+a:			$(NAME)
+	clear
 	./$(NAME) $(PORT) $(PASS)
 
 .PHONY: all clean fclean re e a

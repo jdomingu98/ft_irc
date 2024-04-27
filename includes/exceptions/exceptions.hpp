@@ -2,7 +2,6 @@
 # define EXCEPTIONS_HPP
 
 # include "IRCException.hpp"
-# include "ServerException.hpp"
 
 // ========================================= IRC COMMAND ERROR MESSAGES =========================================
 
@@ -34,15 +33,10 @@
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
 # define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
-// # define ERR_NO_TOP_LEVEL(mask) (mask) + " :No toplevel domain specified"
-// # define ERR_WILD_TOP_LEVEL(mask) (mask) + " :Wildcard in toplevel domain"
 // # define ERR_TOO_MANY_TARGETS(target)  (target)" + :Duplicate recipients. No message delivered"
 
 // #define ERR_KEYSET(channel) (channel) " :Channel key already set"
 # define ERR_UNKOWN_MODE(modeChar) (modeChar) + " :is unknown mode char to me"
-// #define ERR_USERS_DONT_MATCH ":Cant change mode for other users"
-// #define ERR_U_MODE_IS(userModeString) (userModeString)
-// #define ERR_U_MODE_UNKNOWN_FLAG ":Unknown MODE flag"
 
 // ==================================================================================
 

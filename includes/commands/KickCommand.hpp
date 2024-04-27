@@ -1,8 +1,6 @@
 #ifndef KICK_COMMAND_HPP
 # define KICK_COMMAND_HPP
 
-# include "ACommand.hpp"
-
 # include "Server.hpp"
 
 class Channel;

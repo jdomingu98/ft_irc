@@ -42,8 +42,8 @@ void QuitCommand::execute(int clientFd) {
 
     for (it = allUsers.begin(); it != allUsers.end(); it++) {
         server.sendMessage(it->getFd(), 
-                            QUIT_MSG(nickname, user.getUsername(), user.getHostname(),
-                                    _message.empty() ? nickname : _message));
+                            CMD_MSG(nickname, user.getUsername(), user.getHostname(),
+                                    QUIT_MSG(_message.empty() ? nickname : _message)));
     }
     server.handleClientDisconnection(clientFd);
 }

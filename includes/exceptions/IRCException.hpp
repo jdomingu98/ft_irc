@@ -4,7 +4,7 @@
 # include <string>
 
 /**
- * Generic Exception class for the IRC server.
+ * Generic exception class for the IRC server.
  */
 class IRCException : public std::exception {
     private:

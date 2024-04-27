@@ -7,7 +7,6 @@
 */
 ACommand::ACommand(bool needsValidation) : _needsValidation(needsValidation) {}
 
-
 /**
   * Getter for the needValidation attribute.
   * 

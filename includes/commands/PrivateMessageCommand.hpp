@@ -1,15 +1,10 @@
 #ifndef PRIVATE_MESSAGE_COMMAND_HPP
 # define PRIVATE_MESSAGE_COMMAND_HPP
 
-# include "ACommand.hpp"
-
 # include "Server.hpp"
-# include "User.hpp"
-
-class User;
 
 /**
- * A class that represents the PRIVMSG command.
+ * An ACommand implementation that is responsible for sending a private message to a user or channel.
  */
 class PrivateMessageCommand : public ACommand {
     private:

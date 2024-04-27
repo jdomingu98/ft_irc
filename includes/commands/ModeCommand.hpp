@@ -1,8 +1,6 @@
 #ifndef MODE_COMMAND_HPP
 # define MODE_COMMAND_HPP
 
-# include "ACommand.hpp"
-
 # include "Server.hpp"
 
 /**
@@ -18,6 +16,7 @@ typedef enum EMode {
 
 /**
  * An ACommand implementation that is responsible for setting the modes of a channel.
+ * 
  */
 class ModeCommand : public ACommand {
     private:

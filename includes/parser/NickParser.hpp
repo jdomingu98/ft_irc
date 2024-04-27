@@ -2,10 +2,7 @@
 # define NICK_PARSER_HPP
 
 # include "IParser.hpp"
-
 # include "NickCommand.hpp"
-
-# include "Utils.hpp"
 
 /**
  * An IParser implementation that is responsible for parsing the NICK command.

@@ -1,7 +1,13 @@
 #include "Utils.hpp"
 
+/**
+ * The utils constructor.
+ */
 Utils::Utils() {}
 
+/**
+ * The utils destructor.
+ */
 Utils::~Utils() {}
 
 /**
