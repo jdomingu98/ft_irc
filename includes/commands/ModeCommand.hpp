@@ -20,17 +20,18 @@ typedef enum EMode {
  */
 class ModeCommand : public ACommand {
     private:
-
         bool _plus;
+        bool _showChannelModes;
         Channel &_channel;
-        std::vector<Mode> &_modes;
-        std::vector<std::string> &_modeParams;
+        std::vector<Mode> _modes;
+        std::vector<std::string> _modeParams;
 
         bool modeNeedsParam(Mode mode);
 
     public:
         void execute(int clientFd);
         ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, std::vector<std::string>& modeParams);
+        ModeCommand(const std::string& channel);
         ~ModeCommand();
 
         void inviteOnly();
