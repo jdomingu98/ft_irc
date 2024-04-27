@@ -24,7 +24,6 @@ NickCommand::~NickCommand() {}
  * 
  * @throws `NoNicknameGivenException` If the nickname is empty
  * @throws `ErroneousNicknameException` If the nickname is too long or invalid
- * @throws `NickCollisionException` If the nickname is already in use and the user is not registered
  * @throws `NicknameInUseException` If the nickname is already in use and the user is registered
  * 
  */
@@ -39,9 +38,7 @@ void NickCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
 
     if (server.isNicknameInUse(this->_nickname))
-        user.isRegistered()
-            ? throw NicknameInUseException(this->_nickname)
-            : throw NickCollisionException(this->_nickname);
+        throw NicknameInUseException(this->_nickname);
 
     if (!NickCommand::isValidNickname())
         throw ErroneousNicknameException(this->_nickname);

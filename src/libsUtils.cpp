@@ -32,3 +32,17 @@ bool isNumber(const std::string& s) {
         ++it;
     return !s.empty() && it == s.end();
 }
+
+/**
+ * Gets the current date.
+ * 
+ * @return The string with the current date.
+ */
+std::string getCurrentDate() {
+    std::time_t t = std::time(0);
+    std::tm* now = std::localtime(&t);
+    char buffer[100];
+
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S UTC", now);
+    return std::string(buffer);
+}

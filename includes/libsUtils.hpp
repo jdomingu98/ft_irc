@@ -7,10 +7,15 @@
 
 # include <sstream>
 # include <vector>
+# include <ctime>
 
+# define DEFAULT_SERVER_VERSION "ft_messenger-v1.0.0"
 // ========================================= IRC SERVER ERROR MESSAGES =========================================
 
-# define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + (message)
+# define RPL_WELCOME(nickname, username, hostname) std::string("Welcome to the Internet Relay Network ") + USER_ID(nickname, username, hostname)
+# define RPL_YOURHOST(servername) "Your host is " + (servername) + ", running version " + (DEFAULT_SERVER_VERSION)
+# define RPL_CREATED(date) "This server was create: " + (date)
+# define RPL_MYINFO(servername, channelModes) (servername) + " " + (DEFAULT_SERVER_VERSION) + " Available user modes: " + ", Available channel modes: " + (channelModes)
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
@@ -24,5 +29,6 @@
 std::vector<std::string> split(const std::string &s, char delim);
 
 bool isNumber(const std::string& s);
+std::string getCurrentDate();
 
 #endif
