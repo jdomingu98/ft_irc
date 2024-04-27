@@ -288,6 +288,9 @@ void Server::handleExistingConnection(int clientFd) {
             if (command->needsValidation() && !client.isRegistered())
                 throw NotRegisteredException();
             command->execute(clientFd);
+        } catch (PasswordMismatchException &e) {
+            this->sendExceptionMessage(clientFd, e);
+            this->handleClientDisconnection(clientFd);
         } catch (IRCException &e) {
             this->sendExceptionMessage(clientFd, e);
         } catch (IgnoreCommandException &e) {
