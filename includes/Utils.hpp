@@ -1,5 +1,5 @@
-#ifndef LIBS_UTILS_HPP
-# define LIBS_UTILS_HPP
+#ifndef UTILS_HPP
+# define UTILS_HPP
 
 /**
  * A file that contains utility consts and libraries that are used along the project.
@@ -25,10 +25,16 @@
 # define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
 # define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
 # define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
+# define MODE_MSG(nickname, username, hostname, channel, flag, modeParams) " MODE " + (channel) + " " + (flag) + " " + (modeParams)
 
-std::vector<std::string> split(const std::string &s, char delim);
-
-bool isNumber(const std::string& s);
-std::string getCurrentDate();
+class Utils {
+    private:
+        Utils();
+        ~Utils();
+    public:
+        static std::vector<std::string> split(const std::string &s, char delim);
+        static bool isNumber(const std::string& s);
+        static std::string getCurrentDate();
+};
 
 #endif
