@@ -25,6 +25,8 @@ class Channel;
 # define RPL_CREATED(date) "This server was created " + (date)
 # define RPL_MY_INFO(servername) (servername) + " " + SERVER_VERSION + " Available user modes: , Available channel modes: " + AVAILABLE_CHANNEL_MODES
 
+# define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " " + (message)
+
 # define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
 # define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
