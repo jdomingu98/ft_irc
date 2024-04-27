@@ -1,21 +1,38 @@
 #ifndef RESPONSES_HPP
 # define RESPONSES_HPP
 
+# include <ctime>
+
 # include "Channel.hpp"
 
 class Channel;
 
 // ========================================= IRC COMMAND REPLY MESSAGES =========================================
 
+# define SERVER_VERSION "ft_messenger-v1.0.0"
+
 # define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
-// # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
 # define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
+# define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
 
-// # define CHANNEL_MODE_IS_CODE_NUMBER "324"
+# define RPL_WELCOME(nickname, username, hostname) "Welcome to the Internet Relay Network " + USER_ID(nickname, username, hostname)
+# define RPL_YOUR_HOST(servername) "Your host is " + (servername) + ", running version " + (SERVER_VERSION)
+# define RPL_CREATED(date) "This server was create: " + (date)
+# define RPL_MY_INFO(servername, channelModes) (servername) + " " + (SERVER_VERSION) + " Available user modes: " + ", Available channel modes: " + (channelModes)
+
+# define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
+
+# define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
+# define JOIN_MSG(channelName) " JOIN " + (channelName)
+# define PART_MSG(channelName) " PART " + (channelName)
+# define QUIT_MSG(message) " QUIT :" + (message)
+# define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
+# define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
+# define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
 
 /**
  * This class represents the responses to the IRC commands.
@@ -77,5 +94,50 @@ class TopicResponse : public Responses {
     public:
         TopicResponse(std::string const &nickname, std::string const &channel, std::string const &topic) : Responses("332", nickname, RPL_TOPIC(channel, topic)) {}
 };
+
+/**
+ * This class represents the response to a channel mode consult.
+ */
+class ChannelModeIsResponse : public Responses {
+    public:
+        ChannelModeIsResponse(std::string const &nickname, std::string const &channel, std::string const &mode, std::string const &modeParams) : Responses("324", nickname, RPL_CHANNEL_MODE_IS(channel, mode, modeParams)) {}
+};
+
+/**
+ * This class represents the response to the welcome message.
+ */
+class WelcomeResponse : public Responses {
+    public:
+        WelcomeResponse(std::string const &nickname, std::string const &username, std::string const &hostname) : Responses("001", nickname, RPL_WELCOME(nickname, username, hostname)) {}
+};
+
+/**
+ * This class represents the response to the welcome message.
+ * This response refers to the users host.
+ */
+class YourHostResponse : public Responses {
+    public:
+        YourHostResponse(std::string const &nickname, std::string const &servername) : Responses("002", nickname, RPL_YOUR_HOST(servername)) {}
+}
+
+/**
+ * This class represents the response to the welcome message.
+ * This response refers to the server creation date.
+ */
+class CreatedResponse : public Responses {
+    public:
+        CreatedResponse(std::string const &nickname, std::string const &date) : Responses("003", nickname, RPL_CREATED(date)) {}
+}
+
+/**
+ * This class represents the response to the welcome message.
+ * This response refers to the user information.
+ */
+class MyInfoResponse : public Responses {
+    public:
+        MyInfoResponse(std::string const &nickname, std::string const &servername, std::string const &channelModes) : Responses("004", nickname, RPL_MY_INFO(servername, channelModes)) {}
+}
+
+
 
 #endif

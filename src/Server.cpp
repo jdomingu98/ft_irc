@@ -251,8 +251,7 @@ void Server::handleExistingConnection(int clientFd) {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
         throw ServerException(RECV_EXPT);
-    }
-    else if (readBytes == 0) {
+    } else if (readBytes == 0) {
         QuitCommand quit("connection closed");
         quit.execute(clientFd);
         return;
