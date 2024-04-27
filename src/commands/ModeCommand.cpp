@@ -32,30 +32,30 @@ void ModeCommand::execute(int clientFd) {
     if (!me.isOnChannel(channel.getName()))
         throw NotOnChannelException(channel.getName());
 
-    std::string flag;
     for (size_t i = 0; i < _modes.size(); i++) {
+        std::string flag = _plus ? "+" : "-";
         switch (_modes[i]) {
             case INVITE_ONLY:
                 ModeCommand::inviteOnly();
-                flag = _plus ? "+i" : "-i";
+                flag +=  "i";
                 break;
             case TOPIC_PROTECTED:
                 ModeCommand::topicProtected();
-                flag = _plus ? "+t" : "-t";
+                flag += "t";
                 break;
             case CHANNEL_KEY:
                 ModeCommand::channelKey();
-                flag = _plus ? "+k" : "-k";
+                flag += "k";
                 break;
             case CHANNEL_OPERATOR:
                 if (!channel.isOper(me.getNickname()))
                     throw ChanOPrivsNeededException(_channel);
                 ModeCommand::channelOperator();
-                flag = _plus ? "+o" : "-o";
+                flag += "o";
                 break;
             case USER_LIMIT:
                 ModeCommand::userLimit();
-                flag = _plus ? "+l" : "-l";
+                flag += "l";
                 break;
             default:
                 // Aquí habrá que hacer algo digo yo.
@@ -67,9 +67,11 @@ void ModeCommand::execute(int clientFd) {
                 // Autogenerado por C++ AutoCommentator Pro 3000, el mejor generador de comentarios automáticos para C++ del mercado.
                 break;
         }
-    }
-    channel.broadcastToChannel(MODE_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
+        if (!_plus && (_modes[i] == CHANNEL_OPERATOR || _modes[i] == CHANNEL_KEY || _modes[i] == USER_LIMIT))
+            _modeParams = "*";
+        channel.broadcastToChannel(MODE_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
                                             channel.getName(), flag, _modeParams));
+    }
 }
 
 /**
