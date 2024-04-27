@@ -185,7 +185,16 @@ bool User::canRegister() const {
 void User::makeRegistration() {
     if (!Server::getInstance().isValidPassword(this->_password))
         throw PasswordMismatchException();
-    this->_registered = true;   
+    this->_registered = true;
+
+    std::string date = getCurrentDate();
+    std::string channelModes = "iklot";
+
+    Server& server = Server::getInstance();
+    server.sendMessage(this->getFd(), RPL_WELCOME(_nickname, _username, _hostname));
+    server.sendMessage(this->getFd(), RPL_YOURHOST(_serverName));
+    server.sendMessage(this->getFd(), RPL_CREATED(date));
+    server.sendMessage(this->getFd(), RPL_MYINFO(_serverName, channelModes));
 }
 
 /**
