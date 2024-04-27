@@ -1,7 +1,7 @@
 #ifndef A_COMMAND_HPP
 # define A_COMMAND_HPP
 
-class Server;
+# include <string>
 
 /**
  * An abstract class which represents a command that can be executed by the server.

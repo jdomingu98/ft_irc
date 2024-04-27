@@ -2,12 +2,7 @@
 # define TOPIC_PARSER_HPP
 
 # include "IParser.hpp"
-
 # include "TopicCommand.hpp"
-
-# include "Channel.hpp"
-
-# include "Utils.hpp"
 
 /**
  * An IParser implementation that is responsible for parsing the TOPIC command.

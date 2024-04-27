@@ -69,8 +69,8 @@ void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
     for (size_t j = 0; j < channelUsers.size(); j++) {
         Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[j].getNickname().c_str());
         server.sendMessage(channelUsers[j].getFd(),
-                            KICK_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
-                                    channel.getName(), kickedUser, comment));
+                            CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
+                                    KICK_MSG(channel.getName(), kickedUser, comment)));
     }
     channel.removeUser(kickedUser);
 }

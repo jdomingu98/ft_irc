@@ -2,7 +2,6 @@
 # define MODE_PARSER_HPP
 
 # include "IParser.hpp"
-
 # include "ModeCommand.hpp"
 
 /**

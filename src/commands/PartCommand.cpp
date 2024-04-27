@@ -43,7 +43,7 @@ void PartCommand::execute(int clientFd) {
 
             for (size_t j = 0; j < users.size(); j++) {
                 Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-                server.sendMessage(users[j].getFd(), PART_MSG(nickname, username, hostname, channel.getName()));
+                server.sendMessage(users[j].getFd(), CMD_MSG(nickname, username, hostname, PART_MSG(channel.getName())));
             }
 
             channel.removeUser(nickname);

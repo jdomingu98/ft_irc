@@ -1,9 +1,7 @@
 #ifndef TOPIC_COMMAND_HPP
 # define TOPIC_COMMAND_HPP
 
-# include "ACommand.hpp"
-
-# include "Server.hpp"
+# include "Channel.hpp"
 
 class Channel;
 

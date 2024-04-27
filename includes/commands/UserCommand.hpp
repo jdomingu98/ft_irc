@@ -1,8 +1,6 @@
 #ifndef USER_COMMAND_HPP
 # define USER_COMMAND_HPP
 
-# include "ACommand.hpp"
-
 # include "Server.hpp"
 
 /**

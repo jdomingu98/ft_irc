@@ -2,27 +2,44 @@
 # define SERVER_HPP
 
 # include <arpa/inet.h>
+# include <cerrno>
+# include <csignal>
+# include <cstdlib>
+# include <cstring>
 # include <fcntl.h>
+# include <map>
 # include <netinet/in.h>
 # include <poll.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <unistd.h>
+# include <vector>
 
 # include "ACommand.hpp"
 # include "CommandParser.hpp"
+# include "exceptions.hpp"
+# include "IgnoreCommandException.hpp"
+# include "Logger.hpp"
+# include "QuitCommand.hpp"
+# include "Responses.hpp"
+# include "ServerException.hpp"
 
-# include "Channel.hpp"
-# include "User.hpp"
-
-# include "Utils.hpp"
+# define SUCCESS 0
+# define EXIT 1
 
 # define MIN_PORT 1
 # define MAX_PORT 65535
+
+# define DEFAULT_PORT "6667"
+# define DEFAULT_PASS "1111"
 
 # define BUFFER_SIZE 512
 # define MAX_CLIENTS 42
 
 # define NONE ""
+
+# define INVALID_ARGS "[ERROR] Invalid args.\nUsage: ./ircserv <port> <password>"
+# define PORT_OUT_OF_RANGE_ERR "[ERROR] Port out of range."
 
 class Channel;
 
@@ -45,11 +62,11 @@ class Server {
         std::vector<Channel>        _channels;
 
         // Singleton Pattern
-        static Server           *_server;
+        static Server               *_server;
         Server(const std::string port, const std::string password);
 
         // Signal Handler
-        bool _signalReceived;
+        bool                        _signalReceived;
 
         // Server logic
         bool isValidPort(const std::string &port) const;
@@ -63,7 +80,6 @@ class Server {
         std::vector<User>::const_iterator findUserByFd(int clientFd) const;
         std::vector<User>::iterator findUserByNickname(const std::string &nickname);
         std::vector<User>::const_iterator findUserByNickname(const std::string &nickname) const;
-
 
     public:
         ~Server();
