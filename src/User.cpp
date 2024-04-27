@@ -187,14 +187,11 @@ void User::makeRegistration() {
         throw PasswordMismatchException();
     this->_registered = true;
 
-    std::string date = Utils::getCurrentDate();
-    std::string channelModes = "iklot";
-
     Server& server = Server::getInstance();
-    server.sendMessage(this->getFd(), RPL_WELCOME(_nickname, _username, _hostname));
-    server.sendMessage(this->getFd(), RPL_YOURHOST(_serverName));
-    server.sendMessage(this->getFd(), RPL_CREATED(date));
-    server.sendMessage(this->getFd(), RPL_MYINFO(_serverName, channelModes));
+    server.sendMessage(this->getFd(), WelcomeResponse(_nickname, _username, _hostname).getReply());
+    server.sendMessage(this->getFd(), YourHostResponse(_nickname, _serverName).getReply());
+    server.sendMessage(this->getFd(), CreatedResponse(_nickname, Utils::getCurrentDate()).getReply());
+    server.sendMessage(this->getFd(), MyInfoResponse(_nickname, _serverName).getReply());
 }
 
 /**

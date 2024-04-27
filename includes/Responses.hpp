@@ -8,6 +8,7 @@ class Channel;
 // ========================================= IRC COMMAND REPLY MESSAGES =========================================
 
 # define SERVER_VERSION "ft_messenger-v1.0.0"
+# define AVAILABLE_CHANNEL_MODES "iklot"
 
 # define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
 
@@ -20,9 +21,9 @@ class Channel;
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
 # define RPL_WELCOME "Welcome to the Internet Relay Network "
-# define RPL_YOUR_HOST(servername) "Your host is " + (servername) + ", running version " + (SERVER_VERSION)
+# define RPL_YOUR_HOST(servername) "Your host is " + (servername) + ", running version " + SERVER_VERSION
 # define RPL_CREATED(date) "This server was created " + (date)
-# define RPL_MY_INFO(servername, channelModes) (servername) + " " + (SERVER_VERSION) + " Available user modes: , Available channel modes: " + (channelModes)
+# define RPL_MY_INFO(servername) (servername) + " " + SERVER_VERSION + " Available user modes: , Available channel modes: " + AVAILABLE_CHANNEL_MODES
 
 # define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
@@ -134,7 +135,7 @@ class CreatedResponse : public Responses {
  */
 class MyInfoResponse : public Responses {
     public:
-        MyInfoResponse(std::string const &nickname, std::string const &servername, std::string const &channelModes) : Responses("004", nickname, RPL_MY_INFO(servername, channelModes)) {}
+        MyInfoResponse(std::string const &nickname, std::string const &servername) : Responses("004", nickname, RPL_MY_INFO(servername)) {}
 };
 
 #endif
