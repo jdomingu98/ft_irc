@@ -46,7 +46,7 @@ void NickCommand::execute(int clientFd) {
     if (user.isRegistered() && user.getNickname() != this->_nickname) {
         std::vector<Channel> userChannels = server.getChannels();
         for (std::vector<Channel>::iterator it = userChannels.begin(); it != userChannels.end(); it++) {
-            if (it->isUserOnChannel(user.getNickname()))
+            if (it->isUserInChannel(user.getNickname()))
                 it->broadcastToChannel(CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(), NICK_MSG(this->_nickname)));
         }
     }
