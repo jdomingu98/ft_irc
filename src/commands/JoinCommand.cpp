@@ -77,32 +77,35 @@ void JoinCommand::execute(int clientFd) {
 
     std::string channelName;
     std::string channelKey;
+    bool isNewChannel = false;
 
     for (std::map<std::string, std::string>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
         channelName = it->first;
         channelKey = it->second;
 
-        Logger::debug("JOINING CHANNEL: " + channelName + " WITH KEY: " + channelKey);
-
-        if (!server.channelExists(channelName)) {
-            Logger::debug("CHANNEL DOES NOT EXIST");
-
-            server.addChannel(Channel(channelName, user));
-            Channel &channel = server.getChannelByName(channelName); //No need to catch exception
-
-            user.addChannel(channel);
-            this->printUsers(channel);
-
-            sendMessages(clientFd, channel);
+        try {
+            if (channelName[0] != '#' && channelName[0] != '&')
+                throw BadChannelMaskException(channelName);
+        } catch (IRCException &e) {
+            server.sendExceptionMessage(clientFd, e);
             continue;
+
+        }
+        // Check if user has joined max channels
+        if (user.isUserInMaxChannels())
+            throw TooManyChannelsException(channelName);
+
+
+        isNewChannel = false;
+        if (!server.channelExists(channelName)) {
+            isNewChannel = true;
+            server.addChannel(Channel(channelName, user));
         }
 
-        Logger::debug("CHANNEL NOW EXISTS");
         Channel &channel = server.getChannelByName(channelName); //No need to catch exception
-        Logger::debug("CHANNEL NAME: " + channelName);
 
-        if (channel.isUserInChannel(nickname))
-            throw UserOnChannelException(nickname, channelName); //Provisional
+        if (!isNewChannel && channel.isUserInChannel(nickname))
+            throw UserOnChannelException(nickname, channelName);
 
         //1. Check if channel[i] is invite-only channel and if user is invited
         if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
@@ -116,14 +119,12 @@ void JoinCommand::execute(int clientFd) {
         if (channel.hasLimit() && channel.isFull())
             throw ChannelIsFullException(channelName);
 
-        //4. Check if user has joined max channels
-        if (user.isUserInMaxChannels())
-            throw TooManyChannelsException(channelName);
 
         Logger::debug("--- PRE SAVE ---");
         this->printUsers(channel);
 
-        channel.addUser(user);
+        if (!isNewChannel)
+            channel.addUser(user);
         user.addChannel(channel);
 
         Logger::debug("--- POST SAVE ---");

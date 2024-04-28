@@ -29,9 +29,6 @@ ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {
         if (channelsVec[i].empty())
             continue;
 
-        if (channelsVec[i][0] != '#' && channelsVec[i][0] != '&')
-            throw BadChannelMaskException(channelsVec[i]);
-        
         channels[channelsVec[i]] = (!keysVec.empty() && !keysVec[i].empty()) ? keysVec[i] : NONE;
     }
     if (!keysVec.empty())
