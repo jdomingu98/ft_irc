@@ -50,6 +50,7 @@ void PartCommand::execute(int clientFd) {
             Logger::debug("User " + nickname + " removed from channel " + this->_channels[i] + ".");
         } catch (NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_channels[i] + " does not exist.");
+            server.sendExceptionMessage(clientFd, e);
         }
     }
 }

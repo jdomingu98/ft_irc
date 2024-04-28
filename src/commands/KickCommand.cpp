@@ -52,6 +52,7 @@ void KickCommand::execute(int clientFd) {
             kickUserFromChannel(channel, user, kickedUser, comment);
         } catch (NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_channels[i] + " does not exist.");
+            server.sendExceptionMessage(clientFd, e);
         }
 
     }
