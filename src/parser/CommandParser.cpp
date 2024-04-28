@@ -58,6 +58,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new KickParser();
     if (command == "MODE")
         return new ModeParser();
+    if (command == "NOTICE")
+        return new NoticeParser();
     if (command == NONE)
         throw IgnoreCommandException();
     throw UnknownCommandException(command);
@@ -94,7 +96,7 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
  * @param command The command to validate.
  * @param client The client that sent the command.
  * 
- * @throws `IRCException` if the prefix is incorrect.
+ * @throws `IgnoreCommandException` if the prefix is incorrect.
  * 
  */
 void CommandParser::validateUserPrefix(std::string &command, const User &client) {
