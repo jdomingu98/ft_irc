@@ -53,9 +53,10 @@ void NickCommand::execute(int clientFd) {
             if (!channels[i].isUserInChannel(user.getNickname()))
                 continue;
 
-            std::vector<User> &usersChannel = channels[i].getAllUsers();
+            std::vector<User> usersChannel = channels[i].getAllUsers();
             for (size_t j = 0; j < usersChannel.size(); j++)
                 allUsers.insert(usersChannel[j]);
+            usersChannel.clear();
         }
         for (it = allUsers.begin(); it != allUsers.end(); it++)
             server.sendMessage(it->getFd(), 
