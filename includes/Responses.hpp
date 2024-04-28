@@ -10,12 +10,12 @@ class Channel;
 # define SERVER_VERSION "ft_messenger-v1.0.0"
 # define AVAILABLE_CHANNEL_MODES "iklot"
 
-# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg) + "."
+# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg)
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
-# define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list."
+# define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list"
 # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
@@ -27,15 +27,15 @@ class Channel;
 
 # define CMD_MSG(nickname, username, hostname, message) USER_ID(nickname, username, hostname) + " " + (message)
 
-# define INVITE_MSG(invitedUser, channel) " INVITE " + (invitedUser) + " " + (channel)
-# define JOIN_MSG(channelName) " JOIN " + (channelName)
-# define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
-# define MODE_MSG(channel, flag, modeParams) " MODE " + (channel) + " " + (flag) + " " + (modeParams)
-# define NICK_MSG(nickname) " NICK " + (nickname)
-# define PART_MSG(channelName) " PART " + (channelName)
-# define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
-# define QUIT_MSG(message) " QUIT :" + (message)
-# define TOPIC_MSG(channelName, topic) " TOPIC " + (channelName) + " " + (topic)
+# define INVITE_MSG(invitedUser, channel) "INVITE " + (invitedUser) + " " + (channel)
+# define JOIN_MSG(channelName) "JOIN " + (channelName)
+# define KICK_MSG(channelName, kickedUser, comment) "KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
+# define MODE_MSG(channel, flag, modeParams) "MODE " + (channel) + " " + (flag) + " " + (modeParams)
+# define NICK_MSG(nickname) "NICK " + (nickname)
+# define PART_MSG(channelName) "PART " + (channelName)
+# define PRIVMSG_MSG(destination, message) "PRIVMSG " + (destination) + " :" + (message)
+# define QUIT_MSG(message) "QUIT :" + (message)
+# define TOPIC_MSG(channelName, topic) "TOPIC " + (channelName) + " " + (topic)
 
 /**
  * This class represents the responses to the IRC commands.

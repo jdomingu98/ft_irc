@@ -13,7 +13,7 @@ std::string NamesReplyResponse::rplNamesReply(Channel &channel) const {
     std::vector<User> users = channel.getUsers();
     std::vector<User> opers = channel.getOperators();
     
-    std::string msg = " " + channel.getName() + " :";
+    std::string msg = channel.getName() + " :";
     if (opers.size() > 0) {
         msg += "@" + opers[0].getNickname();
     
