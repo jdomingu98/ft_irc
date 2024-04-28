@@ -48,9 +48,12 @@ void ModeCommand::execute(int clientFd) {
         );
         return ;
     }
-    
+
     if (!me.isOnChannel(_channel.getName()))
         throw NotOnChannelException(_channel.getName());
+
+    if (!_channel.isOper(me.getNickname()))
+        throw ChanOPrivsNeededException(_channel.getName());
 
     std::string flag = _plus ? "+" : "-";
     std::vector<std::string>::iterator paramIterator = _modeParams.begin();
@@ -74,7 +77,7 @@ void ModeCommand::execute(int clientFd) {
                 ModeCommand::channelKey(param);
                 break;
             case CHANNEL_OPERATOR:
-                ModeCommand::channelOperator(me, param);
+                ModeCommand::channelOperator(param);
                 break;
             case USER_LIMIT:
                 ModeCommand::userLimit(param);
@@ -125,9 +128,7 @@ void ModeCommand::channelKey(const std::string & param) {
  * 
  * Sets the user as an operator of the channel.
  */
-void ModeCommand::channelOperator(const User &me, const std::string &param) {
-    if (!_channel.isOper(me.getNickname()))
-        throw ChanOPrivsNeededException(_channel.getName());
+void ModeCommand::channelOperator(const std::string &param) {
     if (!_channel.isUserInChannel(param))
         throw UserNotInChannelException(param, _channel.getName());
     if (_plus)

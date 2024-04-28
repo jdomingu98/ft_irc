@@ -37,7 +37,7 @@ class ModeCommand : public ACommand {
         void inviteOnly();
         void topicProtected();
         void channelKey(const std::string & param);
-        void channelOperator(const User &me, const std::string & param);
+        void channelOperator(const std::string & param);
         void userLimit(const std::string & param);
 };
 
