@@ -39,7 +39,7 @@ std::vector<std::string> Utils::split(const std::string &s, char delim) {
 bool Utils::isNumber(const std::string& s) {
     std::string::const_iterator it = s.begin();
     
-    while (it != s.end() && std::isdigit(*it))
+    while (it != s.end() && (std::isdigit(*it) || (*it == '-' && it == s.begin())))
         ++it;
     return !s.empty() && it == s.end();
 }

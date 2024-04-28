@@ -58,36 +58,31 @@ void ModeCommand::execute(int clientFd) {
     std::string flag = _plus ? "+" : "-";
     std::vector<std::string>::iterator paramIterator = _modeParams.begin();
     std::string param = NONE;
+    std::string modeParams = NONE;
     for (size_t i = 0; i < _modes.size(); i++) {
         flag += _modes[i];
-    
+        
         if (ModeCommand::modeNeedsParam(_modes[i])) {
             if (paramIterator == _modeParams.end())
                 throw NeedMoreParamsException("MODE");
             param = *(paramIterator++);
+            modeParams += param + " ";
         }
-        switch (_modes[i]) {
-            case INVITE_ONLY:
-                ModeCommand::inviteOnly();
-                break;
-            case TOPIC_PROTECTED:
-                ModeCommand::topicProtected();
-                break;
-            case CHANNEL_KEY:
-                ModeCommand::channelKey(param);
-                break;
-            case CHANNEL_OPERATOR:
-                ModeCommand::channelOperator(param);
-                break;
-            case USER_LIMIT:
-                ModeCommand::userLimit(param);
-                break;
-            default:
-                throw UnknownModeException(std::string(1, _modes[i]));
+        try {
+            switch (_modes[i]) {
+                case INVITE_ONLY:       ModeCommand::inviteOnly(); break;
+                case TOPIC_PROTECTED:   ModeCommand::topicProtected(); break;
+                case CHANNEL_KEY:       ModeCommand::channelKey(param); break;
+                case CHANNEL_OPERATOR:  ModeCommand::channelOperator(param); break;
+                case USER_LIMIT:        ModeCommand::userLimit(param); break;
+                default:                throw UnknownModeException(std::string(1, _modes[i]));
+            }
+        } catch (IRCException &e) {
+            server.sendExceptionMessage(clientFd, e);
         }
     }
     _channel.broadcastToChannel(
-        CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(), MODE_MSG(_channel.getName(), flag, param))
+        CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(), MODE_MSG(_channel.getName(), flag, modeParams))
     );
 }
 
@@ -129,6 +124,7 @@ void ModeCommand::channelKey(const std::string & param) {
  * Sets the user as an operator of the channel.
  */
 void ModeCommand::channelOperator(const std::string &param) {
+    Server::getInstance().getUserByNickname(param);
     if (!_channel.isUserInChannel(param))
         throw UserNotInChannelException(param, _channel.getName());
     if (_plus)
