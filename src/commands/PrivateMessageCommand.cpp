@@ -36,6 +36,7 @@ void PrivateMessageCommand::execute(int clientFd) {
             }
         } catch (const NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_receivers[i] + " does not exist.");
+            server.sendExceptionMessage(clientFd, e);
         } catch (const NoSuchNickException &e) {
             server.sendExceptionMessage(clientFd, e);
         }
