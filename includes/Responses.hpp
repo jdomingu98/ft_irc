@@ -31,6 +31,7 @@ class Channel;
 # define JOIN_MSG(channelName) " JOIN " + (channelName)
 # define KICK_MSG(channelName, kickedUser, comment) " KICK " + (channelName) + " " + (kickedUser) + " :" + (comment)
 # define MODE_MSG(channel, flag, modeParams) " MODE " + (channel) + " " + (flag) + " " + (modeParams)
+# define NICK_MSG(nickname) " NICK " + (nickname)
 # define PART_MSG(channelName) " PART " + (channelName)
 # define PRIVMSG_MSG(destination, message) " PRIVMSG " + (destination) + " :" + (message)
 # define QUIT_MSG(message) " QUIT :" + (message)
