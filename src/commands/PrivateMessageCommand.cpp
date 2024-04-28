@@ -25,12 +25,9 @@ void PrivateMessageCommand::execute(int clientFd) {
             if (this->_receivers[i][0] == '#' || this->_receivers[i][0] == '&') {
                 Logger::debug("Sending private message to channel " + this->_receivers[i]);
 
-                if (!server.channelExists(this->_receivers[i]))
-                    throw CannotSendToChanException(this->_receivers[i]);
-
                 Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
                 if (!destinationChannel.isUserInChannel(sender.getNickname()))
-                    throw CannotSendToChanException(this->_receivers[i]);
+                    throw NoSuchNickException(this->_receivers[i]);
 
                 sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
             } else {
@@ -40,8 +37,6 @@ void PrivateMessageCommand::execute(int clientFd) {
         } catch (const NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_receivers[i] + " does not exist.");
         } catch (const NoSuchNickException &e) {
-            server.sendExceptionMessage(clientFd, e);
-        } catch (const CannotSendToChanException &e) {
             server.sendExceptionMessage(clientFd, e);
         }
     }

@@ -21,9 +21,7 @@
 # define ERR_BAD_CHAN_MASK(channel) (channel) + " :Bad Channel Mask"
 # define ERR_NO_SUCH_CHANNEL(channelName) (channelName) + " :No such channel"
 # define ERR_TOO_MANY_CHANNELS(channelName) (channelName) + " :You have joined too many channels"
-
 # define ERR_NOT_ON_CHANNEL(channel)  (channel) + " :You're not on that channel"
-
 # define ERR_CHANOP_PRIVS_NEEDED(channel)  (channel) + " :You're not channel operator"
 
 # define ERR_NO_SUCH_NICK(nickname) (nickname) + " :No such nick/channel"
@@ -32,7 +30,6 @@
 
 # define ERR_NO_RECIPIENT(command) ":No recipient given (" + (command) + ")"
 # define ERR_NO_TEXT_TO_SEND ":No text to send"
-# define ERR_CANNOT_SEND_TO_CHAN(channel) (channel) + " :Cannot send to channel"
 
 # define ERR_KEYSET(channel) (channel) + " :Channel key already set"
 # define ERR_UNKOWN_MODE(modeChar) (modeChar) + " :is unknown mode char to me"
@@ -210,14 +207,6 @@ class UserNotInChannelException : public IRCException {
 class UnknownModeException : public IRCException {
     public:
         UnknownModeException(const std::string &modeChar) : IRCException("472", ERR_UNKOWN_MODE(modeChar)) {}
-};
-
-/**
- * This exception is thrown when the user tries to send a message to a channel that does not exist.
- */
-class CannotSendToChanException : public IRCException {
-    public:
-        CannotSendToChanException(const std::string &channelName) : IRCException("404", ERR_CANNOT_SEND_TO_CHAN(channelName)) {}
 };
 
 /**
