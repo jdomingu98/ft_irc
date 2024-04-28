@@ -7,7 +7,6 @@
  * @param channel The channel to set the mode
  * @param modes The modes to set
  * @param modeParams The parameters of the mode
- * 
  */
 ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, std::vector<std::string>& modeParams) :
     ACommand(true),
@@ -17,6 +16,11 @@ ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode
     _modes(modes),
     _modeParams(modeParams) {}
 
+/**
+ * Construct a new ModeCommand.
+ * 
+ * @param channel The channel to set the mode
+ */
 ModeCommand::ModeCommand(const std::string &channel) :
     ACommand(true),
     _plus(false),
@@ -36,7 +40,10 @@ ModeCommand::~ModeCommand() {}
  * 
  * @param clientFd The socket file descriptor of the client
  * 
- * @throws `NotOnChannelException` if the user is not on the channel
+ * @throws `NotOnChannelException` If the user is not on the channel
+ * @throws `ChanOPrivsNeededException` If the user is not an operator of the channel
+ * @throws `NeedMoreParamsException` If the mode needs more parameters
+ * @throws `UnknownModeException` If the mode is unknown
  */
 void ModeCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
@@ -106,8 +113,11 @@ void ModeCommand::topicProtected() {
 
 /**
  * Execute the key option of the MODE command.
- * 
  * Sets the password of the channel.
+ * 
+ * @param param The password to set
+ * 
+ * @throws `KeySetException` If the key is already set
  */
 void ModeCommand::channelKey(const std::string & param) {
     if (_channel.isPasswordSet() && _plus)
@@ -120,8 +130,11 @@ void ModeCommand::channelKey(const std::string & param) {
 
 /**
  * Execute the operator option of the MODE command.
- * 
  * Sets the user as an operator of the channel.
+ * 
+ * @param param The nickname of the user
+ * 
+ * @throws `UserNotInChannelException` If the user is not in the channel
  */
 void ModeCommand::channelOperator(const std::string &param) {
     Server::getInstance().getUserByNickname(param);
@@ -135,8 +148,9 @@ void ModeCommand::channelOperator(const std::string &param) {
 
 /**
  * Execute the limit option of the MODE command.
- * 
  * Sets the limit of users in the channel.
+ * 
+ * @param param The limit to set
  */
 void ModeCommand::userLimit(const std::string & param) {
     if (!_plus) {

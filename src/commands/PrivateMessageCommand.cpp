@@ -14,6 +14,8 @@ PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers,
  * 
  * @param clientFd The socket file descriptor of the client
  * 
+ * @throws `NoSuchNickException` if the user does not exist
+ * @throws `NoSuchChannelException` if the channel does not exist
  */
 void PrivateMessageCommand::execute(int clientFd) {
     Server &server = Server::getInstance();

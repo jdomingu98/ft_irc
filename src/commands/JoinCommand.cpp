@@ -67,6 +67,13 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
  * 
  * @param clientFd The socket file descriptor of the client
  * 
+ * @throws `BadChannelMaskException` If the channel mask is invalid
+ * @throws `TooManyChannelsException` If the user is in too many channels
+ * @throws `InviteOnlyChanException` If the channel is invite-only
+ * @throws `BadChannelKeyException` If the channel key is incorrect
+ * @throws `ChannelIsFullException` If the channel is full
+ * @throws `UserOnChannelException` If the user is already on the channel
+ * 
  */
 void JoinCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
