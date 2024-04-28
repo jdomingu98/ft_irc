@@ -44,7 +44,7 @@ void NickCommand::execute(int clientFd) {
         throw ErroneousNicknameException(this->_nickname);
 
     user.setNickname(this->_nickname);
-    if (user.canRegister())
+    if (!user.isRegistered() && user.canRegister())
         server.attemptUserRegistration(clientFd);
 }
 
