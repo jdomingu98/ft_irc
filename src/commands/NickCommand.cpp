@@ -45,6 +45,7 @@ void NickCommand::execute(int clientFd) {
     
     std::set<User> allUsers;
     std::set<User>::iterator it;
+    std::vector<Channel> &channels = server.getChannels();
 
     if (user.isRegistered() && user.getNickname() != this->_nickname) {
         allUsers.insert(user);
