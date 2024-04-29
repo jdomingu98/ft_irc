@@ -285,8 +285,8 @@ void User::sendPrivateMessageToChannel(const Channel &destination, const std::st
 void User::sendNoticeToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
     std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, NOTICE_MSG(destination.getName(), message));
-    std::vector<User> users = destination.getAllUsers();
+    std::vector<User *> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
-        if (users[i].getNickname() != this->_nickname)
-            Server::getInstance().sendMessage(users[i].getFd(), response);
+        if (users[i]->getNickname() != this->_nickname)
+            Server::getInstance().sendMessage(users[i]->getFd(), response);
 }
