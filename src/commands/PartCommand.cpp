@@ -39,12 +39,12 @@ void PartCommand::execute(int clientFd) {
                 throw NotOnChannelException(this->_channels[i]);
             Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
 
-            const std::vector<User> &users = channel.getAllUsers();
+            const std::vector<User *> &users = channel.getAllUsers();
             Logger::debug("Get users list of channel " + channel.getName());
 
             for (size_t j = 0; j < users.size(); j++) {
-                Logger::debug("Sending PART message of user " + nickname + " to user " + users[j].getNickname().c_str());
-                server.sendMessage(users[j].getFd(), CMD_MSG(nickname, username, hostname, PART_MSG(channel.getName())));
+                Logger::debug("Sending PART message of user " + nickname + " to user " + users[j]->getNickname().c_str());
+                server.sendMessage(users[j]->getFd(), CMD_MSG(nickname, username, hostname, PART_MSG(channel.getName())));
             }
 
             channel.removeUser(nickname);

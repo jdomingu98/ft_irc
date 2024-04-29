@@ -22,14 +22,14 @@ JoinCommand::~JoinCommand() {
  */
 void JoinCommand::printUsers(Channel &channel) const {
     Logger::debug("OPERATORS:");
-    std::vector<User> opers = channel.getOperators();
+    std::vector<User *> opers = channel.getOperators();
     for (size_t i = 0; i < opers.size(); i++)
-        Logger::debug(opers[i].getNickname());
+        Logger::debug(opers[i]->getNickname());
 
     Logger::debug("USERS:");
-    std::vector<User> users = channel.getUsers();
+    std::vector<User *> users = channel.getUsers();
     for (size_t i = 0; i < users.size(); i++)
-        Logger::debug(users[i].getNickname());
+        Logger::debug(users[i]->getNickname());
 }
 
 /**
@@ -45,14 +45,14 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     User &user = server.getUserByFd(clientFd);
 
     std::string channelName = channel.getName();
-    std::vector<User> channelUsers = channel.getAllUsers();
+    std::vector<User *> channelUsers = channel.getAllUsers();
 
     std::string nickname = user.getNickname();
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
 
     for (size_t i = 0; i < channelUsers.size(); i++) {
-        server.sendMessage(channelUsers[i].getFd(),
+        server.sendMessage(channelUsers[i]->getFd(),
                             CMD_MSG(nickname, username, hostname, JOIN_MSG(channelName)));
     }
 
