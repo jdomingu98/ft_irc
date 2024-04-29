@@ -432,7 +432,7 @@ std::string Channel::getModeParams() const {
  * 
  * @param message The message to broadcast.
  */
-void Channel::broadcastToChannel(const std::string &message) {
+void Channel::broadcastToChannel(const std::string &message) const {
     Server& server = Server::getInstance();
     const std::vector<User>& allUsers = getAllUsers();
     for (std::vector<User>::const_iterator it = allUsers.begin(); it != allUsers.end(); it++)
