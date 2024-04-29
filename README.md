@@ -71,6 +71,7 @@ Where `<port>` is the port where the server will listen for new connections and 
 | KICK | Request the forced removal of a user from a channel. |
 | TOPIC | Change or view the topic of the given channel. |
 | PRIVMSG | Send private messages between users, as well as to send messages to channels. |
+| NOTICE | Send notices between users, as well as to send messages to channels. |
 | QUIT | Terminates a client’s connection to the server. |
 
 ## See the wiki

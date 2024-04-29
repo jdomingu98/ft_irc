@@ -34,6 +34,7 @@ class Channel;
 # define NICK_MSG(nickname) "NICK " + (nickname)
 # define PART_MSG(channelName) "PART " + (channelName)
 # define PRIVMSG_MSG(destination, message) "PRIVMSG " + (destination) + " :" + (message)
+# define NOTICE_MSG(destination, message) "NOTICE " + (destination) + " :" + (message)
 # define QUIT_MSG(message) "QUIT :" + (message)
 # define TOPIC_MSG(channelName, topic) "TOPIC " + (channelName) + " " + (topic)
 
