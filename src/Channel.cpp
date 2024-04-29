@@ -434,7 +434,7 @@ std::string Channel::getModeParams() const {
  */
 void Channel::broadcastToChannel(const std::string &message) {
     Server& server = Server::getInstance();
-    std::vector<User> allUsers = getAllUsers();
-    for (std::vector<User>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
+    const std::vector<User>& allUsers = getAllUsers();
+    for (std::vector<User>::const_iterator it = allUsers.begin(); it != allUsers.end(); it++)
         server.sendMessage(it->getFd(), message);
 }
