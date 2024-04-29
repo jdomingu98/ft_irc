@@ -17,8 +17,8 @@ ACommand* NoticeParser::parse(const std::vector<std::string>& tokens) {
     std::vector<std::string> receivers;
 
     if (tokens.size() < 3)
-        throw IgnoreCommandException();
+        throw NeedMoreParamsException(tokens[0]);
     receivers = Utils::split(tokens[1], ',');
 
-    return new PrivateMessageCommand(receivers, tokens[2]);
+    return new NoticeCommand(receivers, tokens[2]);
 }
