@@ -19,8 +19,8 @@ class Channel {
     private:
         std::string                 _name;
         std::string                 _password;
-        std::vector<User>           _users;
-        std::vector<User>           _operators;
+        std::vector<User *>         _users;
+        std::vector<User *>         _operators;
         std::vector<std::string>    _inviteList;
         std::string                 _topic;
         int                         _limit;
@@ -31,10 +31,10 @@ class Channel {
         bool    _topicProtected;
 
         // Iterators
-        std::vector<User>::iterator         findUser(const std::string &nickname);
-        std::vector<User>::const_iterator   findUser(const std::string &nickname) const;
-        std::vector<User>::iterator         findOper(const std::string &nickname);
-        std::vector<User>::const_iterator   findOper(const std::string &nickname) const;
+        std::vector<User *>::iterator         findUser(const std::string &nickname);
+        std::vector<User *>::const_iterator   findUser(const std::string &nickname) const;
+        std::vector<User *>::iterator         findOper(const std::string &nickname);
+        std::vector<User *>::const_iterator   findOper(const std::string &nickname) const;
 
         // Other Operations
         bool checkChannelName(std::string name) const;
@@ -42,15 +42,15 @@ class Channel {
     public:
         // Constructors and destructor
         Channel();
-        Channel(const std::string &name, const User &user);
+        Channel(const std::string &name, User &user);
         ~Channel();
 
         // Getters
         std::string         getName() const;
         std::string         getPassword() const;
-        std::vector<User>   getUsers() const;
-        std::vector<User>   getOperators() const;
-        std::vector<User>   getAllUsers() const;
+        std::vector<User *>   getUsers() const;
+        std::vector<User *>   getOperators() const;
+        std::vector<User *>   getAllUsers() const;
         std::string         getTopic() const;
         bool                isPasswordSet() const;
 
@@ -58,7 +58,7 @@ class Channel {
         void setTopic(std::string topic);
 
         // User
-        void addUser(User user);
+        void addUser(User &user);
         void removeUser(const std::string &nickname);
         bool isUserInChannel(const std::string &nickname) const;
 

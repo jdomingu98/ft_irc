@@ -43,23 +43,23 @@ void NickCommand::execute(int clientFd) {
     if (!NickCommand::isValidNickname())
         throw ErroneousNicknameException(this->_nickname);
     
-    std::set<User> allUsers;
-    std::set<User>::iterator it;
+    std::set<User *> allUsers;
+    std::set<User *>::iterator it;
     std::vector<Channel> &channels = server.getChannels();
 
     if (user.isRegistered() && user.getNickname() != this->_nickname) {
-        allUsers.insert(user);
+        allUsers.insert(&user);
         for (size_t i = 0; i < channels.size(); i++) {
             if (!channels[i].isUserInChannel(user.getNickname()))
                 continue;
 
-            std::vector<User> usersChannel = channels[i].getAllUsers();
+            std::vector<User *> usersChannel = channels[i].getAllUsers();
             for (size_t j = 0; j < usersChannel.size(); j++)
                 allUsers.insert(usersChannel[j]);
             usersChannel.clear();
         }
         for (it = allUsers.begin(); it != allUsers.end(); it++)
-            server.sendMessage(it->getFd(), 
+            server.sendMessage((*it)->getFd(), 
                         CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
                                 NICK_MSG(this->_nickname)));
     }
