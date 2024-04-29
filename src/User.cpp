@@ -238,6 +238,18 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
 }
 
 /**
+ * This function aims to send a notice message to an user.
+ * 
+ * @param destination The user who will receive the notice message.
+ * @param message The message to send.
+ */
+void User::sendNoticeToUser(const User &destination, const std::string& message) const {
+    Logger::debug("Sending NOTICE to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
+    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, NOTICE_MSG(destination.getNickname(), message));
+    Server::getInstance().sendMessage(destination.getFd(), response);
+}
+
+/**
  * This function aims to get a channel by the name.
  * 
  * @param channelName The name of the channel.
@@ -248,6 +260,7 @@ Channel *User::getChannelByName(std::string &channelName) {
     std::vector<Channel>::iterator it = findChannel(channelName);
     return (it != this->_channels.end()) ? &(*it) : NULL;
 }
+
 /**
  * This function aims to send a private message to a channel.
  * 
@@ -257,8 +270,23 @@ Channel *User::getChannelByName(std::string &channelName) {
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
     std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, PRIVMSG_MSG(destination.getName(), message));
-    std::vector<User> users = destination.getAllUsers();
+    std::vector<User *> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
-        if (users[i].getNickname() != this->_nickname)
-            Server::getInstance().sendMessage(users[i].getFd(), response);
+        if (users[i]->getNickname() != this->_nickname)
+            Server::getInstance().sendMessage(users[i]->getFd(), response);
+}
+
+/**
+ * This function aims to send a notice message to a channel.
+ * 
+ * @param destination The channel that will receive the message.
+ * @param message The message to send.
+ */
+void User::sendNoticeToChannel(const Channel &destination, const std::string& message) const {
+    Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
+    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, NOTICE_MSG(destination.getName(), message));
+    std::vector<User *> users = destination.getAllUsers();
+    for (size_t i = 0; i < users.size(); i++)
+        if (users[i]->getNickname() != this->_nickname)
+            Server::getInstance().sendMessage(users[i]->getFd(), response);
 }

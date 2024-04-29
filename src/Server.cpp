@@ -196,6 +196,7 @@ void Server::handleClientDisconnection(int clientFd) {
             channels[i].removeUser(nickname);
     }
     this->removeUser(clientFd);
+    this->_inputBuffer.erase(clientFd);
 
     close(clientFd);
     

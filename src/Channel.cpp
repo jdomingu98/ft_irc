@@ -14,12 +14,12 @@ Channel::Channel()
  * 
  * @throws `BadChannelMaskException` If the channel name is invalid.
  */
-Channel::Channel(const std::string &name, const User &user)
+Channel::Channel(const std::string &name, User &user)
     : _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {
     if (!checkChannelName(name))
         throw BadChannelMaskException(name);
     this->_name = name;
-    this->_operators.push_back(user);
+    this->_operators.push_back(&user);
 }
 
 /**
@@ -54,9 +54,9 @@ bool Channel::checkChannelName(std::string name) const {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findUser(const std::string &nickname) {
+std::vector<User *>::iterator Channel::findUser(const std::string &nickname) {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getNickname() == nickname)
+        if (this->_users[i]->getNickname() == nickname)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -69,9 +69,9 @@ std::vector<User>::iterator Channel::findUser(const std::string &nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Channel::findUser(const std::string &nickname) const {
+std::vector<User *>::const_iterator Channel::findUser(const std::string &nickname) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getNickname() == nickname)
+        if (this->_users[i]->getNickname() == nickname)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -84,9 +84,9 @@ std::vector<User>::const_iterator Channel::findUser(const std::string &nickname)
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Channel::findOper(const std::string &nickname) {
+std::vector<User *>::iterator Channel::findOper(const std::string &nickname) {
     for (size_t i = 0; i < this->_operators.size(); i++) {
-        if (this->_operators[i].getNickname() == nickname)
+        if (this->_operators[i]->getNickname() == nickname)
             return this->_operators.begin() + i;
     }
     return this->_operators.end();
@@ -99,9 +99,9 @@ std::vector<User>::iterator Channel::findOper(const std::string &nickname) {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Channel::findOper(const std::string &nickname) const {
+std::vector<User *>::const_iterator Channel::findOper(const std::string &nickname) const {
     for (size_t i = 0; i < this->_operators.size(); i++) {
-        if (this->_operators[i].getNickname() == nickname)
+        if (this->_operators[i]->getNickname() == nickname)
             return this->_operators.begin() + i;
     }
     return this->_operators.end();
@@ -130,7 +130,7 @@ std::string Channel::getPassword() const {
  * 
  * @return The users of the channel.
  */
-std::vector<User> Channel::getUsers() const {
+std::vector<User *> Channel::getUsers() const {
     return this->_users;
 }
 
@@ -139,7 +139,7 @@ std::vector<User> Channel::getUsers() const {
  * 
  * @return The operators of the channel.
  */
-std::vector<User> Channel::getOperators() const {
+std::vector<User *> Channel::getOperators() const {
     return this->_operators;
 }
 
@@ -148,8 +148,8 @@ std::vector<User> Channel::getOperators() const {
  * 
  * @return All the users of the channel.
  */
-std::vector<User> Channel::getAllUsers() const {
-    std::vector<User> allUsers = this->_operators;
+std::vector<User *> Channel::getAllUsers() const {
+    std::vector<User *> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
     return allUsers;
 }
@@ -270,10 +270,10 @@ bool Channel::isFull() const {
  * 
  * @throw `ChannelException` If the user is already in the channel.
  */
-void Channel::addUser(User user) {
-    std::vector<User>::iterator it = findUser(user.getNickname());
+void Channel::addUser(User &user) {
+    std::vector<User *>::iterator it = findUser(user.getNickname());
     if (it == this->_users.end())
-        this->_users.push_back(user);
+        this->_users.push_back(&user);
 
 }
 
@@ -287,19 +287,19 @@ void Channel::addUser(User user) {
 void Channel::removeUser(const std::string &nickname) {
     Server &server = Server::getInstance();
     
-    std::vector<User>::iterator itUser = this->findUser(nickname);
-    std::vector<User>::iterator itOper = this->findOper(nickname);   
+    std::vector<User *>::iterator itUser = this->findUser(nickname);
+    std::vector<User *>::iterator itOper = this->findOper(nickname);   
     
     if (itUser == this->_users.end() && itOper == this->_operators.end())
         throw UserNotInChannelException(nickname, this->_name);
 
     if (itUser != this->_users.end()) {
-        itUser->removeChannel(this->_name);
+        (*itUser)->removeChannel(this->_name);
         this->_users.erase(itUser);
     }
     
     if (itOper != this->_operators.end()) {
-        itOper->removeChannel(this->_name);
+        (*itOper)->removeChannel(this->_name);
         this->_operators.erase(itOper);
     }
 
@@ -334,7 +334,7 @@ bool Channel::isUserInChannel(const std::string &nickname) const {
  * @throw `UserNotInChannelException` If the user is not found in the channel.
  */
 void Channel::makeUserAnOper(std::string nickname) {
-    std::vector<User>::iterator it = findUser(nickname);
+    std::vector<User *>::iterator it = findUser(nickname);
     if (it == this->_users.end())
         throw UserNotInChannelException(nickname, this->_name);
     this->_operators.push_back(*it);
@@ -349,7 +349,7 @@ void Channel::makeUserAnOper(std::string nickname) {
  * @throw `UserNotInChannelException` If the operator is not found in the channel.
  */
 void Channel::makeOperAnUser(std::string nickname) {
-    std::vector<User>::iterator it = findOper(nickname);
+    std::vector<User *>::iterator it = findOper(nickname);
     if (it == this->_operators.end())
         throw UserNotInChannelException(nickname, this->_name);
     this->_users.push_back(*it);
@@ -434,7 +434,7 @@ std::string Channel::getModeParams() const {
  */
 void Channel::broadcastToChannel(const std::string &message) const {
     Server& server = Server::getInstance();
-    const std::vector<User>& allUsers = getAllUsers();
-    for (std::vector<User>::const_iterator it = allUsers.begin(); it != allUsers.end(); it++)
-        server.sendMessage(it->getFd(), message);
+    std::vector<User *> allUsers = getAllUsers();
+    for (std::vector<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
+        server.sendMessage((*it)->getFd(), message);
 }
