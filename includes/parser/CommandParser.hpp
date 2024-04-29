@@ -13,6 +13,7 @@
 # include "QuitParser.hpp"
 # include "TopicParser.hpp"
 # include "UserParser.hpp"
+# include "NoticeParser.hpp"
 
 /**
  * A class that is responsible for parsing strings to commands.
