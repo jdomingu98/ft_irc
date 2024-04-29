@@ -26,6 +26,7 @@ InviteCommand::~InviteCommand() {}
  * 
  * @throws `NoSuchNickException` If the nickname is not in use
  * @throws `NotOnChannelException` If the user which invites is not on the channel
+ * @throws `NoSuchChannelException` If the channel does not exist
  * @throws `UserOnChannelException` If the user invited is already on the channel
  * @throws `ChanOPrivsNeededException` If the user which invites is not an operator of the channel and the channel is invite-only
  */

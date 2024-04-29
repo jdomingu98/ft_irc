@@ -11,7 +11,6 @@
  * @param tokens The parameters of the command.
  * 
  * @throws `NeedMoreParamsException` if the number of arguments is less than the expected.
- * @throws `BadChannelMaskException` if the channel mask is invalid.
  * @return The parsed command.
  */
 ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {

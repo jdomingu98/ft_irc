@@ -3,7 +3,7 @@
 /**
  * QuitCommand message constructor.
  * 
- * @param msg The message
+ * @param message The message
  */
 QuitCommand::QuitCommand(const std::string &message) : ACommand(false), _message(message) {}
 

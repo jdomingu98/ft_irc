@@ -20,6 +20,9 @@ KickCommand::~KickCommand() {}
  * 
  * @param clientFd The socket file descriptor of the client
  * 
+ * @throws `NotOnChannelException` If the user is not on the channel
+ * @throws `ChanOPrivsNeededException` If the user is not an operator of the channel
+ * @throws `NoSuchChannelException` If the channel does not exist
  */
 void KickCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
@@ -58,6 +61,16 @@ void KickCommand::execute(int clientFd) {
     }
 }
 
+/**
+ * Kicks a user from a channel.
+ * 
+ * @param channel The channel to kick the user from
+ * @param user The user that is kicking
+ * @param kickedUser The user to kick
+ * @param comment The comment for the kick
+ * 
+ * @throws `UserNotInChannelException` If the user is not in the channel
+*/
 void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
     Server &server = Server::getInstance();
