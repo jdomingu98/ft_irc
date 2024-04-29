@@ -180,5 +180,5 @@ const std::string CommandParser::join(const std::vector<std::string> &msg, size_
     }
 
     Logger::debug(strJoined); 
-    return strJoined.empty() ? " " : strJoined;
+    return strJoined;
 }
