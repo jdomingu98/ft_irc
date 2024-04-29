@@ -31,10 +31,10 @@ void NoticeCommand::execute(int clientFd) {
                 if (!destinationChannel.isUserInChannel(sender.getNickname()))
                     throw IgnoreCommandException();
 
-                sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
+                sender.sendNoticeToChannel(destinationChannel, this->_message);
             } else {
                 User &destinationUser = server.getUserByNickname(this->_receivers[i]);
-                sender.sendPrivateMessageToUser(destinationUser, this->_message);
+                sender.sendNoticeToUser(destinationUser, this->_message);
             }
         } catch (const IRCException &e) {
             throw IgnoreCommandException();
