@@ -60,6 +60,8 @@ IParser* CommandParser::getParser(std::string command) {
         return new ModeParser();
     if (command == "NOTICE")
         return new NoticeParser();
+    if (command == "WHO")
+        return new WhoParser();
     if (command == NONE)
         throw IgnoreCommandException();
     throw UnknownCommandException(command);

@@ -14,6 +14,7 @@
 # include "TopicParser.hpp"
 # include "UserParser.hpp"
 # include "NoticeParser.hpp"
+# include "WhoParser.hpp"
 
 /**
  * A class that is responsible for parsing strings to commands.

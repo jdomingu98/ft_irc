@@ -9,6 +9,7 @@ class Channel;
 
 # define SERVER_VERSION "ft_messenger-v1.0.0"
 # define AVAILABLE_CHANNEL_MODES "iklot"
+# define SERVER_NAME "holis"
 
 # define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg)
 
@@ -17,6 +18,8 @@ class Channel;
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
 # define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list"
 # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
+# define RPL_WHO_REPLY(channel, user, host, nick, userType, realname) (channel) + " " + (user) + " " + (host) + " " + SERVER_NAME + " " + (nick) + "H" + (userType) + " :0 " + (realname)
+# define END_OF_WHO(name) (name) + ":End of WHO list"
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 
@@ -106,6 +109,18 @@ class ChannelModeIsResponse : public Responses {
     public:
         ChannelModeIsResponse(std::string const &nickname, std::string const &channel, std::string const &mode, std::string const &modeParams) : Responses("324", nickname, RPL_CHANNEL_MODE_IS(channel, mode, modeParams)) {}
 };
+
+/**
+ * This class represents the response to the Who command request
+*/
+class WhoReplyResponse : public Responses {
+    public:
+        WhoReplyResponse(std::string const &nickname,
+                            std::string const &username,
+                            std::string const &hostname,
+                            std::string const &)
+}
+
 
 /**
  * This class represents the response to the welcome message.
