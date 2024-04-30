@@ -430,9 +430,7 @@ std::string Channel::getModeParams() const {
 /**
  * This function aims to broadcast a message to all the users in the channel.
  * 
- * @param nickname The nickname of the user who sent the message.
- * @param username The username of the user who sent the message.
- * @param hostname The hostname of the user who sent the message.
+ * @param user The user who sent the message.
  * @param message The message to broadcast.
  */
 void Channel::broadcastToChannel(const User& user, const std::string &message) const {
