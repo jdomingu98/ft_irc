@@ -29,7 +29,6 @@ void WhoCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
     User& user = server.getUserByFd(clientFd);
 
-    const std::vector<User> &users = server.getUsers();
     if (this->_query != NONE && (this->_query[0] == '#' || this->_query[0] == '&')) {
         // El canal que coincida con el query, usuarios en el canal
         // Si no coincide ninguno, EndOfWhoResponse solamente (un usuario puede llevar # o & en su nombre??)
@@ -48,7 +47,7 @@ void WhoCommand::execute(int clientFd) {
                         usersChannel[i]->getHostname(),
                         usersChannel[i]->getNickname(),
                         isOper ? "@" : NONE,
-                        usersChannel[i]->getRealname()
+                        usersChannel[i]->getRealName()
                     ).getReply()
                 );
             }
@@ -56,21 +55,34 @@ void WhoCommand::execute(int clientFd) {
         } catch (NoSuchChannelException &e) {
             server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
         }
-    } else  if (this->_query != NONE) {
-        //El usuario que coincida con el query, rol en los canales en los que esté
-        //Si no coincide ninguno, EndOfWhoResponse solamente
-        for (size_t i = 0; i < users.size(); i++) {
-            if (this->_query != users[i].getNickname() &&
-                this->_query != users[i].getUsername() &&
-                this->_query != users[i].getHostname())
+    } else if (this->_query != NONE) {
+        // El usuario que coincida con el query, rol en los canales en los que esté
+        // Si no coincide ninguno, EndOfWhoResponse solamente
+        const std::vector<User> &users = server.getUsers();
+        for (std::vector<User>::const_iterator it = users.begin(); it != users.end(); it++) {
+            if (this->_query != it->getNickname() && this->_query != it->getUsername()
+                && this->_query != it->getHostname())
                 continue;
-            
+
         }
-        
         server.sendMessage(clientFd, WhoReplyResponse().getReply());
         server.sendMessage(clientFd, EndOfWhoResponse().getReply());
     } else {
         //lo del else if pero para todos los usuarios
-        
+        const std::vector<User> &users = server.getUsers();
+        for (std::vector<User>::iterator it = users.begin(); it != users.end(); it++) {
+            if (this->_hasOperatorFlag && !it->isOper())
+                continue;
+            server.sendMessage(clientFd,
+                WhoReplyResponse(
+                    it->getUsername(),
+                    it->getHostname(),
+                    it->getServerName(),
+                    it->getNickname(),
+                    it->isOper() ? "@" : NONE,
+                    it->getRealName()
+                ).getReply()
+            );
+        }
     }
 }
