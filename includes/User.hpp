@@ -56,10 +56,18 @@ class User {
         bool canRegister() const;
         void addChannel(Channel &channel);
         void removeChannel(const std::string &channelName);
-        void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
-        void sendNoticeToUser(const User &destination, const std::string& message) const;
-        void sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const;
-        void sendNoticeToChannel(const Channel &destination, const std::string& message) const;
+
+        /**
+         * This function aims to broadcast a message to all the users in the channel.
+         * 
+         * @param recipientUsers The users who will receive the message.
+         * @param message The message to broadcast.
+         */
+        template <typename T>
+        void User::broadcastToChannel(const T &recipientUsers, const std::string message) const {
+            for (typename T::iterator it = recipientUsers.begin(); it != recipientUsers.end(); it++)
+                Server::getInstance().sendMessage((*it)->getFd(), CMD_MSG(_nickname, _username, _hostname, message));
+        }
 };
 
 #endif

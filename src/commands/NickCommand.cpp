@@ -44,9 +44,8 @@ void NickCommand::execute(int clientFd) {
         throw ErroneousNicknameException(this->_nickname);
     
     std::set<User *> allUsers;
-    std::set<User *>::iterator it;
+    
     std::vector<Channel> &channels = server.getChannels();
-
     if (user.isRegistered() && user.getNickname() != this->_nickname) {
         allUsers.insert(&user);
         for (size_t i = 0; i < channels.size(); i++) {
@@ -58,12 +57,8 @@ void NickCommand::execute(int clientFd) {
                 allUsers.insert(usersChannel[j]);
             usersChannel.clear();
         }
-        for (it = allUsers.begin(); it != allUsers.end(); it++)
-            server.sendMessage((*it)->getFd(), 
-                        CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
-                                NICK_MSG(this->_nickname)));
+        user.broadcastToChannel(allUsers, NICK_MSG(user.getNickname()));
     }
-
     user.setNickname(this->_nickname);
 
     if (!user.isRegistered() && user.canRegister())

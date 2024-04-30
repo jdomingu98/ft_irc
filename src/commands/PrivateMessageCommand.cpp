@@ -31,10 +31,16 @@ void PrivateMessageCommand::execute(int clientFd) {
                 if (!destinationChannel.isUserInChannel(sender.getNickname()))
                     throw NoSuchNickException(this->_receivers[i]);
 
+                std::vector<User *> usersChannel = destinationChannel.getAllUsers();
+                std::vector<User *>::iterator it = std::find(usersChannel.begin(), usersChannel.end(), &sender);
+                if (it != usersChannel.end())
+                    usersChannel.erase(it);
+                sender.broadcastToChannel(usersChannel, PRIVMSG_MSG(sender.getNickname(), this->_message));
                 sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
             } else {
-                User &destinationUser = server.getUserByNickname(this->_receivers[i]);
-                sender.sendPrivateMessageToUser(destinationUser, this->_message);
+                std::vector<User *> userOnly;
+                userOnly.push_back(&server.getUserByNickname(this->_receivers[i]));
+                sender.broadcastToChannel(userOnly, PRIVMSG_MSG(sender.getNickname(), this->_message));
             }
         } catch (const NoSuchChannelException &e) {
             Logger::debug("Channel " + this->_receivers[i] + " does not exist.");

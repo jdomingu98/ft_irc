@@ -62,12 +62,12 @@ void ModeCommand::execute(int clientFd) {
     if (!_channel.isOper(me.getNickname()))
         throw ChanOPrivsNeededException(_channel.getName());
 
-    std::string flag = _plus ? "+" : "-";
+    std::string flags = _plus ? "+" : "-";
     std::vector<std::string>::iterator paramIterator = _modeParams.begin();
     std::string param = NONE;
     std::string modeParams = NONE;
     for (size_t i = 0; i < _modes.size(); i++) {
-        flag += _modes[i];
+        flags += _modes[i];
         
         if (ModeCommand::modeNeedsParam(_modes[i])) {
             if (paramIterator == _modeParams.end())
@@ -88,7 +88,7 @@ void ModeCommand::execute(int clientFd) {
             server.sendExceptionMessage(clientFd, e);
         }
     }
-    _channel.broadcastToChannel(me, MODE_MSG(_channel.getName(), flag, modeParams));
+    me.broadcastToChannel(_channel.getAllUsers(), MODE_MSG(_channel.getName(), flags, modeParams));
 }
 
 /**

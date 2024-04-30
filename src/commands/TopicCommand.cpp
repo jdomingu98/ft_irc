@@ -32,30 +32,24 @@ void TopicCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
 
-    std::string channelName = _channel->getName();
+    std::string channelName = this->_channel->getName();
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
 
     if (!user.isOnChannel(channelName))
         throw NotOnChannelException(channelName);
 
-    Logger::debug("User " + nickname + " in channel " + channelName);
-
-    if (_newTopicProvided && _channel->isTopicProtected() && !_channel->isOper(nickname))
+    if (this->_newTopicProvided && this->_channel->isTopicProtected() && !this->_channel->isOper(nickname))
         throw ChanOPrivsNeededException(channelName);
 
-    if (_newTopicProvided) {
-        Logger::debug("Setting the new topic of channel " + channelName + " to " + _topic);
-        _channel->setTopic(_topic);
-
-        Logger::debug("Sending the new topic of channel " + channelName + " to all its users");
-        _channel->broadcastToChannel(user ,TOPIC_MSG(channelName, _topic));
+    if (this->_newTopicProvided) {
+        Logger::debug("Setting the new topic of channel " + channelName + " to " + this->_topic);
+        this->_channel->setTopic(this->_topic);
+        user.broadcastToChannel(this->_channel->getAllUsers(), TOPIC_MSG(channelName, this->_topic));
     } else {
-        std::string message = _channel->getTopic().empty()  ? NoTopicResponse(nickname, channelName).getReply()
-                                                            : TopicResponse(nickname, channelName, _channel->getTopic()).getReply();
+        std::string message = this->_channel->getTopic().empty()    ? NoTopicResponse(nickname, channelName).getReply()
+                                                                    : TopicResponse(nickname, channelName, this->_channel->getTopic()).getReply();
         Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
         server.sendMessage(clientFd, message);
     }
-    Logger::debug("Channel " + channelName + " topic is: " + _channel->getTopic());
+    Logger::debug("Channel " + channelName + " topic is: " + this->_channel->getTopic());
 }

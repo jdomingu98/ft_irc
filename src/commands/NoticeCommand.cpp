@@ -31,10 +31,15 @@ void NoticeCommand::execute(int clientFd) {
                 if (!destinationChannel.isUserInChannel(sender.getNickname()))
                     throw IgnoreCommandException();
 
-                sender.sendNoticeToChannel(destinationChannel, this->_message);
+                std::vector<User *> usersChannel = destinationChannel.getAllUsers();
+                std::vector<User *>::iterator it = std::find(usersChannel.begin(), usersChannel.end(), &sender);
+                if (it != usersChannel.end())
+                    usersChannel.erase(it);
+                sender.broadcastToChannel(usersChannel, NOTICE_MSG(sender.getNickname(), this->_message));
             } else {
-                User &destinationUser = server.getUserByNickname(this->_receivers[i]);
-                sender.sendNoticeToUser(destinationUser, this->_message);
+                std::vector<User *> userOnly;
+                userOnly.push_back(&server.getUserByNickname(this->_receivers[i]));
+                sender.broadcastToChannel(userOnly, NOTICE_MSG(sender.getNickname(), this->_message));
             }
         } catch (const IRCException &e) {
             throw IgnoreCommandException();

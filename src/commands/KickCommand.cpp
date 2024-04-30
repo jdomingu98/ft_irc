@@ -28,10 +28,8 @@ void KickCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User &user = server.getUserByFd(clientFd);
 
-    std::string nickname = user.getNickname();
-    std::string comment = this->_comment.empty() ? nickname : this->_comment;
-    std::string kickedUser;
-    size_t pos;
+    const std::string &nickname = user.getNickname();
+    const std::string &comment = this->_comment.empty() ? nickname : this->_comment;
 
     for (size_t i = 0; i < this->_channels.size(); i++) {
         try {
@@ -43,8 +41,8 @@ void KickCommand::execute(int clientFd) {
             if (!channel.isOper(nickname))
                 throw ChanOPrivsNeededException(this->_channels[i]);
 
-            pos = this->_channels.size() == this->_users.size() ? i : 0;
-            kickedUser = this->_users[pos].getNickname();
+            size_t pos = this->_channels.size() == this->_users.size() ? i : 0;
+            std::string &kickedUser = this->_users[pos].getNickname();
             if (this->_channels.size() == 1) {
                 for (size_t j = 0; j < this->_users.size(); j++) {
                     kickedUser = this->_users[j].getNickname();
@@ -57,7 +55,6 @@ void KickCommand::execute(int clientFd) {
             Logger::debug("Channel " + this->_channels[i] + " does not exist.");
             server.sendExceptionMessage(clientFd, e);
         }
-
     }
 }
 
@@ -76,10 +73,6 @@ void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
     if (!channel.isUserInChannel(kickedUser))
         throw UserNotInChannelException(kickedUser, channel.getName());
 
-    std::vector<User *> channelUsers = channel.getAllUsers();
-
-    Logger::debug("Broadcasting KICK message of user " + kickedUser + " to all users in channel " + channel.getName());
-    channel.broadcastToChannel(user, KICK_MSG(channel.getName(), kickedUser, comment));
-
+    user.broadcastToChannel(channel.getAllUsers(), KICK_MSG(channel.getName(), kickedUser, comment));
     channel.removeUser(kickedUser);
 }

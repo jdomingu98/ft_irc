@@ -28,9 +28,6 @@ void PartCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
 
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
-
     for (size_t i = 0; i < this->_channels.size(); i++) {
         try {
             Channel &channel = server.getChannelByName(this->_channels[i]);
@@ -39,12 +36,7 @@ void PartCommand::execute(int clientFd) {
                 throw NotOnChannelException(this->_channels[i]);
             Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
 
-            const std::vector<User *> &users = channel.getAllUsers();
-            Logger::debug("Get users list of channel " + channel.getName());
-
-            Logger::debug("Broadcasting PART message of user " + nickname + " to all users in channel " + channel.getName());
-            channel.broadcastToChannel(user, PART_MSG(channel.getName()));
-
+            user.broadcastToChannel(channel.getAllUsers(), PART_MSG(channel.getName()));
             channel.removeUser(nickname);
             Logger::debug("User " + nickname + " removed from channel " + this->_channels[i] + ".");
         } catch (NoSuchChannelException &e) {

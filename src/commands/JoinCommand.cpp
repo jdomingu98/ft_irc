@@ -36,7 +36,6 @@ void JoinCommand::printUsers(Channel &channel) const {
  * Sends the join message and responses to the client.
  * 
  * @param clientFd The socket file descriptor of the client
- * @param message The message to be sent
  * @param channel The channel to send the message to
  * 
  */
@@ -45,13 +44,9 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     User &user = server.getUserByFd(clientFd);
 
     std::string channelName = channel.getName();
-    std::vector<User *> channelUsers = channel.getAllUsers();
-
     std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
 
-    channel.broadcastToChannel(user, JOIN_MSG(channelName));
+    user.broadcastToChannel(channel.getAllUsers(), JOIN_MSG(channelName));
 
     if (!channel.getTopic().empty())
         server.sendMessage(clientFd, TopicResponse(nickname, channelName, channel.getTopic()).getReply());
@@ -77,64 +72,54 @@ void JoinCommand::execute(int clientFd) {
     User &user = server.getUserByFd(clientFd);
 
     std::string nickname = user.getNickname();
-    Logger::debug("JOINING CHANNELS");
-
-    std::string channelName;
-    std::string channelKey;
-    bool isNewChannel = false;
-
     for (std::map<std::string, std::string>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
-        channelName = it->first;
-        channelKey = it->second;
+        std::string &channelName = it->first;
+        std::string &channelKey = it->second;
 
         try {
             if (channelName[0] != '#' && channelName[0] != '&')
                 throw BadChannelMaskException(channelName);
+
+            // 1. Check if user has joined max channels
+            if (user.isUserInMaxChannels())
+                throw TooManyChannelsException(channelName);
+
+            bool isNewChannel = false;
+            if (!server.channelExists(channelName)) {
+                isNewChannel = true;
+                server.addChannel(Channel(channelName, user));
+            }
+
+            Channel &channel = server.getChannelByName(channelName);
+            if (!isNewChannel && channel.isUserInChannel(nickname))
+                throw UserOnChannelException(nickname, channelName);
+
+            // 2. Check if channel[i] is invite-only channel and if user is invited
+            if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
+                throw InviteOnlyChanException(channelName);
+
+            // 3. Check if password is correct if channel[i] is password-protected
+            if (channel.isPasswordSet() && channel.getPassword() != channelKey)
+                throw BadChannelKeyException(channelName);
+
+            // 4. Check if channel[i] has limit and if its full
+            if (channel.hasLimit() && channel.isFull())
+                throw ChannelIsFullException(channelName);
+
+            Logger::debug("--- PRE SAVE ---");
+            this->printUsers(channel);
+
+            if (!isNewChannel)
+                channel.addUser(user);
+            user.addChannel(channel);
+
+            Logger::debug("--- POST SAVE ---");
+            this->printUsers(channel);
+
+            // 5. Send JOIN messages
+            sendMessages(clientFd, channel);
         } catch (IRCException &e) {
             server.sendExceptionMessage(clientFd, e);
-            continue;
-
         }
-        // Check if user has joined max channels
-        if (user.isUserInMaxChannels())
-            throw TooManyChannelsException(channelName);
-
-
-        isNewChannel = false;
-        if (!server.channelExists(channelName)) {
-            isNewChannel = true;
-            server.addChannel(Channel(channelName, user));
-        }
-
-        Channel &channel = server.getChannelByName(channelName); //No need to catch exception
-
-        if (!isNewChannel && channel.isUserInChannel(nickname))
-            throw UserOnChannelException(nickname, channelName);
-
-        //1. Check if channel[i] is invite-only channel and if user is invited
-        if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
-            throw InviteOnlyChanException(channelName);
-
-        //2. Check if password is correct if channel[i] is password-protected
-        if (channel.isPasswordSet() && channel.getPassword() != channelKey)
-            throw BadChannelKeyException(channelName);
-
-        //3. Check if channel[i] has limit and if its full
-        if (channel.hasLimit() && channel.isFull())
-            throw ChannelIsFullException(channelName);
-
-
-        Logger::debug("--- PRE SAVE ---");
-        this->printUsers(channel);
-
-        if (!isNewChannel)
-            channel.addUser(user);
-        user.addChannel(channel);
-
-        Logger::debug("--- POST SAVE ---");
-        this->printUsers(channel);
-
-        //5. Send JOIN messages
-        sendMessages(clientFd, channel);
     }
 }
