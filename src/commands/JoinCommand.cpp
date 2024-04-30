@@ -51,10 +51,7 @@ void JoinCommand::sendMessages(int clientFd, Channel &channel) const {
     std::string username = user.getUsername();
     std::string hostname = user.getHostname();
 
-    for (size_t i = 0; i < channelUsers.size(); i++) {
-        server.sendMessage(channelUsers[i]->getFd(),
-                            CMD_MSG(nickname, username, hostname, JOIN_MSG(channelName)));
-    }
+    channel.broadcastToChannel(user, JOIN_MSG(channelName));
 
     if (!channel.getTopic().empty())
         server.sendMessage(clientFd, TopicResponse(nickname, channelName, channel.getTopic()).getReply());

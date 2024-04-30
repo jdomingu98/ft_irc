@@ -435,10 +435,16 @@ std::string Channel::getModeParams() const {
  * @param hostname The hostname of the user who sent the message.
  * @param message The message to broadcast.
  */
-void Channel::broadcastToChannel(const std::string &nickname, const std::string &username, const std::string &hostname, const std::string &message) const {
+void Channel::broadcastToChannel(const User& user, const std::string &message) const {
     Server& server = Server::getInstance();
     std::vector<User *> allUsers = getAllUsers();
-    for (std::vector<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
-        server.sendMessage((*it)->getFd(),
-                            CMD_MSG(nickname, username, hostname, message));
+    std::set<int> sentUsers;
+
+    for (std::vector<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++) {
+        int userFd = (*it)->getFd();
+        if (sentUsers.find(userFd) == sentUsers.end()) {
+            server.sendMessage(userFd, CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(), message));
+            sentUsers.insert(userFd);
+        }
+    }
 }

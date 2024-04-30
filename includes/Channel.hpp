@@ -66,7 +66,7 @@ class Channel {
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
         bool isOper(const std::string &nickname) const;
-        void broadcastToChannel(const std::string &nickname, const std::string &username, const std::string &hostname, const std::string &message) const;
+        void broadcastToChannel(const User& user, const std::string &message) const;
 
         // Invite
         void inviteUser(const std::string &nickname);

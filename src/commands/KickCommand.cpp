@@ -73,18 +73,13 @@ void KickCommand::execute(int clientFd) {
 */
 void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
-    Server &server = Server::getInstance();
-
     if (!channel.isUserInChannel(kickedUser))
         throw UserNotInChannelException(kickedUser, channel.getName());
 
     std::vector<User *> channelUsers = channel.getAllUsers();
 
-    for (size_t j = 0; j < channelUsers.size(); j++) {
-        Logger::debug("Sending KICK message of user " + kickedUser + " to user " + channelUsers[j]->getNickname().c_str());
-        server.sendMessage(channelUsers[j]->getFd(),
-                            CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
-                                    KICK_MSG(channel.getName(), kickedUser, comment)));
-    }
+    Logger::debug("Broadcasting KICK message of user " + kickedUser + " to all users in channel " + channel.getName());
+    channel.broadcastToChannel(user, KICK_MSG(channel.getName(), kickedUser, comment));
+
     channel.removeUser(kickedUser);
 }
