@@ -36,7 +36,6 @@ void PrivateMessageCommand::execute(int clientFd) {
                 if (it != usersChannel.end())
                     usersChannel.erase(it);
                 sender.broadcastToChannel(usersChannel, PRIVMSG_MSG(sender.getNickname(), this->_message));
-                sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
             } else {
                 std::vector<User *> userOnly;
                 userOnly.push_back(&server.getUserByNickname(this->_receivers[i]));
