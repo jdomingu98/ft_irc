@@ -613,6 +613,7 @@ std::string Server::getCreationDate() const {
  * @param recipientUsers The users who will receive the message.
  * @param message The message to broadcast.
  */
+template <typename T>
 void User::broadcastToChannel(const T &recipientUsers, const std::string message) const {
     for (typename T::iterator it = recipientUsers.begin(); it != recipientUsers.end(); it++)
         Server::getInstance().sendMessage((*it)->getFd(), CMD_MSG(_nickname, _username, _hostname, message));
