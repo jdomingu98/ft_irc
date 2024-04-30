@@ -1,11 +1,14 @@
 #ifndef USER_HPP
 # define USER_HPP
 
+# include "Responses.hpp"
 # include "Server.hpp"
 
 # define MAX_CHANNELS 10
 
 class Channel;
+
+class Server;
 
 /**
  * A class that represents an user.
@@ -64,7 +67,7 @@ class User {
          * @param message The message to broadcast.
          */
         template <typename T>
-        void User::broadcastToChannel(const T &recipientUsers, const std::string message) const {
+        void broadcastToChannel(const T &recipientUsers, const std::string message) const {
             for (typename T::iterator it = recipientUsers.begin(); it != recipientUsers.end(); it++)
                 Server::getInstance().sendMessage((*it)->getFd(), CMD_MSG(_nickname, _username, _hostname, message));
         }
