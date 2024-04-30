@@ -89,8 +89,7 @@ void ModeCommand::execute(int clientFd) {
         }
     }
     _channel.broadcastToChannel(
-        CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(), MODE_MSG(_channel.getName(), flag, modeParams))
-    );
+        me.getNickname(), me.getUsername(), me.getHostname(), MODE_MSG(_channel.getName(), flag, modeParams));
 }
 
 /**
