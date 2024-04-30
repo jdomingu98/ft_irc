@@ -42,7 +42,7 @@ void KickCommand::execute(int clientFd) {
                 throw ChanOPrivsNeededException(this->_channels[i]);
 
             size_t pos = this->_channels.size() == this->_users.size() ? i : 0;
-            std::string &kickedUser = this->_users[pos].getNickname();
+            std::string kickedUser = this->_users[pos].getNickname();
             if (this->_channels.size() == 1) {
                 for (size_t j = 0; j < this->_users.size(); j++) {
                     kickedUser = this->_users[j].getNickname();
