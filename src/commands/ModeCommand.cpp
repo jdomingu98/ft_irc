@@ -88,7 +88,7 @@ void ModeCommand::execute(int clientFd) {
             server.sendExceptionMessage(clientFd, e);
         }
     }
-    me.broadcastToChannel(_channel.getAllUsers(), MODE_MSG(_channel.getName(), flags, modeParams));
+    me.broadcastToChannel(_channel.getAllUsers(), MODE_MSG(_channel.getName(), flags, modeParams), server.sendMessage);
 }
 
 /**

@@ -37,6 +37,6 @@ void QuitCommand::execute(int clientFd) {
             allUsers.insert(usersChannel[j]);
         usersChannel.clear();
     }
-    user.broadcastToChannel(allUsers, QUIT_MSG(_message.empty() ? nickname : _message));
+    user.broadcastToChannel(allUsers, QUIT_MSG(_message.empty() ? nickname : _message), server.sendMessage);
     server.handleClientDisconnection(clientFd);
 }

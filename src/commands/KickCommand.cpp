@@ -71,7 +71,7 @@ void KickCommand::execute(int clientFd) {
 void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
     if (!channel.isUserInChannel(kickedUser))
-        throw UserNotInChannelException(kickedUser, channel.getName());
+        throw UserNotInChannelException(kickedUser, channel.getName(), Server::getInstance().sendMessage);
 
     user.broadcastToChannel(channel.getAllUsers(), KICK_MSG(channel.getName(), kickedUser, comment));
     channel.removeUser(kickedUser);

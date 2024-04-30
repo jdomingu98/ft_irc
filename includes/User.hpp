@@ -58,8 +58,17 @@ class User {
         void addChannel(Channel &channel);
         void removeChannel(const std::string &channelName);
 
+        /**
+         * This function aims to broadcast a message to all the users in the channel.
+         * 
+         * @param recipientUsers The users who will receive the message.
+         * @param message The message to broadcast.
+         */
         template <typename T>
-        void broadcastToChannel(const T &recipientUsers, const std::string message) const;
+        void User::broadcastToChannel(const T &recipientUsers, const std::string message, void (*sendMessage)(int, const std::string&)) const {
+            for (typename T::iterator it = recipientUsers.begin(); it != recipientUsers.end(); it++)
+                sendMessage((*it)->getFd(), CMD_MSG(_nickname, _username, _hostname, message));
+        }
 };
 
 #endif

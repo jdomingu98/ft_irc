@@ -36,7 +36,7 @@ void PartCommand::execute(int clientFd) {
                 throw NotOnChannelException(this->_channels[i]);
             Logger::debug("User in channel " + this->_channels[i] + ". Added to PART list.");
 
-            user.broadcastToChannel(channel.getAllUsers(), PART_MSG(channel.getName()));
+            user.broadcastToChannel(channel.getAllUsers(), PART_MSG(channel.getName()), server.sendMessage);
             channel.removeUser(nickname);
             Logger::debug("User " + nickname + " removed from channel " + this->_channels[i] + ".");
         } catch (NoSuchChannelException &e) {

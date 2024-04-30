@@ -35,11 +35,11 @@ void NoticeCommand::execute(int clientFd) {
                 std::vector<User *>::iterator it = std::find(usersChannel.begin(), usersChannel.end(), &sender);
                 if (it != usersChannel.end())
                     usersChannel.erase(it);
-                sender.broadcastToChannel(usersChannel, NOTICE_MSG(sender.getNickname(), this->_message));
+                sender.broadcastToChannel(usersChannel, NOTICE_MSG(sender.getNickname(), this->_message), server.sendMessage);
             } else {
                 std::vector<User *> userOnly;
                 userOnly.push_back(&server.getUserByNickname(this->_receivers[i]));
-                sender.broadcastToChannel(userOnly, NOTICE_MSG(sender.getNickname(), this->_message));
+                sender.broadcastToChannel(userOnly, NOTICE_MSG(sender.getNickname(), this->_message), server.sendMessage);
             }
         } catch (const IRCException &e) {
             throw IgnoreCommandException();

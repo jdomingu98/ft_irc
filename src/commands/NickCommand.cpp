@@ -57,7 +57,7 @@ void NickCommand::execute(int clientFd) {
                 allUsers.insert(usersChannel[j]);
             usersChannel.clear();
         }
-        user.broadcastToChannel(allUsers, NICK_MSG(user.getNickname()));
+        user.broadcastToChannel(allUsers, NICK_MSG(user.getNickname()), server.sendMessage);
     }
     user.setNickname(this->_nickname);
 

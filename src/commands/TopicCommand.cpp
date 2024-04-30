@@ -49,7 +49,7 @@ void TopicCommand::execute(int clientFd) {
         std::string message = this->_channel->getTopic().empty()    ? NoTopicResponse(nickname, channelName).getReply()
                                                                     : TopicResponse(nickname, channelName, this->_channel->getTopic()).getReply();
         Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
-        server.sendMessage(clientFd, message);
+        server.sendMessage(clientFd, message, server.sendMessage);
     }
     Logger::debug("Channel " + channelName + " topic is: " + this->_channel->getTopic());
 }
