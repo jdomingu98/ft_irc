@@ -115,12 +115,23 @@ class ChannelModeIsResponse : public Responses {
 */
 class WhoReplyResponse : public Responses {
     public:
-        WhoReplyResponse(std::string const &nickname,
-                            std::string const &username,
-                            std::string const &hostname,
-                            std::string const &)
-}
+        WhoReplyResponse(
+            std::string const &channel,
+            std::string const &nickname,
+            std::string const &username,
+            std::string const &hostname,
+            std::string const &userType,
+            std::string const &realname
+        ): Responses("352", nickname, RPL_WHO_REPLY(channel, username, hostname, nickname, userType, realname)) {}
+};
 
+/**
+ * This class represents the response to the end of the Who command request.
+*/
+class EndOfWhoResponse : public Responses {
+    public:
+        EndOfWhoResponse(std::string const &nickname) : Responses("315", nickname, END_OF_WHO(nickname)) {}
+};
 
 /**
  * This class represents the response to the welcome message.

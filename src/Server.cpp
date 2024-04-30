@@ -423,6 +423,15 @@ void Server::attemptUserRegistration(int clientFd) {
 }
 
 /**
+ * This function aims to get the users of the server.
+ * 
+ * @return The users of the server.
+ */
+std::vector<User> &Server::getUsers() {
+    return this->_users;
+}
+
+/**
  * This function aims to find a user by the file descriptor.
  * 
  * @param clientFd The file descriptor of the user.

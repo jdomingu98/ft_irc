@@ -30,30 +30,31 @@ void WhoCommand::execute(int clientFd) {
     User& user = server.getUserByFd(clientFd);
 
     const std::vector<User> &users = server.getUsers();
-    if (this->query != NONE && (this->_query[0] == '#' || this->_query[0] == '&')) {
-        //El canal que coincida con el query, usuarios en el canal
-        //Si no coincide ninguno, EndOfWhoResponse solamente (un usuario puede llevar # o & en su nombre??)
+    if (this->_query != NONE && (this->_query[0] == '#' || this->_query[0] == '&')) {
+        // El canal que coincida con el query, usuarios en el canal
+        // Si no coincide ninguno, EndOfWhoResponse solamente (un usuario puede llevar # o & en su nombre??)
         try {
             Channel &channel = server.getChannelByName(this->_query);
-            const std::vector<User> &usersChannel = channel.getAllUsers();
+            const std::vector<User *> &usersChannel = channel.getAllUsers();
 
             for (size_t i = 0; i < usersChannel.size(); i++) {
-                bool isOper = channel.isOper(usersChannel[i].getNickname());
+                bool isOper = channel.isOper(usersChannel[i]->getNickname());
                 if (this->_hasOperatorFlag && !isOper)
                     continue;
-                server.sendResponse(clientFd,
-                    WhoReplyResponse(this->_query,
-                                    usersChannel[i].getUsername(),
-                                    usersChannel[i].getHostname(),
-                                    usersChannel[i].getNickname(),
-                                    isOper ? "@" : NONE,
-                                    usersChannel[i].getRealname()
+                server.sendMessage(clientFd,
+                    WhoReplyResponse(
+                        this->_query,
+                        usersChannel[i]->getUsername(),
+                        usersChannel[i]->getHostname(),
+                        usersChannel[i]->getNickname(),
+                        isOper ? "@" : NONE,
+                        usersChannel[i]->getRealname()
                     ).getReply()
                 );
             }
-            server.sendResponse(clientFd, EndOfWhoResponse(this->_query).getReply());
+            server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
         } catch (NoSuchChannelException &e) {
-            server.sendResponse(clientFd, EndOfWhoResponse(this->_query).getReply());
+            server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
         }
     } else  if (this->_query != NONE) {
         //El usuario que coincida con el query, rol en los canales en los que esté
@@ -66,8 +67,8 @@ void WhoCommand::execute(int clientFd) {
             
         }
         
-        server.sendResponse(clientFd, WhoReplyResponse().getReply());
-        server.sendResponse(clientFd, EndOfWhoResponse().getReply());
+        server.sendMessage(clientFd, WhoReplyResponse().getReply());
+        server.sendMessage(clientFd, EndOfWhoResponse().getReply());
     } else {
         //lo del else if pero para todos los usuarios
         
