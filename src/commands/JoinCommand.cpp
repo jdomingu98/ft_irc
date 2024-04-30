@@ -73,8 +73,8 @@ void JoinCommand::execute(int clientFd) {
 
     std::string nickname = user.getNickname();
     for (std::map<std::string, std::string>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++) {
-        std::string &channelName = it->first;
-        std::string &channelKey = it->second;
+        std::string channelName = it->first;
+        std::string channelKey = it->second;
 
         try {
             if (channelName[0] != '#' && channelName[0] != '&')
