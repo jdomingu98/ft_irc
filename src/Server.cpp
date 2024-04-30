@@ -606,3 +606,14 @@ void Server::generateDate() {
 std::string Server::getCreationDate() const {
     return this->_creationDate;
 }
+
+/**
+ * This function aims to broadcast a message to all the users in the channel.
+ * 
+ * @param recipientUsers The users who will receive the message.
+ * @param message The message to broadcast.
+ */
+void User::broadcastToChannel(const T &recipientUsers, const std::string message) const {
+    for (typename T::iterator it = recipientUsers.begin(); it != recipientUsers.end(); it++)
+        Server::getInstance().sendMessage((*it)->getFd(), CMD_MSG(_nickname, _username, _hostname, message));
+}
