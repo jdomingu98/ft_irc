@@ -3,7 +3,7 @@
 /**
  * Command WHO default constructor
  */
-WhoCommand::WhoCommand() : _query(NONE), _hasOperatorFlag(false) {}
+WhoCommand::WhoCommand() : ACommand(true), _query(NONE), _hasOperatorFlag(false) {}
 
 /**
  * Command WHO constructor
@@ -11,7 +11,8 @@ WhoCommand::WhoCommand() : _query(NONE), _hasOperatorFlag(false) {}
  * @param query The query to search for
  * @param hasOperatorFlag Whether to only show operator users
  */
-WhoCommand::WhoCommand(const std::string query, const bool &hasOperatorFlag) : _query(query), _hasOperatorFlag(hasOperatorFlag) {}
+WhoCommand::WhoCommand(const std::string query, const bool &hasOperatorFlag)
+    : ACommand(true), _query(query), _hasOperatorFlag(hasOperatorFlag) {}
 
 /**
  * Destroys the WHO command
@@ -49,7 +50,7 @@ void WhoCommand::getQueryOfChannel(const int &clientFd, Channel &channel) {
  * @param clientFd The socket file descriptor of the client
  */
 void WhoCommand::execute(int clientFd) {
-
+    Server &server = Server::getInstance();
     try { // If the query is a channel
         Channel &channel = server.getChannelByName(this->_query);
         getQueryOfChannel(clientFd, channel);
@@ -69,5 +70,5 @@ void WhoCommand::execute(int clientFd) {
             }
         }
     }
-    Server::getInstance().sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
+    server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
 }

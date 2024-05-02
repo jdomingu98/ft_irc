@@ -299,3 +299,12 @@ void User::sendNoticeToChannel(const Channel &destination, const std::string& me
         if (users[i]->getNickname() != this->_nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
 }
+
+/**
+ * This function aims to get the channels of the user.
+ * 
+ * @return The channels of the user.
+ */
+std::vector<Channel> User::getChannels() const {
+    return this->_channels;
+}

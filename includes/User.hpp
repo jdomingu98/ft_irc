@@ -39,6 +39,7 @@ class User {
         std::string getUsername() const;
         std::string getHostname() const;
         std::string getRealName() const;
+        std::vector<Channel> getChannels() const;
         bool isUserInMaxChannels() const;
         bool isOnChannel(const std::string &channelName) const;
         bool isRegistered() const;
