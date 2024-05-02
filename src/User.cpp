@@ -8,9 +8,42 @@
 User::User(int fd) : _fd(fd), _registered(false) {}
 
 /**
+ * User copy constructor
+ * 
+ * @param other The other user to copy.
+ */
+User::User(const User &other) {
+    *this = other;
+}
+
+/**
  * User destructor 
  */
 User::~User() {}
+
+/**
+ * This function aims to assign a user to another.
+ * 
+ * @param other The other user to assign.
+ * 
+ * @return The user assigned.
+ */
+User &User::operator=(const User &other) {
+    if (this != &other) {
+        this->_fd = other.getFd();
+        this->_registered = other.isRegistered();
+        this->_username = other.getUsername();
+        this->_hostname = other.getHostname();
+        this->_serverName = other._serverName;
+        this->_realName = other._realName;
+        this->_nickname = other.getNickname();
+        this->_password = other._password;
+        this->_channels.clear();
+        for (size_t i = 0; i < other._channels.size(); i++)
+            this->_channels.push_back(other._channels[i]);
+    }
+    return *this;
+}
 
 /**
  * This function aims to compare two users.
