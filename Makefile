@@ -20,11 +20,11 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who
+CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who Down Up
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who
+PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who Down Up
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
@@ -43,10 +43,12 @@ all:		$(NAME)
 	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
+	mkdir files
 	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
 clean:
 	$(RM) $(OBJS)
+	$(RM) files
 
 fclean:		clean
 	$(RM) $(NAME)

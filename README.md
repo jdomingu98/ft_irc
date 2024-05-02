@@ -74,6 +74,8 @@ Where `<port>` is the port where the server will listen for new connections and 
 | NOTICE | Send notices between users, as well as to send messages to channels. |
 | QUIT | Terminates a client’s connection to the server. |
 | WHO | Used to retrieve information about users on a channel or the entire network. |
+| UP | Uploads a file to a channel. |
+| DOWN | Downloads a file from a channel. |
 
 ## See the wiki
 

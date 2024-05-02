@@ -34,6 +34,11 @@
 # define ERR_KEYSET(channel) (channel) + " :Channel key already set"
 # define ERR_UNKOWN_MODE(modeChar) (modeChar) + " :is unknown mode char to me"
 
+//Bonus
+# define ERR_CANNOT_OPEN_STREAM ":Cannot open stream"
+# define ERR_CANNOT_UPLOAD_FILE(filename) ":Cannot upload file" + (filename)
+# define ERR_CANNOT_DOWNLOAD_FILE(filename) ":Cannot download file" + (filename)
+
 // ==================================================================================
 
 
@@ -223,6 +228,32 @@ class UnknownCommandException : public IRCException {
 class KeySetException : public IRCException {
     public:
         KeySetException(const std::string &channel) : IRCException("467", ERR_KEYSET(channel)) {}
+};
+
+/**
+ * This exception is thrown when the user tries to open a stream that cannot be opened.
+ */
+class CannotOpenStreamException : public IRCException {
+    public:
+        CannotOpenStreamException() : IRCException("493", ERR_CANNOT_OPEN_STREAM) {}
+};
+
+/**
+ * This exception is thrown when the user tries to upload a file and its fail.
+ */
+class CannotUploadFileException : public IRCException {
+    public:
+        CannotUploadFileException(const std::string &filename)
+            : IRCException("494", ERR_CANNOT_UPLOAD_FILE(filename)) {}
+};
+
+/**
+ * This exception is thrown when the user tries to download a file and its fail.
+ */
+class CannotDownloadFileException : public IRCException {
+    public:
+        CannotDownloadFileException(const std::string &filename)
+            : IRCException("495", ERR_CANNOT_DOWNLOAD_FILE(filename)) {}
 };
 
 #endif

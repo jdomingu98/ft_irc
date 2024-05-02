@@ -1,7 +1,11 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
+# include <fstream>
+# include <map>
 # include <string>
+# include <sys/stat.h>
+# include <sys/types.h>
 # include <vector>
 
 # include "User.hpp"
@@ -10,6 +14,8 @@
 # define NO_LIMIT 0
 # define BELL_CHAR '\a'
 
+# define DOWNLOAD_PATH(channel) "files/" + (channel) + "/"
+# define FOLDER_PRIVILEGES 0777
 class User;
 
 /**
@@ -25,6 +31,7 @@ class Channel {
         std::string                 _topic;
         int                         _limit;
         bool                        _passwordSet;
+        std::map<std::string, std::vector<char> >  _files;
 
         // modes
         bool    _inviteOnly;
@@ -92,6 +99,10 @@ class Channel {
         void setLimit(int limit);
         bool hasLimit() const;
         bool isFull() const;
+
+        // Bonus
+        void uploadFile(const std::string &path);
+        void downloadFile(const std::string &filename);
 };
 
 #endif
