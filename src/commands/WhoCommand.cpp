@@ -57,12 +57,23 @@ void WhoCommand::execute(int clientFd) {
     } catch (NoSuchChannelException &e) {
         try { // The query is an user
             User &user = server.getUserByNickname(this->_query);
-            std::vector<Channel> &channels = user.getChannels();
+            std::vector<Channel> channels = user.getChannels();
 
             for (size_t i = 0; i < channels.size(); i++)
                 getQueryOfChannel(clientFd, channels[i]);
         } catch (NoSuchNickException &e) {
-            // The query is not a channel nor an user
+            // The query is not a channel nor an user (nickname)
+            std::vector<User *> usersServer = server.getUsers();
+            for (size_t i = 0; i < usersServer.size(); i++) {
+                if (userServer[i]->getUsername() != this->_query &&
+                    userServer[i]->getHostname() != this->_query &&
+                    userServer[i]->getRealName() != this->_query)
+                    continue;
+                std::vector<Channel> channels = userServer[i]->getChannels();
+                for (size_t j = 0; j < channels.size(); j++)
+                    getQueryOfChannel(clientFd, channels[j]);
+            }
+            // None of the above matched, so we will show all users if query is NONE
             if (this->_query == NONE) {
                 std::vector<Channel> &channels = server.getChannels();
                 for (size_t i = 0; i < channels.size(); i++)
