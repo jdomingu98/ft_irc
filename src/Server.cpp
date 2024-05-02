@@ -190,16 +190,14 @@ void Server::handleClientDisconnection(int clientFd) {
     std::vector<Channel> &channels = this->getChannels();
 
     std::string nickname = user.getNickname();
-
     for (size_t i = 0; i < channels.size(); i++) {
         if (channels[i].isUserInChannel(nickname))
             channels[i].removeUser(nickname);
     }
-    this->removeUser(clientFd);
-    this->_inputBuffer.erase(clientFd);
 
+    this->_inputBuffer.erase(clientFd);
     close(clientFd);
-    
+
     for (size_t i = 0; i < _fds.size(); i++) {
         if (this->_fds[i].fd == clientFd) {
             this->_fds.erase(this->_fds.begin() + i);
