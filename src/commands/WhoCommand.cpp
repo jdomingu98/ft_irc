@@ -63,13 +63,13 @@ void WhoCommand::execute(int clientFd) {
                 getQueryOfChannel(clientFd, channels[i]);
         } catch (NoSuchNickException &e) {
             // The query is not a channel nor an user (nickname)
-            std::vector<User *> usersServer = server.getUsers();
+            std::vector<User> usersServer = server.getUsers();
             for (size_t i = 0; i < usersServer.size(); i++) {
-                if (userServer[i]->getUsername() != this->_query &&
-                    userServer[i]->getHostname() != this->_query &&
-                    userServer[i]->getRealName() != this->_query)
+                if (usersServer[i].getUsername() != this->_query &&
+                    usersServer[i].getHostname() != this->_query &&
+                    usersServer[i].getRealName() != this->_query)
                     continue;
-                std::vector<Channel> channels = userServer[i]->getChannels();
+                std::vector<Channel> channels = usersServer[i].getChannels();
                 for (size_t j = 0; j < channels.size(); j++)
                     getQueryOfChannel(clientFd, channels[j]);
             }
