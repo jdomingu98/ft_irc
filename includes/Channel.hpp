@@ -4,6 +4,8 @@
 # include <fstream>
 # include <map>
 # include <string>
+# include <sys/stat.h>
+# include <sys/types.h>
 # include <vector>
 
 # include "User.hpp"
@@ -12,8 +14,8 @@
 # define NO_LIMIT 0
 # define BELL_CHAR '\a'
 
-# define DOWNLOAD_FILE_PATH(channel, filename) "/saves/" + (channel) + "/" + (filename)
-
+# define DOWNLOAD_PATH(channel) "files/" + (channel) + "/"
+# define FOLDER_PRIVILEGES 0777
 class User;
 
 /**

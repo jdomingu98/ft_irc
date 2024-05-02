@@ -463,7 +463,7 @@ void Channel::uploadFile(const std::string &path) {
     file.seekg(0, std::ios::beg);
 
     std::vector<char> buffer(size);
-    if (!file.read(buffer.data(), size))
+    if (!file.read(&buffer[0], size))
         throw CannotUploadFileException(filename);
     
     this->_files[filename] = buffer;
@@ -482,12 +482,15 @@ void Channel::uploadFile(const std::string &path) {
  * @throw `CannotDownloadFileException` If the file cannot be downloaded.
  */
 void Channel::downloadFile(const std::string &filename) {
-    std::ofstream file(std::string(DOWNLOAD_FILE_PATH(this->_name, filename)).c_str(), std::ios::binary);
+    std::string path = std::string(DOWNLOAD_FILE_PATH(this->_name));
+    if (mkdir(path.c_str(), FOLDER_PRIVILEGES) == -1)
+        throw CannotOpenStreamException();
+    std::ofstream file((path + filename).c_str(), std::ios::binary);
     if (!file)
         throw CannotOpenStreamException();
 
     std::vector<char> buffer = this->_files[filename];
-    if (!file.write(buffer.data(), buffer.size()))
+    if (!file.write(&buffer[0], buffer.size()))
         throw CannotDownloadFileException(filename);
 
     buffer.clear();

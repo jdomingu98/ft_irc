@@ -17,7 +17,7 @@ class Channel;
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
 # define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list"
 # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_DOWNLOAD(filename) ":File" + (filename) + " has been downloaded successfully"
+# define RPL_DOWNLOAD(filename) ":File " + (filename) + " has been downloaded successfully"
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
 

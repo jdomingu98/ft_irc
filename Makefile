@@ -43,10 +43,12 @@ all:		$(NAME)
 	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
+	mkdir files
 	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
 clean:
 	$(RM) $(OBJS)
+	$(RM) files
 
 fclean:		clean
 	$(RM) $(NAME)
