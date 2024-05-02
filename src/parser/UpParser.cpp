@@ -15,7 +15,7 @@
  * 
  * @return The parsed command.
  */
-ACommand *DownParser::parse(const std::vector<std::string>& tokens) {
+ACommand *UpParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
         throw NeedMoreParamsException("UP");
     

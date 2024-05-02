@@ -29,7 +29,7 @@ class Channel {
         std::string                 _topic;
         int                         _limit;
         bool                        _passwordSet;
-        std::map<std::string, std::string>  _files;
+        std::map<std::string, std::vector<char> >  _files;
 
         // modes
         bool    _inviteOnly;

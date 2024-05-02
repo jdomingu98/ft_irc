@@ -482,7 +482,7 @@ void Channel::uploadFile(const std::string &path) {
  * @throw `CannotDownloadFileException` If the file cannot be downloaded.
  */
 void Channel::downloadFile(const std::string &filename) {
-    std::ofstream file(DOWNLOAD_FILE_PATH(this->_name, filename), std::ios::binary);
+    std::ofstream file(std::string(DOWNLOAD_FILE_PATH(this->_name, filename)).c_str(), std::ios::binary);
     if (!file)
         throw CannotOpenStreamException();
 

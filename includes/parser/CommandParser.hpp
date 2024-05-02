@@ -15,7 +15,7 @@
 # include "UserParser.hpp"
 # include "NoticeParser.hpp"
 # include "DownParser.hpp"
-# include "Up.hpp"
+# include "UpParser.hpp"
 
 /**
  * A class that is responsible for parsing strings to commands.

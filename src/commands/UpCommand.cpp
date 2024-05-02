@@ -32,7 +32,7 @@ void UpCommand::execute(int clientFd) {
     Channel &channel = server.getChannelByName(this->_channelName);
     channel.uploadFile(this->_path);
 
-    std::vector<User *> &users = channel.getAllUsers();
+    std::vector<User *> users = channel.getAllUsers();
     for (size_t i = 0; i < users.size(); i++) {
         server.sendMessage(users[i]->getFd(), 
             CMD_MSG(me.getNickname(),
