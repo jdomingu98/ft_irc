@@ -97,6 +97,7 @@ class Server {
         bool        isNicknameInUse(const std::string& nickname) const;
         void        removeUser(int clientFd);
         void        attemptUserRegistration(int clientFd);
+        std::vector<User> &getUsers();
 
         // Channel
         std::vector<Channel> &getChannels();

@@ -144,6 +144,15 @@ std::string User::getHostname() const {
 }
 
 /**
+ * This function aims to get the real name of the user.
+ * 
+ * @return The real name of the user.
+ */
+std::string User::getRealName() const {
+    return this->_realName;
+}
+
+/**
  * This function aims to set the hostname of the user.
  * 
  * @param hostname The hostname of the user.
@@ -322,4 +331,13 @@ void User::sendNoticeToChannel(const Channel &destination, const std::string& me
     for (size_t i = 0; i < users.size(); i++)
         if (users[i]->getNickname() != this->_nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
+}
+
+/**
+ * This function aims to get the channels of the user.
+ * 
+ * @return The channels of the user.
+ */
+std::vector<Channel> User::getChannels() const {
+    return this->_channels;
 }
