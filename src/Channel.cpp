@@ -52,11 +52,11 @@ Channel &Channel::operator=(const Channel &other) {
         this->_password = other._password;
         this->_users.clear();
         for (size_t i = 0; i < other._users.size(); i++) {
-            this->_users.push_back(new User(*other._users[i]));
+            this->_users.push_back(other._users[i]);
         }
         this->_operators.clear();
         for (size_t i = 0; i < other._operators.size(); i++) {
-            this->_operators.push_back(new User(*other._operators[i]));
+            this->_operators.push_back(other._operators[i]);
         }
         this->_inviteList.clear();
         for (size_t i = 0; i < other._inviteList.size(); i++) {
