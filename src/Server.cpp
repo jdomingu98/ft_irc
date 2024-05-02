@@ -423,6 +423,15 @@ void Server::attemptUserRegistration(int clientFd) {
 }
 
 /**
+ * This function aims to get the users of the server.
+ * 
+ * @return The users of the server.
+ */
+std::vector<User> &Server::getUsers() {
+    return this->_users;
+}
+
+/**
  * This function aims to find a user by the file descriptor.
  * 
  * @param clientFd The file descriptor of the user.
@@ -517,7 +526,7 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  * 
  * @param channel The channel to add.
  */
-void Server::addChannel(Channel channel) {
+void Server::addChannel(Channel &channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
     if (it == this->_channels.end())
         this->_channels.push_back(channel);

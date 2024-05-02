@@ -50,7 +50,10 @@ class Channel {
         // Constructors and destructor
         Channel();
         Channel(const std::string &name, User &user);
+        Channel(const Channel &other);
         ~Channel();
+
+        Channel &operator=(const Channel &other);
 
         // Getters
         std::string         getName() const;

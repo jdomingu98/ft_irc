@@ -28,7 +28,10 @@ class User {
         
     public:
         User(int fd);
+        User(const User &other);
         ~User();
+
+        User &operator=(const User &other);
 
         // Less than operator
         bool operator<(const User& other) const;
@@ -38,6 +41,8 @@ class User {
         std::string getNickname() const;
         std::string getUsername() const;
         std::string getHostname() const;
+        std::string getRealName() const;
+        std::vector<Channel> getChannels() const;
         bool isUserInMaxChannels() const;
         bool isOnChannel(const std::string &channelName) const;
         bool isRegistered() const;

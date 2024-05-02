@@ -1,21 +1,22 @@
 #ifndef COMMAND_PARSER_HPP
 # define COMMAND_PARSER_HPP
 
+# include "DownParser.hpp"
 # include "InviteParser.hpp"
 # include "IParser.hpp"
 # include "JoinParser.hpp"
 # include "KickParser.hpp"
 # include "ModeParser.hpp"
 # include "NickParser.hpp"
+# include "NoticeParser.hpp"
 # include "PartParser.hpp"
 # include "PassParser.hpp"
 # include "PrivateMessageParser.hpp"
 # include "QuitParser.hpp"
 # include "TopicParser.hpp"
-# include "UserParser.hpp"
-# include "NoticeParser.hpp"
-# include "DownParser.hpp"
 # include "UpParser.hpp"
+# include "UserParser.hpp"
+# include "WhoParser.hpp"
 
 /**
  * A class that is responsible for parsing strings to commands.

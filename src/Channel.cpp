@@ -23,11 +23,52 @@ Channel::Channel(const std::string &name, User &user)
 }
 
 /**
+ * Channel copy constructor.
+ * 
+ * @param other The other channel to copy.
+ */
+Channel::Channel(const Channel &other) {
+    *this = other;
+}
+
+/**
  * Channel destructor.
  */
 Channel::~Channel() {
     this->_users.clear();
     this->_operators.clear();
+}
+
+/**
+ * This function aims to copy a channel.
+ * 
+ * @param other The other channel to copy.
+ * 
+ * @return The copied channel.
+ */
+Channel &Channel::operator=(const Channel &other) {
+    if (this != &other) {
+        this->_name = other._name;
+        this->_password = other._password;
+        this->_users.clear();
+        for (size_t i = 0; i < other._users.size(); i++) {
+            this->_users.push_back(new User(*other._users[i]));
+        }
+        this->_operators.clear();
+        for (size_t i = 0; i < other._operators.size(); i++) {
+            this->_operators.push_back(new User(*other._operators[i]));
+        }
+        this->_inviteList.clear();
+        for (size_t i = 0; i < other._inviteList.size(); i++) {
+            this->_inviteList.push_back(other._inviteList[i]);
+        }
+        this->_topic = other._topic;
+        this->_limit = other._limit;
+        this->_passwordSet = other._passwordSet;
+        this->_inviteOnly = other._inviteOnly;
+        this->_topicProtected = other._topicProtected;
+    }
+    return *this;
 }
 
 /**

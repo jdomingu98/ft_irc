@@ -97,12 +97,13 @@ class Server {
         bool        isNicknameInUse(const std::string& nickname) const;
         void        removeUser(int clientFd);
         void        attemptUserRegistration(int clientFd);
+        std::vector<User> &getUsers();
 
         // Channel
         std::vector<Channel> &getChannels();
         Channel &getChannelByName(const std::string &channelName);
         bool    channelExists(const std::string &channelName) const;
-        void    addChannel(Channel channel);
+        void    addChannel(Channel &channel);
         void    removeChannel(std::string channelName);
 
         // Disconnection

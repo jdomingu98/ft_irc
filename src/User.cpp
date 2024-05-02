@@ -8,9 +8,42 @@
 User::User(int fd) : _fd(fd), _registered(false) {}
 
 /**
+ * User copy constructor
+ * 
+ * @param other The other user to copy.
+ */
+User::User(const User &other) {
+    *this = other;
+}
+
+/**
  * User destructor 
  */
 User::~User() {}
+
+/**
+ * This function aims to assign a user to another.
+ * 
+ * @param other The other user to assign.
+ * 
+ * @return The user assigned.
+ */
+User &User::operator=(const User &other) {
+    if (this != &other) {
+        this->_fd = other.getFd();
+        this->_registered = other.isRegistered();
+        this->_username = other.getUsername();
+        this->_hostname = other.getHostname();
+        this->_serverName = other._serverName;
+        this->_realName = other._realName;
+        this->_nickname = other.getNickname();
+        this->_password = other._password;
+        this->_channels.clear();
+        for (size_t i = 0; i < other._channels.size(); i++)
+            this->_channels.push_back(other._channels[i]);
+    }
+    return *this;
+}
 
 /**
  * This function aims to compare two users.
@@ -108,6 +141,15 @@ void User::setUsername(const std::string& username) {
  */
 std::string User::getHostname() const {
     return this->_hostname;
+}
+
+/**
+ * This function aims to get the real name of the user.
+ * 
+ * @return The real name of the user.
+ */
+std::string User::getRealName() const {
+    return this->_realName;
 }
 
 /**
@@ -289,4 +331,13 @@ void User::sendNoticeToChannel(const Channel &destination, const std::string& me
     for (size_t i = 0; i < users.size(); i++)
         if (users[i]->getNickname() != this->_nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
+}
+
+/**
+ * This function aims to get the channels of the user.
+ * 
+ * @return The channels of the user.
+ */
+std::vector<Channel> User::getChannels() const {
+    return this->_channels;
 }
