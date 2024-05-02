@@ -30,7 +30,7 @@ void WhoCommand::getQueryOfChannel(const int &clientFd, Channel &channel) {
     for (size_t i = 0; i < users.size(); i++) {
         if (this->_hasOperatorFlag && !channel.isOper(users[i]->getNickname()))
             continue;
-        server.sendMessage(clientFd,
+        Server::getInstance().sendMessage(clientFd,
             WhoReplyResponse(
                 this->_query,
                 users[i]->getUsername(),
@@ -49,8 +49,6 @@ void WhoCommand::getQueryOfChannel(const int &clientFd, Channel &channel) {
  * @param clientFd The socket file descriptor of the client
  */
 void WhoCommand::execute(int clientFd) {
-    Server& server = Server::getInstance();
-    User& user = server.getUserByFd(clientFd);
 
     try { // If the query is a channel
         Channel &channel = server.getChannelByName(this->_query);
@@ -58,7 +56,7 @@ void WhoCommand::execute(int clientFd) {
     } catch (NoSuchChannelException &e) {
         try { // The query is an user
             User &user = server.getUserByNickname(this->_query);
-            const std::vector<Channel> &channels = user.getChannels();
+            std::vector<Channel> &channels = user.getChannels();
 
             for (size_t i = 0; i < channels.size(); i++)
                 getQueryOfChannel(clientFd, channels[i]);
@@ -71,5 +69,5 @@ void WhoCommand::execute(int clientFd) {
             }
         }
     }
-    server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
+    Server::getInstance().sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
 }
