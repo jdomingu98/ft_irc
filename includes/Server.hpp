@@ -102,7 +102,7 @@ class Server {
         std::vector<Channel> &getChannels();
         Channel &getChannelByName(const std::string &channelName);
         bool    channelExists(const std::string &channelName) const;
-        void    addChannel(Channel channel);
+        void    addChannel(Channel &channel);
         void    removeChannel(std::string channelName);
 
         // Disconnection

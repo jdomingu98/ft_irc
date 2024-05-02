@@ -28,7 +28,10 @@ class User {
         
     public:
         User(int fd);
+        User(const User &other);
         ~User();
+
+        User &operator=(const User &other);
 
         // Less than operator
         bool operator<(const User& other) const;

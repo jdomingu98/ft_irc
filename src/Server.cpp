@@ -517,7 +517,7 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  * 
  * @param channel The channel to add.
  */
-void Server::addChannel(Channel channel) {
+void Server::addChannel(Channel &channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
     if (it == this->_channels.end())
         this->_channels.push_back(channel);

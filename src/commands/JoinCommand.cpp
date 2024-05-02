@@ -92,7 +92,8 @@ void JoinCommand::execute(int clientFd) {
 
             if (!server.channelExists(channelName)) {
                 isNewChannel = true;
-                server.addChannel(Channel(channelName, user));
+                Channel c = Channel(channelName, user);
+                server.addChannel(c);
             }
 
             Channel &channel = server.getChannelByName(channelName);
