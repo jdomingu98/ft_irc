@@ -1,6 +1,8 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
+# include <fstream>
+# include <map>
 # include <string>
 # include <vector>
 
@@ -9,6 +11,8 @@
 # define MAX_CHANNEL_NAME_LENGTH 20
 # define NO_LIMIT 0
 # define BELL_CHAR '\a'
+
+# define DOWNLOAD_FILE_PATH(channel) "/saves/" + channel
 
 class User;
 
@@ -25,6 +29,7 @@ class Channel {
         std::string                 _topic;
         int                         _limit;
         bool                        _passwordSet;
+        std::map<std::string, std::string>  _files;
 
         // modes
         bool    _inviteOnly;
@@ -89,6 +94,10 @@ class Channel {
         void setLimit(int limit);
         bool hasLimit() const;
         bool isFull() const;
+
+        // Bonus
+        void uploadFile(const std::string &path);
+        void downloadFile(const std::string &filename);
 };
 
 #endif

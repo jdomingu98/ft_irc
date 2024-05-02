@@ -438,3 +438,58 @@ void Channel::broadcastToChannel(const std::string &message) {
     for (std::vector<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
         server.sendMessage((*it)->getFd(), message);
 }
+
+/**
+ * This function aims to upload a file to the channel.
+ * 
+ * @param path The path of the file to upload.
+ * 
+ * @throw `CannotOpenStreamException` If the file cannot be opened.
+ * @throw `CannotUploadFileException` If the file cannot be uploaded.
+ */
+void Channel::uploadFile(const std::string &path) {
+    std::ifstream file(path.c_str(), std::ios::binary);
+
+    if (!file)
+        throw CannotOpenStreamException();
+
+    std::string filename = path.substr(path.find_last_of("/\\") + 1);
+
+    // Move the read position to the end of the file
+    file.seekg(0, std::ios::end);
+    // Gets the rea position, which at this point is the size of the file
+    std::streamsize size = file.tellg();
+    // Move the read position to the beginning of the file
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> buffer(size);
+    if (!file.read(buffer.data(), size))
+        throw CannotUploadFileException(filename);
+    
+    this->_files[filename] = buffer;
+    buffer.clear();
+    file.close();
+}
+
+/**
+ * This function aims to download a file from the channel.
+ * 
+ * @param filename The name of the file to download.
+ * 
+ * @return The path of the downloaded file.
+ * 
+ * @throw `CannotOpenStreamException` If the file cannot be opened.
+ * @throw `CannotDownloadFileException` If the file cannot be downloaded.
+ */
+void Channel::downloadFile(const std::string &filename) {
+    std::ofstream file(DOWNLOAD_FILE_PATH(this->_name), std::ios::binary);
+    if (!file)
+        throw CannotOpenStreamException();
+
+    std::vector<char> buffer = this->_files[filename];
+    if (!file.write(buffer.data(), buffer.size()))
+        throw CannotDownloadFileException(filename);
+
+    buffer.clear();
+    file.close();
+}

@@ -15,6 +15,6 @@
  */
 ACommand *InviteParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
-      throw NeedMoreParamsException("INVITE");
+        throw NeedMoreParamsException("INVITE");
     return new InviteCommand(tokens[1], tokens[2]);
 }

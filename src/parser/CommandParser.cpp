@@ -60,6 +60,10 @@ IParser* CommandParser::getParser(std::string command) {
         return new ModeParser();
     if (command == "NOTICE")
         return new NoticeParser();
+    if (command == "DOWN")
+        return new DownParser();
+    if (command == "UP")
+        return new UpParser();
     if (command == NONE)
         throw IgnoreCommandException();
     throw UnknownCommandException(command);
