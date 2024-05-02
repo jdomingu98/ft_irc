@@ -118,6 +118,7 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
     
     if (spaceIndex + 1 >= command.size())
         throw IgnoreCommandException();
+    // Remove the prefix from the command for further parsing
     command = command.substr(spaceIndex + 1);
 
     size_t userIndex = prefix.find('!');
