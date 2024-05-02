@@ -9,9 +9,9 @@ class Channel;
 
 # define SERVER_VERSION "ft_messenger-v1.0.0"
 # define AVAILABLE_CHANNEL_MODES "iklot"
-# define SERVER_NAME "holis"
+# define SERVER_NAME "irc.ft_messenger.net"
 
-# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":irc.ft_messenger.net " + (codeNumber) +  " " + (nickname) + " " + (replyMsg)
+# define RESPONSE_MSG(codeNumber, nickname, replyMsg) ":" + SERVER_NAME + " " + (codeNumber) + " " + (nickname) + " " + (replyMsg)
 
 # define RPL_TOPIC(channel, topic) (channel) + " :" + (topic)
 # define RPL_NO_TOPIC(channel) (channel) + " :No topic is set"
