@@ -29,12 +29,13 @@ NickCommand::~NickCommand() {}
  */
 void NickCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
-    User &user = server.getUserByFd(clientFd);
     if (this->_nickname.empty())
         throw NoNicknameGivenException();
 
     if (this->_nickname.size() > MAX_NICKNAME_SIZE)
         throw ErroneousNicknameException(this->_nickname);
+
+    User &user = server.getUserByFd(clientFd);
 
     if (user.getNickname() != this->_nickname && server.isNicknameInUse(this->_nickname))
         throw NicknameInUseException(this->_nickname);
@@ -43,22 +44,28 @@ void NickCommand::execute(int clientFd) {
         throw ErroneousNicknameException(this->_nickname);
     
     std::set<User *> allUsers;
-    std::vector<Channel> &channels = user.getChannels();
+    std::set<User *>::iterator it;
+    std::vector<Channel> &channels = server.getChannels();
 
     if (user.isRegistered() && user.getNickname() != this->_nickname) {
         allUsers.insert(&user);
         for (size_t i = 0; i < channels.size(); i++) {
+            if (!channels[i].isUserInChannel(user.getNickname()))
+                continue;
+
             std::vector<User *> usersChannel = channels[i].getAllUsers();
             for (size_t j = 0; j < usersChannel.size(); j++)
                 allUsers.insert(usersChannel[j]);
+            usersChannel.clear();
         }
-        for ( std::set<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
+        for (it = allUsers.begin(); it != allUsers.end(); it++)
             server.sendMessage((*it)->getFd(), 
                         CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
                                 NICK_MSG(this->_nickname)));
     }
 
     user.setNickname(this->_nickname);
+
     if (!user.isRegistered() && user.canRegister())
         server.attemptUserRegistration(clientFd);
 }
