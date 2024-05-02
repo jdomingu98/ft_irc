@@ -37,7 +37,7 @@ void NoticeCommand::execute(int clientFd) {
                 sender.sendNoticeToUser(destinationUser, this->_message);
             }
         } catch (const IRCException &e) {
-            throw IgnoreCommandException();
+            // I ignore you, Exception. :D Have a nice day!
         }
     }
 }
