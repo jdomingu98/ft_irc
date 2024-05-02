@@ -14,7 +14,7 @@ ACommand* CommandParser::parse(const std::string& input, const User &client) {
     std::vector<std::string> tokens = CommandParser::tokenize(command);
 
     if (tokens.empty())
-        return NULL;
+        throw IgnoreCommandException();
 
     IParser *parser = CommandParser::getParser(tokens[0]);
     try {
