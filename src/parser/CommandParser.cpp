@@ -75,17 +75,15 @@ IParser* CommandParser::getParser(std::string command) {
  * @return The tokens of the command.
  */
 std::vector<std::string> CommandParser::tokenize(const std::string& command) {
-    std::vector<std::string> tokens(Utils::split(command, ' '));
-    std::string token;
-
-    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++)
-        if (it->size() > 0 && it->at(0) == ':') {
-            token = CommandParser::join(tokens, it - tokens.begin());
-            *it = token;
-            tokens.erase(it + 1, tokens.end());
-            break;
-        }
-    return tokens;
+    // Split first by ":" if there is:
+    size_t posColon = command.find(':');
+    if (posColon != std::string::npos) {
+        std::vector<std::string> tokens(Utils::split(command.substr(0, posColon), ' '));
+        tokens.push_back(command.substr(posColon + 1));
+        return tokens;
+    }
+    else 
+        return Utils::split(command, ' ');
 }
 
 /**
