@@ -86,6 +86,8 @@ void ModeCommand::execute(int clientFd) {
             }
         } catch (IRCException &e) {
             server.sendExceptionMessage(clientFd, e);
+            if (_modes.size() == 1)
+                return;
         }
     }
     _channel.broadcastToChannel(
