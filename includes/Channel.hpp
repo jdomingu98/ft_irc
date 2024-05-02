@@ -12,7 +12,7 @@
 # define NO_LIMIT 0
 # define BELL_CHAR '\a'
 
-# define DOWNLOAD_FILE_PATH(channel) "/saves/" + channel
+# define DOWNLOAD_FILE_PATH(channel, filename) "/saves/" + (channel) + "/" + (filename)
 
 class User;
 
