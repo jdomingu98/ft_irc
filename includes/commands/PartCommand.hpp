@@ -9,11 +9,10 @@
  */
 class PartCommand : public ACommand {
     private:
-        std::vector<std::string> _channels;
+        const std::vector<std::string> _channels;
 
     public:
-        PartCommand(std::vector<std::string> channels);
-        ~PartCommand();
+        PartCommand(const std::vector<std::string> channels);
 
         void execute(int clientFd);
 };

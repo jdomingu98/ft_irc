@@ -14,12 +14,13 @@ Channel::Channel()
  * 
  * @throws `BadChannelMaskException` If the channel name is invalid.
  */
-Channel::Channel(const std::string &name, User &user)
+Channel::Channel(const std::string name, User *user)
     : _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {
     if (!checkChannelName(name))
         throw BadChannelMaskException(name);
     this->_name = name;
-    this->_operators.push_back(&user);
+    this->_operators.push_back(user);
+	std::cout << "User with fd: " << this->_operators[0]->getFd() << std::endl;
 }
 
 /**
@@ -192,6 +193,10 @@ std::vector<User *> Channel::getOperators() const {
 std::vector<User *> Channel::getAllUsers() const {
     std::vector<User *> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
+	for (size_t i = 0; i < allUsers.size(); i++) {
+		std::cout << allUsers[i]->getFd() << std::endl;
+		std::cout << allUsers[i]->getNickname() << std::endl;
+	}
     return allUsers;
 }
 
@@ -311,10 +316,10 @@ bool Channel::isFull() const {
  * 
  * @throw `ChannelException` If the user is already in the channel.
  */
-void Channel::addUser(User &user) {
-    std::vector<User *>::iterator it = findUser(user.getNickname());
+void Channel::addUser(User *user) {
+    std::vector<User *>::iterator it = findUser(user->getNickname());
     if (it == this->_users.end())
-        this->_users.push_back(&user);
+        this->_users.push_back(user);
 
 }
 

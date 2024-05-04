@@ -20,17 +20,13 @@ int main(int argc, char **argv) {
     }
 
     try {
-        std::string port = std::string(argv[1]);
-        std::string password = std::string(argv[2]);
+        const std::string port = std::string(argv[1]);
+        const std::string password = std::string(argv[2]);
         Server::init(port, password);
     } catch (ServerException &e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << '\n';
     } catch (IRCException &e) {
-        std::cerr << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Unexpected error occurs!" << std::endl;
+        std::cerr << e.what() << '\n';
     }
-
-    Server::getInstance().closeConnections();
     return SUCCESS;
 }

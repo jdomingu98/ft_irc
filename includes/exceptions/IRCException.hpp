@@ -12,8 +12,9 @@ class IRCException : public std::exception {
         std::string _message;
 
     public:
-        IRCException(std::string errorCode, const std::string& msg) : _errorCode(errorCode), _message(msg) {}
-        ~IRCException() throw() {}
+        IRCException(const std::string &errorCode, const std::string& msg)
+            : _errorCode(errorCode), _message(msg) {}
+        virtual ~IRCException() throw() {}
 
         virtual const char* what() const throw() {
             return _message.c_str();

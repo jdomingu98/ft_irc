@@ -8,7 +8,7 @@
  * 
  * @return The parsed command.
  */
-ACommand* CommandParser::parse(const std::string& input, const User &client) {
+ACommand* CommandParser::parse(const std::string& input, const User *client) {
     std::string command(input);
     CommandParser::validateUserPrefix(command, client);
     std::vector<std::string> tokens = CommandParser::tokenize(command);
@@ -103,7 +103,7 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
  * @throws `IgnoreCommandException` if the prefix is incorrect.
  * 
  */
-void CommandParser::validateUserPrefix(std::string &command, const User &client) {
+void CommandParser::validateUserPrefix(std::string &command, const User *client) {
     if (command.empty())
         throw IgnoreCommandException();
     if (command[0] != ':')
@@ -154,7 +154,9 @@ void CommandParser::validateUserPrefix(std::string &command, const User &client)
     if (hasHostname) {
         hostname = prefix.substr(prefix.find('@') + 1);
     }
-    if (nick != client.getNickname() || (hasUser && username != client.getUsername()) || (hasHostname && hostname != client.getHostname()))
+    if (nick != client->getNickname()
+		|| (hasUser && username != client->getUsername())
+		|| (hasHostname && hostname != client->getHostname()))
         throw IgnoreCommandException();
 }
 

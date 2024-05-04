@@ -8,11 +8,6 @@
 QuitCommand::QuitCommand(const std::string &message) : ACommand(false), _message(message) {}
 
 /**
- * QuitCommand destructor.
- */
-QuitCommand::~QuitCommand() {}
-
-/**
  * Execute the command QUIT.
  * 
  * @param clientFd The socket file descriptor of the client
@@ -20,29 +15,28 @@ QuitCommand::~QuitCommand() {}
  */
 void QuitCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &user = server.getUserByFd(clientFd);
+    User *user = server.getUserByFd(clientFd);
 
-    std::string nickname = user.getNickname();
-    std::vector<Channel> &channels = server.getChannels();
-    
-    std::set<User *> allUsers;
-    std::set<User *>::iterator it;
+    std::vector<Channel *> channels = user->getChannels();
+    std::set<User *> users;
 
-    if (user.isRegistered())
-        allUsers.insert(&user);
-    for (size_t i = 0; i < channels.size(); i++) {
-        if (!channels[i].isUserInChannel(nickname))
-            continue;
+    if (user->isRegistered())
+        users.insert(user);
 
-        std::vector<User *> usersChannel = channels[i].getAllUsers();
-        for (size_t j = 0; j < usersChannel.size(); j++)
-            allUsers.insert(usersChannel[j]);
-        usersChannel.clear();
+    std::vector<Channel *>::iterator channelIt;
+    for (channelIt = channels.begin(); channelIt != channels.end(); ++channelIt) {
+        
+        std::vector<User *> allUsers = (*channelIt)->getAllUsers();
+        std::vector<User *>::iterator usersIt;
+        for (usersIt = allUsers.begin(); usersIt != allUsers.end(); ++usersIt)
+            users.insert(*usersIt);
     }
 
-    for (it = allUsers.begin(); it != allUsers.end(); it++) {
+    const std::string &nickname = user->getNickname();
+    std::set<User *>::iterator it;
+    for (it = users.begin(); it != users.end(); it++) {
         server.sendMessage((*it)->getFd(), 
-                            CMD_MSG(nickname, user.getUsername(), user.getHostname(),
+                            CMD_MSG(nickname, user->getUsername(), user->getHostname(),
                                     QUIT_MSG(_message.empty() ? nickname : _message)));
     }
     server.handleClientDisconnection(clientFd);

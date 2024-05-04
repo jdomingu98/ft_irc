@@ -86,8 +86,8 @@ void signalHandler(int signal) {
  */
 void Server::closeConnections() {
     for (size_t i = 0; i < this->_users.size(); i++)
-        close(this->_users[i].getFd());
-    std::vector<User>().swap(this->_users);
+        close(this->_users[i]->getFd());
+    std::vector<User *>().swap(this->_users);
 
     if (this->_socketFd != -1)
         close(this->_socketFd);
@@ -186,22 +186,33 @@ void Server::listenClients() {
  * @param clientFd The file descriptor of the client.
  */
 void Server::handleClientDisconnection(int clientFd) {
-    User &user = this->getUserByFd(clientFd);
-    std::vector<Channel> &channels = this->getChannels();
+    std::vector<User *>::iterator userIt = findUserByFd(clientFd);
 
-    std::string nickname = user.getNickname();
-    for (size_t i = 0; i < channels.size(); i++) {
-        if (channels[i].isUserInChannel(nickname))
-            channels[i].removeUser(nickname);
-    }
+    if (userIt == _users.end())
+        return;
+    
+    // Delete user from all channels where it joined
+    std::vector<Channel>::iterator channelIt = _channels.begin();
+    while (channelIt != _channels.end() && !(*userIt)->isOnChannel(channelIt->getName()))
+        ++channelIt;
+    if (channelIt != _channels.end())
+        channelIt->removeUser((*userIt)->getNickname());
 
-    this->_inputBuffer.erase(clientFd);
-    close(clientFd);
+    // Erase possible input left by the user
+    if (_inputBuffer.find(clientFd) != _inputBuffer.end())
+        _inputBuffer.erase(clientFd);
 
-    for (size_t i = 0; i < _fds.size(); i++) {
-        if (this->_fds[i].fd == clientFd) {
-            this->_fds.erase(this->_fds.begin() + i);
-            break;
+    // Remove user from the server vector
+    _users.erase(userIt);
+
+    // Close clientFd and remove it from the poll_fds array
+    if (clientFd != -1) {
+        std::vector<struct pollfd>::const_iterator pollIt = _fds.begin();
+        while (pollIt != _fds.end() && pollIt->fd != clientFd)
+            ++pollIt;
+        if (pollIt != _fds.end()) {
+            close(pollIt->fd);
+            _fds.erase(pollIt);
         }
     }
 }
@@ -225,7 +236,7 @@ void Server::handleNewConnection() {
     if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) < 0)
         throw ServerException(FCNTL_EXPT);
 
-    this->_users.push_back(User(clientSocket));
+    this->_users.push_back(new User(clientSocket));
     // Add new socket to poll_fds array
     struct pollfd newPoll;
     newPoll.fd = clientSocket;
@@ -274,12 +285,12 @@ void Server::handleExistingConnection(int clientFd) {
             this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
         }
 
-        User &client = getUserByFd(clientFd);
+        User *client = getUserByFd(clientFd);
 
         try {
             ACommand* command = CommandParser::parse(message, client);
 
-            if (command->needsValidation() && !client.isRegistered())
+            if (command->needsValidation() && !client->isRegistered())
                 throw NotRegisteredException();
             command->execute(clientFd);
         } catch (PasswordMismatchException &e) {
@@ -316,7 +327,7 @@ void Server::setSignalReceived() {
  * @param clientFd The file descriptor of the user.
  * @return The user with the file descriptor.
  */
-User &Server::getUserByFd(int clientFd) {
+User *Server::getUserByFd(int clientFd) {
     return *findUserByFd(clientFd);
 }
 
@@ -326,7 +337,7 @@ User &Server::getUserByFd(int clientFd) {
  * @param clientFd The file descriptor of the user.
  * @return The user with the file descriptor.
  */
-const User &Server::getUserByFd(int clientFd) const {
+const User *Server::getUserByFd(int clientFd) const {
     return *findUserByFd(clientFd);
 }
 
@@ -337,7 +348,7 @@ const User &Server::getUserByFd(int clientFd) const {
  * @return `true` if the nickname is already in use, `false` otherwise.
  */
 bool Server::isNicknameInUse(const std::string& nickname) const {
-    std::vector<User>::const_iterator it = findUserByNickname(nickname);
+    std::vector<User *>::const_iterator it = findUserByNickname(nickname);
     return it != this->_users.end();
 }
 
@@ -350,8 +361,8 @@ bool Server::isNicknameInUse(const std::string& nickname) const {
  * 
  * @return The user object with all its information.
  */
-User &Server::getUserByNickname(const std::string &nickname) {
-    std::vector<User>::iterator it = this->findUserByNickname(nickname);
+User *Server::getUserByNickname(const std::string &nickname) {
+    std::vector<User *>::iterator it = this->findUserByNickname(nickname);
     if (it == this->_users.end())
         throw NoSuchNickException(nickname);
     return *it;
@@ -380,7 +391,7 @@ void Server::sendMessage(int clientFd, const std::string& message) {
     #else
         msgSignal = MSG_NOSIGNAL;
     #endif
-    
+    std::cout << "Sending message to : " << clientFd << '\n';
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
         handleClientDisconnection(clientFd);
         Logger::debug(SEND_EXPT);
@@ -394,7 +405,7 @@ void Server::sendMessage(int clientFd, const std::string& message) {
  * @param e The exception to send.
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) {
-    std::string clientNickname = getUserByFd(clientFd).getNickname();
+    std::string clientNickname = getUserByFd(clientFd)->getNickname();
     this->sendMessage(clientFd, RESPONSE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
@@ -404,20 +415,11 @@ void Server::sendExceptionMessage(int clientFd, const IRCException &e) {
  * @param clientFd The file descriptor of the user to remove.
 */
 void Server::removeUser(int fd) {
-    std::vector<User>::iterator it = findUserByFd(fd);
+    std::vector<User *>::iterator it = findUserByFd(fd);
     if (it != this->_users.end()) {
-        close(it->getFd());
+        close((*it)->getFd());
         this->_users.erase(it);
     }
-}
-
-/**
- * This function attempt to register a user.
- * 
- * @param clientFd The file descriptor of the user.
- */
-void Server::attemptUserRegistration(int clientFd) {
-    this->getUserByFd(clientFd).makeRegistration();
 }
 
 /**
@@ -425,7 +427,7 @@ void Server::attemptUserRegistration(int clientFd) {
  * 
  * @return The users of the server.
  */
-std::vector<User> &Server::getUsers() {
+std::vector<User *> Server::getUsers() {
     return this->_users;
 }
 
@@ -436,9 +438,9 @@ std::vector<User> &Server::getUsers() {
  * 
  * @return The iterator to the user with the file descriptor.
  */
-std::vector<User>::iterator Server::findUserByFd(int clientFd) {
+std::vector<User *>::iterator Server::findUserByFd(int clientFd) {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getFd() == clientFd)
+        if (this->_users[i]->getFd() == clientFd)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -451,9 +453,9 @@ std::vector<User>::iterator Server::findUserByFd(int clientFd) {
  * 
  * @return The iterator to the user with the file descriptor.
  */
-std::vector<User>::const_iterator Server::findUserByFd(int clientFd) const {
+std::vector<User *>::const_iterator Server::findUserByFd(int clientFd) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getFd() == clientFd)
+        if (this->_users[i]->getFd() == clientFd)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -466,9 +468,9 @@ std::vector<User>::const_iterator Server::findUserByFd(int clientFd) const {
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::iterator Server::findUserByNickname(const std::string &nickname) {
+std::vector<User *>::iterator Server::findUserByNickname(const std::string &nickname) {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getNickname() == nickname)
+        if (this->_users[i]->getNickname() == nickname)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -481,9 +483,9 @@ std::vector<User>::iterator Server::findUserByNickname(const std::string &nickna
  * 
  * @return The iterator to the user with the nickname.
  */
-std::vector<User>::const_iterator Server::findUserByNickname(const std::string &nickname) const {
+std::vector<User *>::const_iterator Server::findUserByNickname(const std::string &nickname) const {
     for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i].getNickname() == nickname)
+        if (this->_users[i]->getNickname() == nickname)
             return this->_users.begin() + i;
     }
     return this->_users.end();
@@ -524,7 +526,7 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  * 
  * @param channel The channel to add.
  */
-void Server::addChannel(Channel &channel) {
+void Server::addChannel(const Channel &channel) {
     std::vector<Channel>::iterator it = findChannel(channel.getName());
     if (it == this->_channels.end())
         this->_channels.push_back(channel);
@@ -564,6 +566,14 @@ Channel &Server::getChannelByName(const std::string &channelName) {
     if (it == this->_channels.end())
         throw NoSuchChannelException(channelName);
     return *it;
+}
+
+Channel *Server::getChannelByNamePtr(const std::string &channelName) {
+	for (size_t i = 0; i < this->_channels.size(); i++) {
+		if (this->_channels[i].getName() == channelName)
+			return &this->_channels[i];
+	}
+	return NULL;
 }
 
 /**

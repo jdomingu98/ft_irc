@@ -2,6 +2,7 @@
 
 /**
  * Command WHO default constructor
+ * 
  */
 WhoCommand::WhoCommand() : ACommand(true), _query(NONE), _hasOperatorFlag(false) {}
 
@@ -11,14 +12,8 @@ WhoCommand::WhoCommand() : ACommand(true), _query(NONE), _hasOperatorFlag(false)
  * @param query The query to search for
  * @param hasOperatorFlag Whether to only show operator users
  */
-WhoCommand::WhoCommand(const std::string query, const bool &hasOperatorFlag)
+WhoCommand::WhoCommand(const std::string &query, const bool hasOperatorFlag)
     : ACommand(true), _query(query), _hasOperatorFlag(hasOperatorFlag) {}
-
-/**
- * Destroys the WHO command
- */
-WhoCommand::~WhoCommand() {}
-
 
 /**
  * Gets the result of the WHO command for a channel given
@@ -26,19 +21,20 @@ WhoCommand::~WhoCommand() {}
  * @param clientFd The socket file descriptor of the client
  * @param channel The channel to get the query of
  */
-void WhoCommand::getQueryOfChannel(const int &clientFd, Channel &channel) {
+void WhoCommand::getQueryOfChannel(int clientFd, const Channel &channel) {
     const std::vector<User *> &users = channel.getAllUsers();
-    for (size_t i = 0; i < users.size(); i++) {
-        if (this->_hasOperatorFlag && !channel.isOper(users[i]->getNickname()))
+    std::vector<User *>::const_iterator it;
+
+    for (it = users.begin(); it != users.end(); ++it) {
+        const std::string &nick = (*it)->getNickname();
+        const bool isOper = channel.isOper(nick);
+        
+        if (_hasOperatorFlag && !isOper)
             continue;
+        
         Server::getInstance().sendMessage(clientFd,
-            WhoReplyResponse(
-                this->_query,
-                users[i]->getUsername(),
-                users[i]->getHostname(),
-                users[i]->getNickname(),
-                channel.isOper(users[i]->getNickname()) ? "@" : NONE,
-                users[i]->getRealName()
+            WhoReplyResponse(_query, (*it)->getUsername(), (*it)->getHostname(),
+                nick, isOper ? "@" : NONE, (*it)->getRealName()
             ).getReply()
         );
     }
@@ -52,34 +48,38 @@ void WhoCommand::getQueryOfChannel(const int &clientFd, Channel &channel) {
 void WhoCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     try { // If the query is a channel
-        Channel &channel = server.getChannelByName(this->_query);
+        const Channel &channel = server.getChannelByName(_query);
         getQueryOfChannel(clientFd, channel);
     } catch (NoSuchChannelException &e) {
         try { // The query is an user
-            User &user = server.getUserByNickname(this->_query);
-            std::vector<Channel> channels = user.getChannels();
+            const User *user = server.getUserByNickname(_query);
 
-            for (size_t i = 0; i < channels.size(); i++)
-                getQueryOfChannel(clientFd, channels[i]);
+            const std::vector<Channel *> channels = user->getChannels();
+            std::vector<Channel *>::const_iterator channelIt;
+            for (channelIt = channels.begin(); channelIt != channels.end(); ++channelIt)
+                getQueryOfChannel(clientFd, **channelIt);
         } catch (NoSuchNickException &e) {
             // The query is not a channel nor an user (nickname)
-            std::vector<User> usersServer = server.getUsers();
-            for (size_t i = 0; i < usersServer.size(); i++) {
-                if (usersServer[i].getUsername() != this->_query &&
-                    usersServer[i].getHostname() != this->_query &&
-                    usersServer[i].getRealName() != this->_query)
+            const std::vector<User *> usersServer = server.getUsers();
+            std::vector<User *>::const_iterator usersIt;
+            for (usersIt = usersServer.begin(); usersIt != usersServer.end(); ++usersIt) {
+                if ((*usersIt)->getUsername() != _query &&
+                    (*usersIt)->getHostname() != _query &&
+                    (*usersIt)->getRealName() != _query)
                     continue;
-                std::vector<Channel> channels = usersServer[i].getChannels();
-                for (size_t j = 0; j < channels.size(); j++)
-                    getQueryOfChannel(clientFd, channels[j]);
+                const std::vector<Channel *> channels = (*usersIt)->getChannels();
+                std::vector<Channel *>::const_iterator channelIt2;
+                for (channelIt2 = channels.begin(); channelIt2 != channels.end(); ++channelIt2)
+                    getQueryOfChannel(clientFd, **channelIt2);
             }
             // None of the above matched, so we will show all users if query is NONE
-            if (this->_query == NONE) {
-                std::vector<Channel> &channels = server.getChannels();
-                for (size_t i = 0; i < channels.size(); i++)
-                    getQueryOfChannel(clientFd, channels[i]);
+            if (_query == NONE) {
+                const std::vector<Channel> &channels = server.getChannels();
+                std::vector<Channel>::const_iterator it;
+                for (it = channels.begin(); it != channels.end(); ++it)
+                    getQueryOfChannel(clientFd, *it);
             }
         }
     }
-    server.sendMessage(clientFd, EndOfWhoResponse(this->_query).getReply());
+    server.sendMessage(clientFd, EndOfWhoResponse(_query).getReply());
 }

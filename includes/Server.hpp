@@ -15,7 +15,6 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <unistd.h>
-# include <vector>
 
 # include "ACommand.hpp"
 # include "CommandParser.hpp"
@@ -25,6 +24,7 @@
 # include "QuitCommand.hpp"
 # include "Responses.hpp"
 # include "ServerException.hpp"
+# include "Utils.hpp"
 
 # define SUCCESS 0
 # define EXIT 1
@@ -60,7 +60,7 @@ class Server {
         std::vector<struct pollfd>  _fds; //MAX_CLIENTS
         std::map<int, std::string>  _inputBuffer;
         std::string                 _creationDate;
-        std::vector<User>           _users;
+        std::vector<User *>         _users;
         std::vector<Channel>        _channels;
 
         // Singleton Pattern
@@ -78,10 +78,10 @@ class Server {
         void handleExistingConnection(int clientFd);
 
         // User Iterators
-        std::vector<User>::iterator findUserByFd(int clientFd);
-        std::vector<User>::const_iterator findUserByFd(int clientFd) const;
-        std::vector<User>::iterator findUserByNickname(const std::string &nickname);
-        std::vector<User>::const_iterator findUserByNickname(const std::string &nickname) const;
+        std::vector<User *>::iterator findUserByFd(int clientFd);
+        std::vector<User *>::const_iterator findUserByFd(int clientFd) const;
+        std::vector<User *>::iterator findUserByNickname(const std::string &nickname);
+        std::vector<User *>::const_iterator findUserByNickname(const std::string &nickname) const;
 
     public:
         ~Server();
@@ -91,19 +91,19 @@ class Server {
         static Server &getInstance();
 
         // User
-        User        &getUserByFd(int clientFd);
-        const User  &getUserByFd(int clientFd) const;
-        User        &getUserByNickname(const std::string& nickname);
+        User        *getUserByFd(int clientFd);
+        const User  *getUserByFd(int clientFd) const;
+        User        *getUserByNickname(const std::string& nickname);
         bool        isNicknameInUse(const std::string& nickname) const;
         void        removeUser(int clientFd);
-        void        attemptUserRegistration(int clientFd);
-        std::vector<User> &getUsers();
+        std::vector<User *> getUsers();
 
         // Channel
         std::vector<Channel> &getChannels();
         Channel &getChannelByName(const std::string &channelName);
+        Channel *getChannelByNamePtr(const std::string &channelName);
         bool    channelExists(const std::string &channelName) const;
-        void    addChannel(Channel &channel);
+        void    addChannel(const Channel &channel);
         void    removeChannel(std::string channelName);
 
         // Disconnection

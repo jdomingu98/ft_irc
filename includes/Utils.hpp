@@ -13,7 +13,7 @@ class Utils {
         Utils();
         ~Utils();
     public:
-        static std::vector<std::string> split(const std::string &s, char delim);
+        static std::vector<std::string> split(const std::string &s, const char delim);
         static bool isNumber(const std::string& s);
 };
 

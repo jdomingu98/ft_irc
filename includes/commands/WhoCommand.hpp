@@ -8,14 +8,13 @@
  */
 class WhoCommand : public ACommand {
     private:
-        std::string _query;
-        bool        _hasOperatorFlag;
+        const std::string _query;
+        const bool        _hasOperatorFlag;
 
-        void getQueryOfChannel(const int &clientFd, Channel &channel);
+        void getQueryOfChannel(int clientFd, const Channel &channel);
     public:
         WhoCommand();
-        WhoCommand(const std::string query, const bool &hasOperatorFlag);
-        ~WhoCommand();
+        WhoCommand(const std::string &query, const bool hasOperatorFlag);
 
         void execute(int clientFd);
 };

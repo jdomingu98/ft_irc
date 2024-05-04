@@ -3,6 +3,7 @@
 
 # include <fstream>
 # include <map>
+# include <sstream>
 # include <string>
 # include <sys/stat.h>
 # include <sys/types.h>
@@ -49,7 +50,7 @@ class Channel {
     public:
         // Constructors and destructor
         Channel();
-        Channel(const std::string &name, User &user);
+        Channel(const std::string name, User *user);
         Channel(const Channel &other);
         ~Channel();
 
@@ -68,7 +69,7 @@ class Channel {
         void setTopic(std::string topic);
 
         // User
-        void addUser(User &user);
+        void addUser(User *user);
         void removeUser(const std::string &nickname);
         bool isUserInChannel(const std::string &nickname) const;
 

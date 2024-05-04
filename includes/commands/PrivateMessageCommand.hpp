@@ -8,13 +8,10 @@
  */
 class PrivateMessageCommand : public ACommand {
     private:
-        std::vector<std::string> _receivers;
-        std::string _message;
-
-        PrivateMessageCommand();
-
+        const std::vector<std::string> _receivers;
+        const std::string _message;
     public:
-        PrivateMessageCommand(std::vector<std::string> receivers, std::string message);
+        PrivateMessageCommand(const std::vector<std::string> receivers, const std::string &message);
         void execute(int clientFd);
 };
 

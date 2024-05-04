@@ -30,17 +30,19 @@ User::~User() {}
  */
 User &User::operator=(const User &other) {
     if (this != &other) {
-        this->_fd = other.getFd();
-        this->_registered = other.isRegistered();
-        this->_username = other.getUsername();
-        this->_hostname = other.getHostname();
-        this->_serverName = other._serverName;
-        this->_realName = other._realName;
-        this->_nickname = other.getNickname();
-        this->_password = other._password;
-        this->_channels.clear();
+        _fd = other.getFd();
+		std::cout << "fd: " << _fd << "\n";
+		std::cout << "other fd: " << other.getFd() << "\n";
+        _registered = other.isRegistered();
+        _username = other.getUsername();
+        _hostname = other.getHostname();
+        _serverName = other._serverName;
+        _realName = other._realName;
+        _nickname = other.getNickname();
+        _password = other._password;
+        _channels.clear();
         for (size_t i = 0; i < other._channels.size(); i++)
-            this->_channels.push_back(other._channels[i]);
+            _channels.push_back(other._channels[i]);
     }
     return *this;
 }
@@ -53,7 +55,7 @@ User &User::operator=(const User &other) {
  * @return `true` if the users are the same, `false` otherwise.
  */
 bool User::operator<(const User& other) const {
-    return this->_nickname < other.getNickname();
+    return _nickname < other.getNickname();
 }
 
 /**
@@ -63,12 +65,12 @@ bool User::operator<(const User& other) const {
  * 
  * @return The const iterator to the channel with the name.
  */
-std::vector<Channel>::const_iterator User::findChannel(const std::string &channelName) const {
-    for (size_t i = 0; i < this->_channels.size(); i++) {
-        if (this->_channels[i].getName() == channelName)
-            return this->_channels.begin() + i;
+std::vector<Channel *>::const_iterator User::findChannel(const std::string &channelName) const {
+    for (size_t i = 0; i < _channels.size(); i++) {
+        if (_channels[i]->getName() == channelName)
+            return _channels.begin() + i;
     }
-    return this->_channels.end();
+    return _channels.end();
 }
 
 /**
@@ -78,12 +80,12 @@ std::vector<Channel>::const_iterator User::findChannel(const std::string &channe
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::iterator User::findChannel(const std::string &channelName) {
-    for (size_t i = 0; i < this->_channels.size(); i++) {
-        if (this->_channels[i].getName() == channelName)
-            return this->_channels.begin() + i;
+std::vector<Channel *>::iterator User::findChannel(const std::string &channelName) {
+    for (size_t i = 0; i < _channels.size(); i++) {
+        if (_channels[i]->getName() == channelName)
+            return _channels.begin() + i;
     }
-    return this->_channels.end();
+    return _channels.end();
 }
 
 /**
@@ -92,7 +94,7 @@ std::vector<Channel>::iterator User::findChannel(const std::string &channelName)
  * @return `true` if the user is already in the maximum number of channels, `false` otherwise.
  */
 bool User::isUserInMaxChannels() const {
-    return this->_channels.size() >= MAX_CHANNELS;
+    return _channels.size() >= MAX_CHANNELS;
 }
 
 /**
@@ -103,8 +105,8 @@ bool User::isUserInMaxChannels() const {
  * @return `true` if the user is on the channel, `false` otherwise.
  */
 bool User::isOnChannel(const std::string &channelName) const {
-    std::vector<Channel>::const_iterator it = findChannel(channelName);
-    return it != this->_channels.end();
+    std::vector<Channel *>::const_iterator it = findChannel(channelName);
+    return it != _channels.end();
 }
 
 /**
@@ -113,7 +115,7 @@ bool User::isOnChannel(const std::string &channelName) const {
  * @return The file descriptor of the user.
  */
 int User::getFd() const {
-    return this->_fd;
+    return _fd;
 }
 
 /**
@@ -122,7 +124,7 @@ int User::getFd() const {
  * @return The username of the user.
  */
 std::string User::getUsername() const {
-    return this->_username;
+    return _username;
 }
 
 /**
@@ -131,7 +133,7 @@ std::string User::getUsername() const {
  * @param username The username of the user.
  */
 void User::setUsername(const std::string& username) {
-    this->_username = username;
+    _username = username;
 }
 
 /**
@@ -140,7 +142,7 @@ void User::setUsername(const std::string& username) {
  * @return The hostname of the user.
  */
 std::string User::getHostname() const {
-    return this->_hostname;
+    return _hostname;
 }
 
 /**
@@ -149,7 +151,7 @@ std::string User::getHostname() const {
  * @return The real name of the user.
  */
 std::string User::getRealName() const {
-    return this->_realName;
+    return _realName;
 }
 
 /**
@@ -158,7 +160,7 @@ std::string User::getRealName() const {
  * @param hostname The hostname of the user.
  */
 void User::setHostname(const std::string& hostname) {
-    this->_hostname = hostname;
+    _hostname = hostname;
 }
 
 /**
@@ -167,7 +169,7 @@ void User::setHostname(const std::string& hostname) {
  * @param serverName The server name of the user.
  */
 void User::setServerName(const std::string& serverName) {
-    this->_serverName = serverName;
+    _serverName = serverName;
 }
 
 /**
@@ -176,7 +178,7 @@ void User::setServerName(const std::string& serverName) {
  * @param realName The real name of the user.
  */
 void User::setRealName(const std::string& realName) {
-    this->_realName = realName;
+    _realName = realName;
 }
 
 /**
@@ -185,7 +187,7 @@ void User::setRealName(const std::string& realName) {
  * @return The nickname of the user.
  */
 std::string User::getNickname() const {
-    return this->_nickname;
+    return _nickname;
 }
 
 /**
@@ -194,7 +196,7 @@ std::string User::getNickname() const {
  * @param nickname The nickname of the user.
  */
 void User::setNickname(const std::string& nickname) {
-    this->_nickname = nickname;
+    _nickname = nickname;
 }
 
 /**
@@ -203,7 +205,7 @@ void User::setNickname(const std::string& nickname) {
  * @param password The password the user wants to use.
  */
 void User::setPassword(const std::string& password) {
-    this->_password = password;
+    _password = password;
 }
 
 
@@ -213,11 +215,11 @@ void User::setPassword(const std::string& password) {
  * @return `true` if the user can register, `false` otherwise.
  */
 bool User::canRegister() const {
-    return  !(this->_username.empty()
-            || this->_hostname.empty()
-            || this->_serverName.empty()
-            || this->_realName.empty()
-            || this->_nickname.empty());
+    return  !(_username.empty()
+            || _hostname.empty()
+            || _serverName.empty()
+            || _realName.empty()
+            || _nickname.empty());
 }
 
 /**
@@ -227,15 +229,15 @@ bool User::canRegister() const {
 void User::makeRegistration() {
     Server &server = Server::getInstance();
 
-    if (!server.isValidPassword(this->_password))
+    if (!server.isValidPassword(_password))
         throw PasswordMismatchException();
 
-    server.sendMessage(this->getFd(), WelcomeResponse(_nickname, _username, _hostname).getReply());
-    server.sendMessage(this->getFd(), YourHostResponse(_nickname, _serverName).getReply());
-    server.sendMessage(this->getFd(), CreatedResponse(_nickname, server.getCreationDate()).getReply());
-    server.sendMessage(this->getFd(), MyInfoResponse(_nickname, _serverName).getReply());
+    server.sendMessage(getFd(), WelcomeResponse(_nickname, _username, _hostname).getReply());
+    server.sendMessage(getFd(), YourHostResponse(_nickname, _serverName).getReply());
+    server.sendMessage(getFd(), CreatedResponse(_nickname, server.getCreationDate()).getReply());
+    server.sendMessage(getFd(), MyInfoResponse(_nickname, _serverName).getReply());
 
-    this->_registered = true;
+    _registered = true;
 }
 
 /**
@@ -244,7 +246,7 @@ void User::makeRegistration() {
  * @return `true` if the user has registered, `false` otherwise.
  */
 bool User::isRegistered() const {
-    return this->_registered;
+    return _registered;
 }
 
 /**
@@ -252,8 +254,8 @@ bool User::isRegistered() const {
  * 
  * @param channel The channel to be added.
  */
-void User::addChannel(Channel &channel) {
-    this->_channels.push_back(channel);
+void User::addChannel(Channel *channel) {
+    _channels.push_back(channel);
 }
 
 /**
@@ -262,9 +264,9 @@ void User::addChannel(Channel &channel) {
  * @param channelName The name of the channel to be removed.
  */
 void User::removeChannel(const std::string &channelName) {
-    std::vector<Channel>::iterator channel = findChannel(channelName);
-    if (channel != this->_channels.end())
-        this->_channels.erase(channel);
+    std::vector<Channel *>::iterator channel = findChannel(channelName);
+    if (channel != _channels.end())
+        _channels.erase(channel);
 }
 
 /**
@@ -274,8 +276,8 @@ void User::removeChannel(const std::string &channelName) {
  * @param message The message to send.
  */
 void User::sendPrivateMessageToUser(const User &destination, const std::string& message) const {
-    Logger::debug("Sending private message to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
-    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, PRIVMSG_MSG(destination.getNickname(), message));
+    Logger::debug("Sending private message to " + destination.getNickname() + " from " + getNickname() + ": " + message);
+    std::string response = CMD_MSG(_nickname, _username, _hostname, PRIVMSG_MSG(destination.getNickname(), message));
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
 
@@ -286,8 +288,8 @@ void User::sendPrivateMessageToUser(const User &destination, const std::string& 
  * @param message The message to send.
  */
 void User::sendNoticeToUser(const User &destination, const std::string& message) const {
-    Logger::debug("Sending NOTICE to " + destination.getNickname() + " from " + this->getNickname() + ": " + message);
-    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, NOTICE_MSG(destination.getNickname(), message));
+    Logger::debug("Sending NOTICE to " + destination.getNickname() + " from " + getNickname() + ": " + message);
+    std::string response = CMD_MSG(_nickname, _username, _hostname, NOTICE_MSG(destination.getNickname(), message));
     Server::getInstance().sendMessage(destination.getFd(), response);
 }
 
@@ -299,8 +301,8 @@ void User::sendNoticeToUser(const User &destination, const std::string& message)
  * @return A pointer of the found channel or `NULL` in other case.
  */
 Channel *User::getChannelByName(std::string &channelName) {
-    std::vector<Channel>::iterator it = findChannel(channelName);
-    return (it != this->_channels.end()) ? &(*it) : NULL;
+    std::vector<Channel *>::iterator it = findChannel(channelName);
+    return (it != _channels.end()) ? *it : NULL;
 }
 
 /**
@@ -310,11 +312,11 @@ Channel *User::getChannelByName(std::string &channelName) {
  * @param message The message to send.
  */
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
-    Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
-    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, PRIVMSG_MSG(destination.getName(), message));
+    Logger::debug("Sending private message to channel " + destination.getName() + " from " + getNickname() + ": " + message);
+    std::string response = CMD_MSG(_nickname, _username, _hostname, PRIVMSG_MSG(destination.getName(), message));
     std::vector<User *> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
-        if (users[i]->getNickname() != this->_nickname)
+        if (users[i]->getNickname() != _nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
 }
 
@@ -325,11 +327,11 @@ void User::sendPrivateMessageToChannel(const Channel &destination, const std::st
  * @param message The message to send.
  */
 void User::sendNoticeToChannel(const Channel &destination, const std::string& message) const {
-    Logger::debug("Sending private message to channel " + destination.getName() + " from " + this->getNickname() + ": " + message);
-    std::string response = CMD_MSG(this->_nickname, this->_username, this->_hostname, NOTICE_MSG(destination.getName(), message));
+    Logger::debug("Sending private message to channel " + destination.getName() + " from " + getNickname() + ": " + message);
+    std::string response = CMD_MSG(_nickname, _username, _hostname, NOTICE_MSG(destination.getName(), message));
     std::vector<User *> users = destination.getAllUsers();
     for (size_t i = 0; i < users.size(); i++)
-        if (users[i]->getNickname() != this->_nickname)
+        if (users[i]->getNickname() != _nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
 }
 
@@ -338,6 +340,6 @@ void User::sendNoticeToChannel(const Channel &destination, const std::string& me
  * 
  * @return The channels of the user.
  */
-std::vector<Channel> User::getChannels() const {
-    return this->_channels;
+std::vector<Channel *> User::getChannels() const {
+    return _channels;
 }

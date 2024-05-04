@@ -13,12 +13,8 @@ TopicCommand::TopicCommand(Channel *channel) : ACommand(true), _channel(channel)
  * @param channel The channel where the topic will be set or removed
  * @param topic The new topic of the channel
  */
-TopicCommand::TopicCommand(Channel *channel, const std::string& topic) : ACommand(true), _channel(channel), _topic(topic), _newTopicProvided(true) {}
-
-/**
- * Destroys the TopicCommand.
- */
-TopicCommand::~TopicCommand() {}
+TopicCommand::TopicCommand(Channel *channel, const std::string& topic)
+    : ACommand(true), _channel(channel), _topic(topic), _newTopicProvided(true) {}
 
 /**
  * Executes the command TOPIC.
@@ -30,33 +26,32 @@ TopicCommand::~TopicCommand() {}
  */
 void TopicCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &user = server.getUserByFd(clientFd);
+    const User *user = server.getUserByFd(clientFd);
 
-    std::string channelName = _channel->getName();
-    std::string nickname = user.getNickname();
-    std::string username = user.getUsername();
-    std::string hostname = user.getHostname();
+    const std::string &channelName = _channel->getName();
+    const std::string &nickname = user->getNickname();
 
-    if (!user.isOnChannel(channelName))
+    if (!user->isOnChannel(channelName))
         throw NotOnChannelException(channelName);
-
     Logger::debug("User " + nickname + " in channel " + channelName);
 
     if (_newTopicProvided && _channel->isTopicProtected() && !_channel->isOper(nickname))
         throw ChanOPrivsNeededException(channelName);
 
     if (_newTopicProvided) {
-        Logger::debug("Setting the new topic of channel " + channelName + " to " + _topic);
         _channel->setTopic(_topic);
-
-        Logger::debug("Sending the new topic of channel " + channelName + " to all its users");
-        _channel->broadcastToChannel(CMD_MSG(nickname, user.getUsername(),
-                                                user.getHostname(), TOPIC_MSG(channelName, _topic)));
+        Logger::debug("Sending the new topic to all its users");
+        
+        _channel->broadcastToChannel(
+            CMD_MSG(nickname, user->getUsername(), user->getHostname(),
+                TOPIC_MSG(channelName, _topic)
+            )
+        );
     } else {
-        std::string message = _channel->getTopic().empty()  ? NoTopicResponse(nickname, channelName).getReply()
-                                                            : TopicResponse(nickname, channelName, _channel->getTopic()).getReply();
-        Logger::debug("Sending topic of channel " + channelName + " response to user " + nickname);
+        const std::string &message = _topic.empty() ? NoTopicResponse(nickname, channelName).getReply()
+                                                    : TopicResponse(nickname, channelName, _topic).getReply();
+        Logger::debug("Sending topic to user " + nickname);
         server.sendMessage(clientFd, message);
     }
-    Logger::debug("Channel " + channelName + " topic is: " + _channel->getTopic());
+    Logger::debug("Channel's topic is: " + _channel->getTopic());
 }

@@ -3,7 +3,6 @@
 
 # include <set>
 
-# include "Utils.hpp"
 # include "Server.hpp"
 
 /**
@@ -11,10 +10,9 @@
  */
 class QuitCommand : public ACommand {
     private:
-        std::string _message;
+        const std::string _message;
     public:
         QuitCommand(const std::string &message);
-        ~QuitCommand();
 
         void execute(int clientFd);
 };

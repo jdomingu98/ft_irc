@@ -18,7 +18,7 @@ ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {
         throw NeedMoreParamsException("JOIN");
 
     std::map<std::string, std::string> channels;
-    std::vector<std::string> channelsVec = Utils::split(tokens[1], ',');
+    const std::vector<std::string> channelsVec = Utils::split(tokens[1], ',');
     std::vector<std::string> keysVec;
 
     if (tokens.size() == 3)
@@ -30,8 +30,5 @@ ACommand *JoinParser::parse(const std::vector<std::string>& tokens) {
 
         channels[channelsVec[i]] = (!keysVec.empty() && !keysVec[i].empty()) ? keysVec[i] : NONE;
     }
-    if (!keysVec.empty())
-        keysVec.clear();
-    channelsVec.clear();
     return new JoinCommand(channels);
 }

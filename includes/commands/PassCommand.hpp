@@ -9,12 +9,10 @@
  */
 class PassCommand : public ACommand {
     private:
-        std::string _password;
+        const std::string _password;
     
     public:
-        PassCommand();
         PassCommand(const std::string& password);
-        ~PassCommand();
 
         void execute(int clientFd);
 };

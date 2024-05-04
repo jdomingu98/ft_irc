@@ -18,7 +18,7 @@ Utils::~Utils() {}
  * 
  * @return The vector of strings.
  */
-std::vector<std::string> Utils::split(const std::string &s, char delim) {
+std::vector<std::string> Utils::split(const std::string &s, const char delim) {
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
@@ -37,6 +37,8 @@ std::vector<std::string> Utils::split(const std::string &s, char delim) {
  * @return `true` if the string is a number, `false` otherwise.
  */
 bool Utils::isNumber(const std::string& s) {
+    if (s == "-")
+        return false;
     std::string::const_iterator it = s.begin();
     
     while (it != s.end() && (std::isdigit(*it) || (*it == '-' && it == s.begin())))

@@ -1,11 +1,6 @@
 #include "InviteCommand.hpp"
 
 /**
- * InviteCommand default constructor.
- */
-InviteCommand::InviteCommand() : ACommand(true), _nickname(NONE), _channelName(NONE) {}
-
-/**
  * InviteCommand nickname and channel name constructor.
  * 
  * @param nickname The nickname
@@ -13,11 +8,6 @@ InviteCommand::InviteCommand() : ACommand(true), _nickname(NONE), _channelName(N
  */
 InviteCommand::InviteCommand(const std::string& nickname, const std::string& channelName)
     : ACommand(true), _nickname(nickname), _channelName(channelName) {}
-
-/**
- * InviteCommand destructor.
- */
-InviteCommand::~InviteCommand() {}
 
 /**
  * Execute the command INVITE.
@@ -32,29 +22,29 @@ InviteCommand::~InviteCommand() {}
  */
 void InviteCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &me = server.getUserByFd(clientFd);
+    const User *me = server.getUserByFd(clientFd);
 
-    if (!server.isNicknameInUse(this->_nickname))
-        throw NoSuchNickException(this->_nickname);
+    if (!server.isNicknameInUse(_nickname))
+        throw NoSuchNickException(_nickname);
 
-    if (!server.channelExists(this->_channelName))
-        throw NoSuchChannelException(this->_channelName);
+    if (!server.channelExists(_channelName))
+        throw NoSuchChannelException(_channelName);
 
-    if (!me.isOnChannel(this->_channelName))
-        throw NotOnChannelException(this->_channelName);
+    if (!me->isOnChannel(_channelName))
+        throw NotOnChannelException(_channelName);
 
-    Channel &channel = server.getChannelByName(this->_channelName);
+    Channel &channel = server.getChannelByName(_channelName);
 
-    if (channel.isUserInChannel(this->_nickname))
-        throw UserOnChannelException(this->_nickname, this->_channelName);
+    if (channel.isUserInChannel(_nickname))
+        throw UserOnChannelException(_nickname, _channelName);
 
-    if (channel.isInviteOnly() && !channel.isOper(me.getNickname()))
-        throw ChanOPrivsNeededException(this->_channelName);
+    if (channel.isInviteOnly() && !channel.isOper(me->getNickname()))
+        throw ChanOPrivsNeededException(_channelName);
 
-    channel.inviteUser(this->_nickname);
-    server.sendMessage(clientFd, InvitingResponse(this->_nickname, this->_channelName).getReply());
+    channel.inviteUser(_nickname);
+    server.sendMessage(clientFd, InvitingResponse(_nickname, _channelName).getReply());
 
-    server.sendMessage(server.getUserByNickname(this->_nickname).getFd(),
-                        CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
-                                    INVITE_MSG(this->_nickname, this->_channelName)));
+    server.sendMessage(server.getUserByNickname(_nickname)->getFd(),
+                        CMD_MSG(me->getNickname(), me->getUsername(), me->getHostname(),
+                                    INVITE_MSG(_nickname, _channelName)));
 }

@@ -57,7 +57,7 @@ class Responses {
         
         virtual ~Responses() {}
         
-        std::string getReply() {
+        std::string getReply() const {
             return RESPONSE_MSG(_codeNumber, _nickname, _replyMsg);
         }
 };
@@ -83,9 +83,9 @@ class InvitingResponse : public Responses {
  */
 class NamesReplyResponse : public Responses {
     private:
-        std::string rplNamesReply(Channel &channel) const;
+        std::string rplNamesReply(const Channel &channel) const;
     public:
-        NamesReplyResponse(std::string const &nickname, Channel &channel) : Responses("353", nickname, rplNamesReply(channel)) {}
+        NamesReplyResponse(std::string const &nickname, const Channel &channel) : Responses("353", nickname, rplNamesReply(channel)) {}
 };
 
 /**

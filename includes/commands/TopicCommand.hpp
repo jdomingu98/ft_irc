@@ -11,13 +11,12 @@ class Channel;
 class TopicCommand : public ACommand {
     private:
         Channel     *_channel;
-        std::string _topic;
-        bool        _newTopicProvided;
+        const std::string _topic;
+        const bool        _newTopicProvided;
     
     public:
         TopicCommand(Channel *channel);
         TopicCommand(Channel *channel, const std::string& topic);
-        ~TopicCommand();
 
         void execute(int clientFd);
 };

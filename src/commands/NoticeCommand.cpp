@@ -6,7 +6,7 @@
  * @param receivers The users or channels that will receive the message
  * @param message The message to be sent
  */
-NoticeCommand::NoticeCommand(std::vector<std::string> receivers, std::string message)
+NoticeCommand::NoticeCommand(const std::vector<std::string> &receivers, const std::string &message)
     : ACommand(true), _receivers(receivers), _message(message) {}
 
 /**
@@ -19,25 +19,22 @@ NoticeCommand::NoticeCommand(std::vector<std::string> receivers, std::string mes
  */
 void NoticeCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &sender = server.getUserByFd(clientFd);
+    const User *sender = server.getUserByFd(clientFd);
 
-    Logger::debug("Sending notice from " + sender.getNickname());
-    for (size_t i = 0; i < this->_receivers.size(); i++) {
+    for (size_t i = 0; i < _receivers.size(); i++) {
+        const std::string recv = _receivers[i];
         try {
-            if (this->_receivers[i][0] == '#' || this->_receivers[i][0] == '&') {
-                Logger::debug("Sending notice to channel " + this->_receivers[i]);
-
-                Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
-                if (!destinationChannel.isUserInChannel(sender.getNickname()))
+            if (recv[0] == '#' || recv[0] == '&') {
+                const Channel &destinationChannel = server.getChannelByName(recv);
+                if (!sender->isOnChannel(recv))
                     throw IgnoreCommandException();
-
-                sender.sendNoticeToChannel(destinationChannel, this->_message);
+                sender->sendNoticeToChannel(destinationChannel, _message);
             } else {
-                User &destinationUser = server.getUserByNickname(this->_receivers[i]);
-                sender.sendNoticeToUser(destinationUser, this->_message);
+                const User *destinationUser = server.getUserByNickname(recv);
+                sender->sendNoticeToUser(*destinationUser, _message);
             }
         } catch (const IRCException &e) {
-            // I ignore you, Exception. :D Have a nice day!
+            Logger::debug("I ignore you, Exception. :D Have a nice day!");
         }
     }
 }

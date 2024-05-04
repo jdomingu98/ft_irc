@@ -10,11 +10,6 @@ DownCommand::DownCommand(const std::string& channelName, const std::string& file
     : ACommand(true), _channelName(channelName), _filename(filename) {}
 
 /**
- * DownCommand destructor.
- */
-DownCommand::~DownCommand() {}
-
-/**
  * Execute the command DOWN.
  * 
  * @param clientFd The socket file descriptor of the client
@@ -23,12 +18,12 @@ DownCommand::~DownCommand() {}
  */
 void DownCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &me = server.getUserByFd(clientFd);
+    const User *me = server.getUserByFd(clientFd);
 
-    if (!me.isOnChannel(this->_channelName))
+    if (!me->isOnChannel(this->_channelName))
         throw NotOnChannelException(this->_channelName);
     Channel &channel = server.getChannelByName(this->_channelName);
     channel.downloadFile(this->_filename);
 
-    server.sendMessage(clientFd, DownloadResponse(me.getNickname(), this->_filename).getReply());
+    server.sendMessage(clientFd, DownloadResponse(me->getNickname(), this->_filename).getReply());
 }

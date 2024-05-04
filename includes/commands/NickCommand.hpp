@@ -11,14 +11,11 @@
 */
 class NickCommand : public ACommand {
     private:
-        std::string _nickname;
+        const std::string _nickname;
 
-        bool isValidNickname();
-
+        bool isValidNickname() const;
     public:
-        NickCommand();
         NickCommand(const std::string& nickname);
-        ~NickCommand(); 
 
         void execute(int clientFd);
 };

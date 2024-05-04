@@ -8,13 +8,10 @@
  */
 class NoticeCommand : public ACommand {
     private:
-        std::vector<std::string> _receivers;
-        std::string _message;
-
-        NoticeCommand();
-
+        const std::vector<std::string> _receivers;
+        const std::string _message;
     public:
-        NoticeCommand(std::vector<std::string> receivers, std::string message);
+        NoticeCommand(const std::vector<std::string> &receivers, const std::string &message);
         void execute(int clientFd);
 };
 

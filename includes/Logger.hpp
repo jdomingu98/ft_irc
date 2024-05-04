@@ -9,13 +9,13 @@
  */
 class Logger {
     private:
-        Logger(void);
-        ~Logger(void);
+        Logger();
+        ~Logger();
 
 	static const bool _debugMode = true;
 
     public:
-        static void debug(std::string message);
+        static void debug(const std::string &message);
 };
 
 #endif

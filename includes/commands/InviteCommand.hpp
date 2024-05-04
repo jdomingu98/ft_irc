@@ -9,13 +9,11 @@
  */
 class InviteCommand : public ACommand {
     private:
-        std::string _nickname;
-        std::string _channelName;
+        const std::string _nickname;
+        const std::string _channelName;
 
     public:
-        InviteCommand();
         InviteCommand(const std::string& nickname, const std::string& channelName);
-        ~InviteCommand();
 
         void execute(int clientFd);
 };

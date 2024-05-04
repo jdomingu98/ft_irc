@@ -11,14 +11,11 @@ class Channel;
  */
 class JoinCommand : public ACommand {
     private:
-        std::map<std::string, std::string> _channels; //key: channelName, value: channelPassword
+        const std::map<std::string, std::string> _channels; //<name, password>
 
-        void printUsers(Channel &channel) const;
-        void sendMessages(int clientFd, Channel &channel) const;
-
+        void sendMessages(int clientFd, const Channel &channel) const;
     public:
-        JoinCommand(std::map<std::string, std::string> channelMap);
-        ~JoinCommand();
+        JoinCommand(const std::map<std::string, std::string> channels);
 
         void execute(int clientFd);
 };

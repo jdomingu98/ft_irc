@@ -8,16 +8,14 @@
  */
 class UserCommand : public ACommand {
     private:
-        std::string _username;
-        std::string _hostname;
-        std::string _serverName;
-        std::string _realName;
+        const std::string _username;
+        const std::string _hostname;
+        const std::string _serverName;
+        const std::string _realName;
 
     public:
-        UserCommand();
         UserCommand(const std::string& username, const std::string& hostname, const std::string& serverName, const std::string& realName);
         void execute(int clientFd);
-        ~UserCommand();
 };
 
 #endif

@@ -20,7 +20,7 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
 
     std::vector<std::string> channels = Utils::split(tokens[1], ',');
     std::vector<std::string> usersList = Utils::split(tokens[2], ',');
-    std::vector<User> users;
+    std::vector<User *> users;
     
     for (size_t i = 0; i < channels.size(); i++) {
         if (channels[i][0] != '#' && channels[i][0] != '&')
@@ -28,7 +28,7 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     }
 
     for (size_t i = 0; i < usersList.size(); i++) {
-        User &user = Server::getInstance().getUserByNickname(usersList[i]);
+        User *user = Server::getInstance().getUserByNickname(usersList[i]);
         users.push_back(user);
     }
     usersList.clear();

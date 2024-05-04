@@ -9,12 +9,11 @@
  */
 class UpCommand : public ACommand {
     private:
-        std::string _channelName;
-        std::string _path;
+        const std::string _channelName;
+        const std::string _path;
 
     public:
         UpCommand(const std::string &channelName, const std::string &path);
-        ~UpCommand();
 
         void execute(int clientFd);
 };

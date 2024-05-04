@@ -43,6 +43,7 @@ all:		$(NAME)
 	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
+	$(RM) files
 	mkdir files
 	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 

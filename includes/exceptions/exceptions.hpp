@@ -41,7 +41,6 @@
 
 // ==================================================================================
 
-
 /**
  * This exception is thrown when an user attempts to register with the server when it is already registered.
  */
@@ -65,7 +64,6 @@ class NeedMoreParamsException : public IRCException {
     public:
         NeedMoreParamsException(const std::string &command) : IRCException("461", ERR_NEED_MORE_PARAMS(command)) {}
 };
-
 
 /**
  * This exception is thrown when a nickname is already in use.

@@ -8,12 +8,14 @@
  */
 class ACommand {
     protected:
-        bool _needsValidation;
+        const bool _needsValidation;
     public:
-        virtual void execute(int clientFd) = 0;
         ACommand(bool needValidate);
+        virtual ~ACommand();
 
-        bool needsValidation();
+        virtual void execute(int clientFd) = 0;
+
+        bool needsValidation() const;
 };
 
 #endif

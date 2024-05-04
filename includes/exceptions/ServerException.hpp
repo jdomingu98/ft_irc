@@ -22,7 +22,7 @@ class ServerException : public std::exception {
         std::string _message;
     public:
         ServerException(const std::string& msg) : _message(msg) {}
-        ~ServerException() throw() {}
+        virtual ~ServerException() throw() {}
 
         virtual const char* what() const throw() {
             return _message.c_str();

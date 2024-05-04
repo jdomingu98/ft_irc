@@ -9,12 +9,11 @@
  */
 class DownCommand : public ACommand {
     private:
-        std::string _channelName;
-        std::string _filename;
+        const std::string _channelName;
+        const std::string _filename;
 
     public:
         DownCommand(const std::string &channelName, const std::string &filename);
-        ~DownCommand();
 
         void execute(int clientFd);
 };

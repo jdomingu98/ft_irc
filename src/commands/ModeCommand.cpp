@@ -8,7 +8,7 @@
  * @param modes The modes to set
  * @param modeParams The parameters of the mode
  */
-ModeCommand::ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, std::vector<std::string>& modeParams) :
+ModeCommand::ModeCommand(const bool plus, const std::string& channel, const std::vector<Mode> &modes, const std::vector<std::string>& modeParams) :
     ACommand(true),
     _plus(plus),
     _showChannelModes(false),
@@ -25,15 +25,7 @@ ModeCommand::ModeCommand(const std::string &channel) :
     ACommand(true),
     _plus(false),
     _showChannelModes(true),
-    _channel(Server::getInstance().getChannelByName(channel)) {
-        this->_modes = std::vector<Mode>();
-        this->_modeParams = std::vector<std::string>();
-    }
-
-/**
- * Destroy the ModeCommand.
- */
-ModeCommand::~ModeCommand() {}
+    _channel(Server::getInstance().getChannelByName(channel)) {}
 
 /**
  * Execute the MODE command.
@@ -47,25 +39,25 @@ ModeCommand::~ModeCommand() {}
  */
 void ModeCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &me = server.getUserByFd(clientFd);
+    const User *me = server.getUserByFd(clientFd);
     if (_showChannelModes) {
         server.sendMessage(
             clientFd,
-            ChannelModeIsResponse(me.getNickname(), _channel.getName(), _channel.getModes(), _channel.getModeParams()).getReply()
+            ChannelModeIsResponse(me->getNickname(), _channel.getName(), _channel.getModes(), _channel.getModeParams()).getReply()
         );
         return ;
     }
 
-    if (!me.isOnChannel(_channel.getName()))
+    if (!me->isOnChannel(_channel.getName()))
         throw NotOnChannelException(_channel.getName());
 
-    if (!_channel.isOper(me.getNickname()))
+    if (!_channel.isOper(me->getNickname()))
         throw ChanOPrivsNeededException(_channel.getName());
 
     std::string flag = _plus ? "+" : "-";
-    std::vector<std::string>::iterator paramIterator = _modeParams.begin();
-    std::string param = NONE;
+    std::vector<std::string>::const_iterator paramIterator = _modeParams.begin();
     std::string modeParams = NONE;
+    std::string param = NONE;
     for (size_t i = 0; i < _modes.size(); i++) {
         flag += _modes[i];
         
@@ -74,7 +66,8 @@ void ModeCommand::execute(int clientFd) {
                 throw NeedMoreParamsException("MODE");
             param = *(paramIterator++);
             modeParams += param + " ";
-        }
+        } else
+            param = NONE;
         try {
             switch (_modes[i]) {
                 case INVITE_ONLY:       ModeCommand::inviteOnly(); break;
@@ -91,7 +84,7 @@ void ModeCommand::execute(int clientFd) {
         }
     }
     _channel.broadcastToChannel(
-        CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(), MODE_MSG(_channel.getName(), flag, modeParams))
+        CMD_MSG(me->getNickname(), me->getUsername(), me->getHostname(), MODE_MSG(_channel.getName(), flag, modeParams))
     );
 }
 
@@ -122,12 +115,13 @@ void ModeCommand::topicProtected() {
  * @throws `KeySetException` If the key is already set
  */
 void ModeCommand::channelKey(const std::string & param) {
-    if (_channel.isPasswordSet() && _plus)
-        throw KeySetException(_channel.getName());
-    if (_plus)
+    if (_plus) {
+        if (_channel.isPasswordSet())
+            throw KeySetException(_channel.getName());
         _channel.setPassword(param);
-    else
+    } else {
         _channel.unsetPassword();
+    }
 }
 
 /**
@@ -139,13 +133,12 @@ void ModeCommand::channelKey(const std::string & param) {
  * @throws `UserNotInChannelException` If the user is not in the channel
  */
 void ModeCommand::channelOperator(const std::string &param) {
-    Server::getInstance().getUserByNickname(param);
+    Server::getInstance().getUserByNickname(param); // throw NoSuchNickException if the user does not exist
     if (!_channel.isUserInChannel(param))
         throw UserNotInChannelException(param, _channel.getName());
-    if (_plus)
-        _channel.makeUserAnOper(param);
-    else
-        _channel.makeOperAnUser(param);
+
+    _plus   ? _channel.makeUserAnOper(param)
+            : _channel.makeOperAnUser(param);
 }
 
 /**
@@ -164,8 +157,7 @@ void ModeCommand::userLimit(const std::string & param) {
         return ;
 
     int numUsers = std::atoi(param.c_str());
-    if (numUsers > MAX_CLIENTS)
-        numUsers = MAX_CLIENTS;
+    numUsers = std::min(numUsers, MAX_CLIENTS);
     _channel.setLimit(numUsers);
 }
 
@@ -176,8 +168,7 @@ void ModeCommand::userLimit(const std::string & param) {
  * 
  * @return True if the mode needs a parameter, false otherwise
  */
-bool ModeCommand::modeNeedsParam(Mode mode) {
-    return (mode == CHANNEL_KEY && _plus)
-        || mode == CHANNEL_OPERATOR
-        || (mode == USER_LIMIT && _plus);
+bool ModeCommand::modeNeedsParam(Mode mode) const {
+    return (_plus && (mode == CHANNEL_KEY || mode == USER_LIMIT))
+            || mode == CHANNEL_OPERATOR;
 }

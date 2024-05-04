@@ -6,7 +6,7 @@
  * @param receivers The users or channels that will receive the message
  * @param message The message to be sent
  */
-PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers, std::string message)
+PrivateMessageCommand::PrivateMessageCommand(const std::vector<std::string> receivers, const std::string &message)
     : ACommand(true), _receivers(receivers), _message(message) {}
 
 /**
@@ -19,27 +19,26 @@ PrivateMessageCommand::PrivateMessageCommand(std::vector<std::string> receivers,
  */
 void PrivateMessageCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
-    User &sender = server.getUserByFd(clientFd);
+    const User *sender = server.getUserByFd(clientFd);
 
-    Logger::debug("Sending private message from " + sender.getNickname());
-    for (size_t i = 0; i < this->_receivers.size(); i++) {
+    Logger::debug("Sending private message from " + sender->getNickname());
+    std::vector<std::string>::const_iterator it;
+    for (it = _receivers.begin(); it != _receivers.end(); ++it) {
         try {
-            if (this->_receivers[i][0] == '#' || this->_receivers[i][0] == '&') {
-                Logger::debug("Sending private message to channel " + this->_receivers[i]);
+            if ((*it)[0] == '#' || (*it)[0] == '&') {
+                Logger::debug("Sending private message to channel " + *it);
 
-                Channel &destinationChannel = server.getChannelByName(this->_receivers[i]);
-                if (!destinationChannel.isUserInChannel(sender.getNickname()))
-                    throw NoSuchNickException(this->_receivers[i]);
+                Channel &destinationChannel = server.getChannelByName(*it);
+                if (!sender->isOnChannel(destinationChannel.getName()))
+                    throw NoSuchNickException(*it);
 
-                sender.sendPrivateMessageToChannel(destinationChannel, this->_message);
+                sender->sendPrivateMessageToChannel(destinationChannel, _message);
             } else {
-                User &destinationUser = server.getUserByNickname(this->_receivers[i]);
-                sender.sendPrivateMessageToUser(destinationUser, this->_message);
+                const User *destinationUser = server.getUserByNickname(*it);
+                sender->sendPrivateMessageToUser(*destinationUser, _message);
             }
-        } catch (const NoSuchChannelException &e) {
-            Logger::debug("Channel " + this->_receivers[i] + " does not exist.");
-            server.sendExceptionMessage(clientFd, e);
-        } catch (const NoSuchNickException &e) {
+        } catch (const IRCException &e) {
+            Logger::debug(*it + " does not exist.");
             server.sendExceptionMessage(clientFd, e);
         }
     }

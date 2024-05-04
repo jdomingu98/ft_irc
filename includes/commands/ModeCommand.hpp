@@ -20,25 +20,24 @@ typedef enum EMode {
  */
 class ModeCommand : public ACommand {
     private:
-        bool _plus;
-        bool _showChannelModes;
+        const bool _plus;
+        const bool _showChannelModes;
         Channel &_channel;
-        std::vector<Mode> _modes;
-        std::vector<std::string> _modeParams;
+        const std::vector<Mode> _modes;
+        const std::vector<std::string> _modeParams;
 
-        bool modeNeedsParam(Mode mode);
+        bool modeNeedsParam(Mode mode) const;
 
     public:
         void execute(int clientFd);
-        ModeCommand(bool plus, const std::string& channel, std::vector<Mode> modes, std::vector<std::string>& modeParams);
-        ModeCommand(const std::string& channel);
-        ~ModeCommand();
+        ModeCommand(const bool plus, const std::string &channel, const std::vector<Mode> &modes, const std::vector<std::string> &modeParams);
+        ModeCommand(const std::string &channel);
 
         void inviteOnly();
         void topicProtected();
-        void channelKey(const std::string & param);
-        void channelOperator(const std::string & param);
-        void userLimit(const std::string & param);
+        void channelKey(const std::string &param);
+        void channelOperator(const std::string &param);
+        void userLimit(const std::string &param);
 };
 
 #endif

@@ -20,11 +20,11 @@ class User {
         std::string             _realName;
         std::string             _nickname;
         std::string             _password;
-        std::vector<Channel>    _channels;
+        std::vector<Channel *>  _channels;
 
         // Iterators
-        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
-        std::vector<Channel>::iterator findChannel(const std::string &channelName);
+        std::vector<Channel *>::const_iterator findChannel(const std::string &channelName) const;
+        std::vector<Channel *>::iterator findChannel(const std::string &channelName);
         
     public:
         User(int fd);
@@ -42,7 +42,7 @@ class User {
         std::string getUsername() const;
         std::string getHostname() const;
         std::string getRealName() const;
-        std::vector<Channel> getChannels() const;
+        std::vector<Channel *> getChannels() const;
         bool isUserInMaxChannels() const;
         bool isOnChannel(const std::string &channelName) const;
         bool isRegistered() const;
@@ -59,7 +59,7 @@ class User {
         // Operations
         void makeRegistration();
         bool canRegister() const;
-        void addChannel(Channel &channel);
+        void addChannel(Channel *channel);
         void removeChannel(const std::string &channelName);
         void sendPrivateMessageToUser(const User &destination, const std::string& message) const;
         void sendNoticeToUser(const User &destination, const std::string& message) const;
