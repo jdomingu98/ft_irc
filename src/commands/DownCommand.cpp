@@ -22,8 +22,8 @@ void DownCommand::execute(int clientFd) {
 
     if (!me->isOnChannel(this->_channelName))
         throw NotOnChannelException(this->_channelName);
-    Channel &channel = server.getChannelByName(this->_channelName);
-    channel.downloadFile(this->_filename);
+    Channel *channel = server.getChannelByName(this->_channelName);
+    channel->downloadFile(this->_filename);
 
     server.sendMessage(clientFd, DownloadResponse(me->getNickname(), this->_filename).getReply());
 }

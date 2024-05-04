@@ -25,10 +25,10 @@ void UpCommand::execute(int clientFd) {
 
     if (!me->isOnChannel(_channelName))
         throw NotOnChannelException(_channelName);
-    Channel &channel = server.getChannelByName(_channelName);
-    channel.uploadFile(_path);
+    Channel *channel = server.getChannelByName(_channelName);
+    channel->uploadFile(_path);
 
-    std::vector<User *> users = channel.getAllUsers();
+    std::vector<User *> users = channel->getAllUsers();
     std::vector<User *>::iterator userIt;
     for (userIt = users.begin(); userIt != users.end(); ++userIt) {
         server.sendMessage((*userIt)->getFd(), 

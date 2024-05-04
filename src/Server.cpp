@@ -27,11 +27,11 @@ bool Server::isValidPort(const std::string &port) const {
  * @throws `ServerException` if the port is out of range.
  */
 Server::Server(const std::string port, const std::string password) : _password(password), _signalReceived(false) {
-    if (!this->isValidPort(port))
+    if (!isValidPort(port))
         throw ServerException(PORT_OUT_OF_RANGE_ERR);
     _port = std::atoi(port.c_str());
-    this->generateDate();
-    this->initServer();
+    generateDate();
+    initServer();
 }
 
 /**
@@ -40,7 +40,7 @@ Server::Server(const std::string port, const std::string password) : _password(p
  * It closes the server socket and all the client sockets.
  */
 Server::~Server() {
-    this->closeConnections();
+    closeConnections();
 }
 
 /**
@@ -85,12 +85,12 @@ void signalHandler(int signal) {
  * This function aims to close all the connections.
  */
 void Server::closeConnections() {
-    for (size_t i = 0; i < this->_users.size(); i++)
-        close(this->_users[i]->getFd());
-    std::vector<User *>().swap(this->_users);
+    for (size_t i = 0; i < _users.size(); i++)
+        close(_users[i]->getFd());
+    std::vector<User *>().swap(_users);
 
-    if (this->_socketFd != -1)
-        close(this->_socketFd);
+    if (_socketFd != -1)
+        close(_socketFd);
 }
 
 /**
@@ -102,44 +102,44 @@ void Server::closeConnections() {
  * @throws `ServerException` if the server socket can't be created, binded or started listening.
  */
 void Server::initServer() {
-    this->_socketFd = socket(
+    _socketFd = socket(
         AF_INET,        // IPv4
         SOCK_STREAM,    // Stream socket
         0               // Let system decide the best protocol (SOCK_STREAM => TCP)
     );
 
-    if (this->_socketFd < 0)
+    if (_socketFd < 0)
         throw ServerException(SOCKET_EXPT);
 
     // Config server address and port
-    this->_serverAddr.sin_family = AF_INET;
-    this->_serverAddr.sin_addr.s_addr = INADDR_ANY;
+    _serverAddr.sin_family = AF_INET;
+    _serverAddr.sin_addr.s_addr = INADDR_ANY;
     // htons: Converts host format port to network format port.
-    this->_serverAddr.sin_port = htons(this->_port);
+    _serverAddr.sin_port = htons(_port);
 
     // set the socket option (SO_REUSEADDR) to reuse the address
     int enabled = 1;
-    if (setsockopt(this->_socketFd, SOL_SOCKET, SO_REUSEADDR, &enabled, sizeof(int)) < 0)
+    if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &enabled, sizeof(int)) < 0)
         throw ServerException(REUSE_ADDR_EXPT);
 
     // Setting the socket option for non-blocking socket (O_NONBLOCK)
-    if (fcntl(this->_socketFd, F_SETFL, O_NONBLOCK) < 0)
+    if (fcntl(_socketFd, F_SETFL, O_NONBLOCK) < 0)
         throw ServerException(FCNTL_EXPT);
 
     // Binding the server socket
-    if (bind(this->_socketFd, (struct sockaddr*)&this->_serverAddr, sizeof(this->_serverAddr)) < 0)
+    if (bind(_socketFd, (struct sockaddr*)&_serverAddr, sizeof(_serverAddr)) < 0)
         throw ServerException(BIND_EXPT);
 
     // Listen to incoming connections
-    if (listen(this->_socketFd, MAX_CLIENTS) < 0)
+    if (listen(_socketFd, MAX_CLIENTS) < 0)
         throw ServerException(LISTEN_EXPT);
 
     // Configure the first element of the pollfd structure array for the server socket
     struct pollfd socketPoll;
     
-    socketPoll.fd = this->_socketFd;
+    socketPoll.fd = _socketFd;
     socketPoll.events = POLLIN;
-    this->_fds.push_back(socketPoll);
+    _fds.push_back(socketPoll);
 }
 
 /**
@@ -154,26 +154,26 @@ void Server::initServer() {
  *  the server can't send a message.
  */
 void Server::listenClients() {
-    while (!this->_signalReceived) {
-        if (poll(&_fds[0], _fds.size(), -1) == -1 && !this->_signalReceived)
+    while (!_signalReceived) {
+        if (poll(&_fds[0], _fds.size(), -1) == -1 && !_signalReceived)
             throw ServerException(POLL_EXPT);
 
         for (size_t i = 0; i < _fds.size(); i++) {
-            if (this->_fds[i].revents == 0)
+            if (_fds[i].revents == 0)
                 continue;
 
             // Client disconnected
-            if (this->_fds[i].revents & POLLHUP || this->_fds[i].revents & POLLERR || this->_fds[i].revents & POLLNVAL) {
-                this->handleClientDisconnection(this->_fds[i].fd);
+            if (_fds[i].revents & POLLHUP || _fds[i].revents & POLLERR || _fds[i].revents & POLLNVAL) {
+                handleClientDisconnection(_fds[i].fd);
                 continue;
             }
 
-            if (this->_fds[i].revents != POLLIN)
+            if (_fds[i].revents != POLLIN)
                 throw ServerException(REVENTS_EXPT);
-            if (this->_fds[i].fd == this->_socketFd)
-                this->handleNewConnection();
+            if (_fds[i].fd == _socketFd)
+                handleNewConnection();
             else
-                this->handleExistingConnection(this->_fds[i].fd);
+                handleExistingConnection(_fds[i].fd);
         }
     }
     Logger::debug("Closing connections...");
@@ -192,11 +192,11 @@ void Server::handleClientDisconnection(int clientFd) {
         return;
     
     // Delete user from all channels where it joined
-    std::vector<Channel>::iterator channelIt = _channels.begin();
-    while (channelIt != _channels.end() && !(*userIt)->isOnChannel(channelIt->getName()))
+    std::vector<Channel *>::iterator channelIt = _channels.begin();
+    while (channelIt != _channels.end() && !(*userIt)->isOnChannel((*channelIt)->getName()))
         ++channelIt;
     if (channelIt != _channels.end())
-        channelIt->removeUser((*userIt)->getNickname());
+        (*channelIt)->removeUser((*userIt)->getNickname());
 
     // Erase possible input left by the user
     if (_inputBuffer.find(clientFd) != _inputBuffer.end())
@@ -226,8 +226,8 @@ void Server::handleClientDisconnection(int clientFd) {
 void Server::handleNewConnection() {
     
     // Accept a new connection
-    socklen_t size = sizeof(this->_serverAddr);
-    int clientSocket = accept(this->_socketFd, (struct sockaddr*) &this->_serverAddr, &size);
+    socklen_t size = sizeof(_serverAddr);
+    int clientSocket = accept(_socketFd, (struct sockaddr*) &_serverAddr, &size);
 
     if (clientSocket < 0)
         throw ServerException(ACCEPT_EXPT);
@@ -236,12 +236,12 @@ void Server::handleNewConnection() {
     if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) < 0)
         throw ServerException(FCNTL_EXPT);
 
-    this->_users.push_back(new User(clientSocket));
+    _users.push_back(new User(clientSocket));
     // Add new socket to poll_fds array
     struct pollfd newPoll;
     newPoll.fd = clientSocket;
     newPoll.events = POLLIN;
-    this->_fds.push_back(newPoll);
+    _fds.push_back(newPoll);
 }
 
 /**
@@ -270,19 +270,19 @@ void Server::handleExistingConnection(int clientFd) {
     if (!buffer[0])
         return;
 
-    if (this->_inputBuffer.find(clientFd) == this->_inputBuffer.end())
-        this->_inputBuffer[clientFd] = "";
+    if (_inputBuffer.find(clientFd) == _inputBuffer.end())
+        _inputBuffer[clientFd] = "";
 
-    this->_inputBuffer[clientFd] += std::string(buffer, readBytes);
+    _inputBuffer[clientFd] += std::string(buffer, readBytes);
 
-    Logger::debug("Mensaje del cliente: " + this->_inputBuffer[clientFd]);
+    Logger::debug("Mensaje del cliente: " + _inputBuffer[clientFd]);
     size_t pos;
-    while ((pos = this->_inputBuffer[clientFd].find_first_of("\r\n")) != std::string::npos) {
-        std::string message = this->_inputBuffer[clientFd].substr(0, pos);
-        this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(pos + 1);
+    while ((pos = _inputBuffer[clientFd].find_first_of("\r\n")) != std::string::npos) {
+        std::string message = _inputBuffer[clientFd].substr(0, pos);
+        _inputBuffer[clientFd] = _inputBuffer[clientFd].substr(pos + 1);
         
-        if (!this->_inputBuffer[clientFd].empty() && this->_inputBuffer[clientFd][0] == '\n') {
-            this->_inputBuffer[clientFd] = this->_inputBuffer[clientFd].substr(1);
+        if (!_inputBuffer[clientFd].empty() && _inputBuffer[clientFd][0] == '\n') {
+            _inputBuffer[clientFd] = _inputBuffer[clientFd].substr(1);
         }
 
         User *client = getUserByFd(clientFd);
@@ -294,10 +294,10 @@ void Server::handleExistingConnection(int clientFd) {
                 throw NotRegisteredException();
             command->execute(clientFd);
         } catch (PasswordMismatchException &e) {
-            this->sendExceptionMessage(clientFd, e);
-            this->handleClientDisconnection(clientFd);
+            sendExceptionMessage(clientFd, e);
+            handleClientDisconnection(clientFd);
         } catch (IRCException &e) {
-            this->sendExceptionMessage(clientFd, e);
+            sendExceptionMessage(clientFd, e);
         } catch (IgnoreCommandException &e) {
             Logger::debug("Ignoring command");
         }
@@ -311,14 +311,14 @@ void Server::handleExistingConnection(int clientFd) {
  * @return `true` if the password is valid, `false` otherwise.
  */
 bool Server::isValidPassword(const std::string &password) const {
-    return password == this->_password;
+    return password == _password;
 }
 
 /**
  * This function sets to `true` the signal received flag
  */
 void Server::setSignalReceived() {
-    this->_signalReceived = true;
+    _signalReceived = true;
 }
 
 /**
@@ -349,7 +349,7 @@ const User *Server::getUserByFd(int clientFd) const {
  */
 bool Server::isNicknameInUse(const std::string& nickname) const {
     std::vector<User *>::const_iterator it = findUserByNickname(nickname);
-    return it != this->_users.end();
+    return it != _users.end();
 }
 
 /**
@@ -362,8 +362,8 @@ bool Server::isNicknameInUse(const std::string& nickname) const {
  * @return The user object with all its information.
  */
 User *Server::getUserByNickname(const std::string &nickname) {
-    std::vector<User *>::iterator it = this->findUserByNickname(nickname);
-    if (it == this->_users.end())
+    std::vector<User *>::iterator it = findUserByNickname(nickname);
+    if (it == _users.end())
         throw NoSuchNickException(nickname);
     return *it;
 }
@@ -377,7 +377,7 @@ User *Server::getUserByNickname(const std::string &nickname) {
  * @throws `ServerException` if the server can't send the message.
 */
 void Server::sendMessage(int clientFd, const std::string& message) {
-    if (!this->isUserConnected(clientFd))
+    if (!isUserConnected(clientFd))
         return;
 
     int msgSignal = 0;
@@ -406,7 +406,7 @@ void Server::sendMessage(int clientFd, const std::string& message) {
  */
 void Server::sendExceptionMessage(int clientFd, const IRCException &e) {
     std::string clientNickname = getUserByFd(clientFd)->getNickname();
-    this->sendMessage(clientFd, RESPONSE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
+    sendMessage(clientFd, RESPONSE_MSG(e.getErrorCode(), clientNickname.empty() ? "*" : clientNickname, e.what()));
 }
 
 /**
@@ -416,9 +416,9 @@ void Server::sendExceptionMessage(int clientFd, const IRCException &e) {
 */
 void Server::removeUser(int fd) {
     std::vector<User *>::iterator it = findUserByFd(fd);
-    if (it != this->_users.end()) {
+    if (it != _users.end()) {
         close((*it)->getFd());
-        this->_users.erase(it);
+        _users.erase(it);
     }
 }
 
@@ -428,7 +428,7 @@ void Server::removeUser(int fd) {
  * @return The users of the server.
  */
 std::vector<User *> Server::getUsers() {
-    return this->_users;
+    return _users;
 }
 
 /**
@@ -439,11 +439,11 @@ std::vector<User *> Server::getUsers() {
  * @return The iterator to the user with the file descriptor.
  */
 std::vector<User *>::iterator Server::findUserByFd(int clientFd) {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i]->getFd() == clientFd)
-            return this->_users.begin() + i;
+    for (size_t i = 0; i < _users.size(); i++) {
+        if (_users[i]->getFd() == clientFd)
+            return _users.begin() + i;
     }
-    return this->_users.end();
+    return _users.end();
 }
 
 /**
@@ -454,11 +454,11 @@ std::vector<User *>::iterator Server::findUserByFd(int clientFd) {
  * @return The iterator to the user with the file descriptor.
  */
 std::vector<User *>::const_iterator Server::findUserByFd(int clientFd) const {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i]->getFd() == clientFd)
-            return this->_users.begin() + i;
+    for (size_t i = 0; i < _users.size(); i++) {
+        if (_users[i]->getFd() == clientFd)
+            return _users.begin() + i;
     }
-    return this->_users.end();
+    return _users.end();
 }
 
 /**
@@ -469,11 +469,11 @@ std::vector<User *>::const_iterator Server::findUserByFd(int clientFd) const {
  * @return The iterator to the user with the nickname.
  */
 std::vector<User *>::iterator Server::findUserByNickname(const std::string &nickname) {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i]->getNickname() == nickname)
-            return this->_users.begin() + i;
+    for (size_t i = 0; i < _users.size(); i++) {
+        if (_users[i]->getNickname() == nickname)
+            return _users.begin() + i;
     }
-    return this->_users.end();
+    return _users.end();
 }
 
 /**
@@ -484,11 +484,11 @@ std::vector<User *>::iterator Server::findUserByNickname(const std::string &nick
  * @return The iterator to the user with the nickname.
  */
 std::vector<User *>::const_iterator Server::findUserByNickname(const std::string &nickname) const {
-    for (size_t i = 0; i < this->_users.size(); i++) {
-        if (this->_users[i]->getNickname() == nickname)
-            return this->_users.begin() + i;
+    for (size_t i = 0; i < _users.size(); i++) {
+        if (_users[i]->getNickname() == nickname)
+            return _users.begin() + i;
     }
-    return this->_users.end();
+    return _users.end();
 }
 
 /**
@@ -498,12 +498,12 @@ std::vector<User *>::const_iterator Server::findUserByNickname(const std::string
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::iterator Server::findChannel(const std::string &channelName) {
-    for (size_t i = 0; i < this->_channels.size(); i++) {
-        if (this->_channels[i].getName() == channelName)
-            return this->_channels.begin() + i;
+std::vector<Channel *>::iterator Server::findChannel(const std::string &channelName) {
+    for (size_t i = 0; i < _channels.size(); i++) {
+        if (_channels[i]->getName() == channelName)
+            return _channels.begin() + i;
     }
-    return this->_channels.end();
+    return _channels.end();
 }
 
 /**
@@ -513,12 +513,12 @@ std::vector<Channel>::iterator Server::findChannel(const std::string &channelNam
  * 
  * @return The iterator to the channel with the name.
  */
-std::vector<Channel>::const_iterator Server::findChannel(const std::string &channelName) const {
-    for (size_t i = 0; i < this->_channels.size(); i++) {
-        if (this->_channels[i].getName() == channelName)
-            return this->_channels.begin() + i;
+std::vector<Channel *>::const_iterator Server::findChannel(const std::string &channelName) const {
+    for (size_t i = 0; i < _channels.size(); i++) {
+        if (_channels[i]->getName() == channelName)
+            return _channels.begin() + i;
     }
-    return this->_channels.end();
+    return _channels.end();
 }
 
 /**
@@ -526,10 +526,10 @@ std::vector<Channel>::const_iterator Server::findChannel(const std::string &chan
  * 
  * @param channel The channel to add.
  */
-void Server::addChannel(const Channel &channel) {
-    std::vector<Channel>::iterator it = findChannel(channel.getName());
-    if (it == this->_channels.end())
-        this->_channels.push_back(channel);
+void Server::addChannel(Channel *channel) {
+    std::vector<Channel *>::iterator it = findChannel(channel->getName());
+    if (it == _channels.end())
+        _channels.push_back(channel);
 }
 
 /**
@@ -537,8 +537,8 @@ void Server::addChannel(const Channel &channel) {
  * 
  * @return The channels of the server.
  */
-std::vector<Channel> &Server::getChannels() {
-    return this->_channels;
+std::vector<Channel *> &Server::getChannels() {
+    return _channels;
 }
 
 /**
@@ -547,9 +547,9 @@ std::vector<Channel> &Server::getChannels() {
  * @param channelName The name of the channel to remove.
  */
 void Server::removeChannel(std::string channelName) {
-    std::vector<Channel>::iterator it = findChannel(channelName);
-    if (it != this->_channels.end())
-        this->_channels.erase(it);
+    std::vector<Channel *>::iterator it = findChannel(channelName);
+    if (it != _channels.end())
+        _channels.erase(it);
 }
 
 /**
@@ -561,19 +561,11 @@ void Server::removeChannel(std::string channelName) {
  * 
  * @return The channel with the name.
  */
-Channel &Server::getChannelByName(const std::string &channelName) {
-    std::vector<Channel>::iterator it = findChannel(channelName);
-    if (it == this->_channels.end())
+Channel *Server::getChannelByName(const std::string &channelName) {
+    std::vector<Channel *>::iterator it = findChannel(channelName);
+    if (it == _channels.end())
         throw NoSuchChannelException(channelName);
     return *it;
-}
-
-Channel *Server::getChannelByNamePtr(const std::string &channelName) {
-	for (size_t i = 0; i < this->_channels.size(); i++) {
-		if (this->_channels[i].getName() == channelName)
-			return &this->_channels[i];
-	}
-	return NULL;
 }
 
 /**
@@ -584,7 +576,7 @@ Channel *Server::getChannelByNamePtr(const std::string &channelName) {
  * @return `true` if the channel exists, `false` otherwise.
  */
 bool Server::channelExists(const std::string &channelName) const {
-    return findChannel(channelName) != this->_channels.end();
+    return findChannel(channelName) != _channels.end();
 }
 
 /**
@@ -596,7 +588,7 @@ bool Server::channelExists(const std::string &channelName) const {
  */
 bool Server::isUserConnected(int clientFd) const {
     for (size_t i = 0; i < _fds.size(); i++) {
-        if (this->_fds[i].fd == clientFd) {
+        if (_fds[i].fd == clientFd) {
             return true;
         }
     }
@@ -612,7 +604,7 @@ void Server::generateDate() {
     char buffer[100];
 
     strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S UTC", now);
-    this->_creationDate = std::string(buffer);
+    _creationDate = std::string(buffer);
 }
 
 /**
@@ -621,5 +613,5 @@ void Server::generateDate() {
  * @return The string with the current date.
  */
 std::string Server::getCreationDate() const {
-    return this->_creationDate;
+    return _creationDate;
 }

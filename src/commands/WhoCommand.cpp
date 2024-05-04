@@ -48,8 +48,8 @@ void WhoCommand::getQueryOfChannel(int clientFd, const Channel &channel) {
 void WhoCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     try { // If the query is a channel
-        const Channel &channel = server.getChannelByName(_query);
-        getQueryOfChannel(clientFd, channel);
+        const Channel *channel = server.getChannelByName(_query);
+        getQueryOfChannel(clientFd, *channel);
     } catch (NoSuchChannelException &e) {
         try { // The query is an user
             const User *user = server.getUserByNickname(_query);
@@ -74,10 +74,10 @@ void WhoCommand::execute(int clientFd) {
             }
             // None of the above matched, so we will show all users if query is NONE
             if (_query == NONE) {
-                const std::vector<Channel> &channels = server.getChannels();
-                std::vector<Channel>::const_iterator it;
+                const std::vector<Channel *> &channels = server.getChannels();
+                std::vector<Channel *>::const_iterator it;
                 for (it = channels.begin(); it != channels.end(); ++it)
-                    getQueryOfChannel(clientFd, *it);
+                    getQueryOfChannel(clientFd, **it);
             }
         }
     }
