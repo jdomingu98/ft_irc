@@ -207,7 +207,7 @@ void Server::handleClientDisconnection(int clientFd) {
 
     // Close clientFd and remove it from the poll_fds array
     if (clientFd != -1) {
-        std::vector<struct pollfd>::const_iterator pollIt = _fds.begin();
+        std::vector<struct pollfd>::iterator pollIt = _fds.begin();
         while (pollIt != _fds.end() && pollIt->fd != clientFd)
             ++pollIt;
         if (pollIt != _fds.end()) {
