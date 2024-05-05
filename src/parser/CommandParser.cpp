@@ -36,36 +36,36 @@ ACommand* CommandParser::parse(const std::string& input, const User *client) {
  * @return The parser for the command
  */
 IParser* CommandParser::getParser(std::string command) {
-    if (command == "QUIT")
+    if (command == QUIT)
         return new QuitParser();
-    if (command == "PASS")
+    if (command == PASS)
         return new PassParser();
-    if (command == "USER")
+    if (command == USER)
         return new UserParser();
-    if (command == "NICK")
+    if (command == NICK)
         return new NickParser();
-    if (command == "PRIVMSG")
+    if (command == PRIVMSG)
         return new PrivateMessageParser();
-    if (command == "JOIN")
+    if (command == JOIN)
         return new JoinParser();
-    if (command == "INVITE")
+    if (command == INVITE)
         return new InviteParser();
-    if (command == "PART")
+    if (command == PART)
         return new PartParser();
-    if (command == "TOPIC")
+    if (command == TOPIC)
         return new TopicParser();
-    if (command == "KICK")
+    if (command == KICK)
         return new KickParser();
-    if (command == "MODE")
+    if (command == MODE)
         return new ModeParser();
-    if (command == "NOTICE")
+    if (command == NOTICE)
         return new NoticeParser();
 #ifdef BONUS
-    if (command == "WHO")
+    if (command == WHO)
         return new WhoParser();
-    if (command == "DOWN")
+    if (command == DOWN)
         return new DownParser();
-    if (command == "UP")
+    if (command == UP)
         return new UpParser();
 #endif
     if (command == NONE)
@@ -81,15 +81,15 @@ IParser* CommandParser::getParser(std::string command) {
  * @return The tokens of the command.
  */
 std::vector<std::string> CommandParser::tokenize(const std::string& command) {
-    // Split first by ":" if there is:
-    size_t posColon = command.find(':');
-    if (posColon != std::string::npos) {
-        std::vector<std::string> tokens(Utils::split(command.substr(0, posColon), ' '));
-        tokens.push_back(command.substr(posColon + 1));
-        return tokens;
-    }
-    else 
+    // Split first by ":" if there is
+    const size_t posColon = command.find(':');
+
+    if (posColon == std::string::npos)
         return Utils::split(command, ' ');
+
+    std::vector<std::string> tokens(Utils::split(command.substr(0, posColon), ' '));
+    tokens.push_back(command.substr(posColon + 1));
+    return tokens;
 }
 
 /**
@@ -108,39 +108,40 @@ std::vector<std::string> CommandParser::tokenize(const std::string& command) {
 void CommandParser::validateUserPrefix(std::string &command, const User *client) {
     if (command.empty())
         throw IgnoreCommandException();
+
     if (command[0] != ':')
         return;
+
     if (command.size() < 2)
         throw IgnoreCommandException();
 
-    size_t spaceIndex = command.find(' ');
-    std::string prefix(NONE);
-    if (spaceIndex == std::string::npos)
-        prefix = command.substr(1);
-    else
-        prefix = command.substr(1, spaceIndex - 1);
-    
+    const size_t spaceIndex = command.find(' ');
+
     if (spaceIndex + 1 >= command.size())
         throw IgnoreCommandException();
+    
+    const std::string prefix = spaceIndex == std::string::npos
+            ? command.substr(1)
+            : command.substr(1, spaceIndex - 1);
+
     // Remove the prefix from the command for further parsing
     command = command.substr(spaceIndex + 1);
 
-    size_t userIndex = prefix.find('!');
-    size_t hostIndex = prefix.find('@');
-    bool hasUser = userIndex != std::string::npos;
-    bool hasHostname = hostIndex != std::string::npos;
+    const size_t userIndex = prefix.find('!');
+    const size_t hostIndex = prefix.find('@');
+    const bool hasUser = userIndex != std::string::npos;
+    const bool hasHostname = hostIndex != std::string::npos;
 
     // Nick parsing
-    std::string nick(NONE);
+    std::string nick = prefix;
+
     if (hasUser)
         nick = prefix.substr(0, userIndex);
     else if (hasHostname)
         nick = prefix.substr(0, hostIndex);
-    else
-        nick = prefix;
+
     if (nick.empty())
         throw IgnoreCommandException();
-
 
     // Username parsing
     std::string username(NONE);
@@ -152,10 +153,8 @@ void CommandParser::validateUserPrefix(std::string &command, const User *client)
     }
 
     // Hostname parsing
-    std::string hostname(NONE);
-    if (hasHostname) {
-        hostname = prefix.substr(prefix.find('@') + 1);
-    }
+    const std::string hostname = hasHostname ? prefix.substr(hostIndex + 1) : NONE;
+
     if (nick != client->getNickname()
 		|| (hasUser && username != client->getUsername())
 		|| (hasHostname && hostname != client->getHostname()))
@@ -167,17 +166,14 @@ void CommandParser::validateUserPrefix(std::string &command, const User *client)
  * 
  * @param msg The vector of strings to be joined.
  * @param initialMsgPosition The position where the message begins
- * @param appendColon If `true`, the colon will be appended to the joined string. Default is `false`.
  * 
  * @return The joined string.
  */
 const std::string CommandParser::join(const std::vector<std::string> &msg, size_t initialMsgPosition) {
-    // TODO: Check if we need to call join at every command. In case we don't, we can remove the default value of appendColon.
-    // and suppose that the colon will be appended to the joined string always.
     if (msg.empty() || initialMsgPosition >= msg.size())
         return NONE;
     
-    std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
+    const std::vector<std::string> msgTokens(msg.begin() + initialMsgPosition, msg.end());
     std::string strJoined;
 
     if (msgTokens.empty())
@@ -189,7 +185,5 @@ const std::string CommandParser::join(const std::vector<std::string> &msg, size_
             strJoined += " " + msgTokens[i];
         strJoined = strJoined.substr(1);
     }
-
-    Logger::debug(strJoined); 
     return strJoined;
 }

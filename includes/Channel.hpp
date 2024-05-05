@@ -26,15 +26,15 @@ class Channel {
     private:
         std::string                 _name;
         std::string                 _password;
-        std::vector<User *>         _users;
         std::vector<User *>         _operators;
+        std::vector<User *>         _users;
         std::vector<std::string>    _inviteList;
         std::string                 _topic;
         int                         _limit;
         bool                        _passwordSet;
         std::map<std::string, std::vector<char> >  _files;
 
-        // modes
+        // Modes
         bool    _inviteOnly;
         bool    _topicProtected;
 
@@ -45,7 +45,7 @@ class Channel {
         std::vector<User *>::const_iterator   findOper(const std::string &nickname) const;
 
         // Other Operations
-        bool checkChannelName(std::string name) const;
+        bool checkName(std::string name) const;
 
     public:
         // Constructors and destructor
@@ -56,52 +56,48 @@ class Channel {
 
         Channel &operator=(const Channel &other);
 
-        // Getters
-        std::string         getName() const;
-        std::string         getPassword() const;
-        std::vector<User *>   getUsers() const;
-        std::vector<User *>   getOperators() const;
-        std::vector<User *>   getAllUsers() const;
-        std::string         getTopic() const;
-        bool                isPasswordSet() const;
-
-        // Setters
-        void setTopic(std::string topic);
+        std::string getName() const;
+        void broadcast(const std::string &message);
 
         // User
+        std::vector<User *> getUsers() const;
         void addUser(User *user);
         void removeUser(const std::string &nickname);
-        bool isUserInChannel(const std::string &nickname) const;
 
         // Oper
         void makeUserAnOper(std::string nickname);
         void makeOperAnUser(std::string nickname);
         bool isOper(const std::string &nickname) const;
-        void broadcastToChannel(const std::string &message);
+
+        // Password
+        std::string getPassword() const;
+        bool isPasswordSet() const;
+        void setPassword(const std::string &password);
+        bool checkPassword(std::string password) const;
+        void unsetPassword();
+
+        // Topic
+        std::string getTopic() const;
+        void setTopic(std::string topic);
+        bool isTopicProtected() const;
+        void setTopicProtected(bool topicProtected);
 
         // Invite
         void inviteUser(const std::string &nickname);
         bool isUserInvited(std::string nickname) const;
-
-        // Modes
         bool isInviteOnly() const;
         void setInviteOnly(bool inviteOnly);
-        bool isTopicProtected() const;
-        void setTopicProtected(bool topicProtected);
+
+        // Mode
         std::string getModes() const;
         std::string getModeParams() const;
-
-        // Password
-        void setPassword(const std::string &password);
-        bool checkPassword(std::string password) const;
-        void unsetPassword();
 
         // Limit
         void setLimit(int limit);
         bool hasLimit() const;
         bool isFull() const;
 
-        // Bonus
+        // Transfer file bonus
         void uploadFile(const std::string &path);
         void downloadFile(const std::string &filename);
 };

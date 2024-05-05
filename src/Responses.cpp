@@ -9,23 +9,16 @@
  */
 std::string NamesReplyResponse::rplNamesReply(const Channel &channel) const {
     const std::vector<User *> users = channel.getUsers();
-    const std::vector<User *> opers = channel.getOperators();
     
-    std::string msg = "= " + channel.getName();
-    msg.append(" :");
-    if (!opers.empty()) {
-        msg.append("@").append(opers[0]->getNickname());
-    
-        for (size_t i = 1; i < opers.size(); i++)
-            msg.append(" @").append(opers[i]->getNickname());
-    
-        for (size_t i = 0; i < users.size(); i++)
-            msg.append(" ").append(users[i]->getNickname());
-    } else if (!users.empty()) {
-        msg.append(users[0]->getNickname());
-    
-        for (size_t i = 1; i < users.size(); i++)
-            msg.append(" ").append(users[i]->getNickname());
+    std::string msg = "= " + channel.getName() + " : ";
+    std::vector<User *>::const_iterator it;
+    for (it = users.begin(); it != users.end(); it++) {
+        const std::string &nickname = (*it)->getNickname();
+        if (channel.isOper(nickname))
+            msg.append("@");
+        msg.append(nickname);
+        if (it != users.end() - 1)
+            msg.append(" ");
     }
     return msg;
 }

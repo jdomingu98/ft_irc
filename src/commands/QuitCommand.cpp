@@ -26,7 +26,7 @@ void QuitCommand::execute(int clientFd) {
     std::vector<Channel *>::iterator channelIt;
     for (channelIt = channels.begin(); channelIt != channels.end(); ++channelIt) {
         
-        std::vector<User *> allUsers = (*channelIt)->getAllUsers();
+        std::vector<User *> allUsers = (*channelIt)->getUsers();
         std::vector<User *>::iterator usersIt;
         for (usersIt = allUsers.begin(); usersIt != allUsers.end(); ++usersIt)
             users.insert(*usersIt);

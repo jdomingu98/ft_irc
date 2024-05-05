@@ -16,27 +16,30 @@
  */
 ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3 || tokens[1].empty() || tokens[2].empty())
-        throw NeedMoreParamsException("KICK");
+        throw NeedMoreParamsException(KICK);
 
-    std::vector<std::string> channels = Utils::split(tokens[1], ',');
-    std::vector<std::string> usersList = Utils::split(tokens[2], ',');
-    std::vector<User *> users;
+    const std::vector<std::string> channels = Utils::split(tokens[1], ',');
+    const std::vector<std::string> usersList = Utils::split(tokens[2], ',');
     
-    for (size_t i = 0; i < channels.size(); i++) {
-        if (channels[i][0] != '#' && channels[i][0] != '&')
-            throw BadChannelMaskException(channels[i]);
+    std::vector<std::string>::const_iterator it;
+    for (it = channels.begin(); it != channels.end(); ++it) {
+        if ((*it)[0] != '#' && (*it)[0] != '&')
+            throw BadChannelMaskException(*it);
     }
 
-    for (size_t i = 0; i < usersList.size(); i++) {
-        User *user = Server::getInstance().getUserByNickname(usersList[i]);
-        users.push_back(user);
+    std::vector<User *> users;
+    std::vector<std::string>::const_iterator it2;
+    for (it2 = usersList.begin(); it2 != usersList.end(); ++it2) {
+        try {
+            User *user = Server::getInstance().getUserByNickname(*it2);
+            users.push_back(user);
+        } catch (const NoSuchNickException& e) {
+            Logger::debug("User not found!. Continue parsing KICK command.");
+        }
     }
-    usersList.clear();
 
     if (channels.size() != users.size() && channels.size() != 1 && users.size() != 1)
-        throw NeedMoreParamsException("KICK");
-    
-    const std::string comment = tokens.size() > 3 ? tokens[3] : NONE;
+        throw NeedMoreParamsException(KICK);
 
-    return new KickCommand(channels, users, comment);
+    return new KickCommand(channels, users, tokens.size() > 3 ? tokens[3] : NONE);
 }

@@ -34,7 +34,7 @@ void NickCommand::execute(int clientFd) {
     if (user->isRegistered() && nickname != this->_nickname) {
         users.insert(user);
         for (size_t i = 0; i < channels.size(); i++) {
-            const std::vector<User *> allUsers = channels[i]->getAllUsers();
+            const std::vector<User *> allUsers = channels[i]->getUsers();
             for (size_t j = 0; j < allUsers.size(); j++)
                 users.insert(allUsers[j]);
         }

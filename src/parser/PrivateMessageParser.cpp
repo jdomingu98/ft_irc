@@ -15,13 +15,11 @@
  * @return The parsed command.
  */
 ACommand* PrivateMessageParser::parse(const std::vector<std::string>& tokens) {
-    std::vector<std::string> receivers;
-
     if (tokens.size() < 2)
-        throw NoRecipientGivenException("PRIVMSG");
-    receivers = Utils::split(tokens[1], ',');
+        throw NoRecipientGivenException(PRIVMSG);
+
     if (tokens.size() < 3)
         throw NoTextToSendException();
 
-    return new PrivateMessageCommand(receivers, tokens[2]);
+    return new PrivateMessageCommand(Utils::split(tokens[1], ','), tokens[2]);
 }

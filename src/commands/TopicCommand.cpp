@@ -42,7 +42,7 @@ void TopicCommand::execute(int clientFd) {
         _channel->setTopic(_topic);
         Logger::debug("Sending the new topic to all its users");
         
-        _channel->broadcastToChannel(
+        _channel->broadcast(
             CMD_MSG(nickname, user->getUsername(), user->getHostname(),
                 TOPIC_MSG(channelName, _topic)
             )

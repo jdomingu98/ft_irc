@@ -312,7 +312,7 @@ Channel *User::getChannelByName(std::string &channelName) {
 void User::sendPrivateMessageToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + getNickname() + ": " + message);
     std::string response = CMD_MSG(_nickname, _username, _hostname, PRIVMSG_MSG(destination.getName(), message));
-    std::vector<User *> users = destination.getAllUsers();
+    std::vector<User *> users = destination.getUsers();
     for (size_t i = 0; i < users.size(); i++)
         if (users[i]->getNickname() != _nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);
@@ -327,7 +327,7 @@ void User::sendPrivateMessageToChannel(const Channel &destination, const std::st
 void User::sendNoticeToChannel(const Channel &destination, const std::string& message) const {
     Logger::debug("Sending private message to channel " + destination.getName() + " from " + getNickname() + ": " + message);
     std::string response = CMD_MSG(_nickname, _username, _hostname, NOTICE_MSG(destination.getName(), message));
-    std::vector<User *> users = destination.getAllUsers();
+    std::vector<User *> users = destination.getUsers();
     for (size_t i = 0; i < users.size(); i++)
         if (users[i]->getNickname() != _nickname)
             Server::getInstance().sendMessage(users[i]->getFd(), response);

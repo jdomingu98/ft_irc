@@ -35,7 +35,7 @@ void InviteCommand::execute(int clientFd) {
 
     Channel *channel = server.getChannelByName(_channelName);
 
-    if (channel->isUserInChannel(_nickname))
+    if (me->isOnChannel(_channelName))
         throw UserOnChannelException(_nickname, _channelName);
 
     if (channel->isInviteOnly() && !channel->isOper(me->getNickname()))

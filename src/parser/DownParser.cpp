@@ -17,7 +17,7 @@
  */
 ACommand *DownParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
-        throw NeedMoreParamsException("DOWN");
+        throw NeedMoreParamsException(DOWN);
     
     if (!Server::getInstance().channelExists(tokens[1]))
         throw NoSuchChannelException(tokens[1]);

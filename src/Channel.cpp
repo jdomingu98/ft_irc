@@ -16,7 +16,7 @@ Channel::Channel()
  */
 Channel::Channel(const std::string name, User *user)
     : _password(NONE), _topic(NONE), _limit(NO_LIMIT), _passwordSet(false), _inviteOnly(false) {
-    if (!checkChannelName(name))
+    if (!checkName(name))
         throw BadChannelMaskException(name);
     this->_name = name;
     this->_operators.push_back(user);
@@ -78,7 +78,7 @@ Channel &Channel::operator=(const Channel &other) {
  * 
  * @return `true` if the channel name is valid, `false` otherwise.
  */
-bool Channel::checkChannelName(std::string name) const {
+bool Channel::checkName(std::string name) const {
     if ((name[0] != '#' && name[0] != '&') || name.size() > MAX_CHANNEL_NAME_LENGTH)
         return false;
     for (size_t i = 1; i < name.size(); i++) {
@@ -167,29 +167,11 @@ std::string Channel::getPassword() const {
 }
 
 /**
- * This function aims to get the users of the channel.
- * 
- * @return The users of the channel.
- */
-std::vector<User *> Channel::getUsers() const {
-    return this->_users;
-}
-
-/**
- * This function aims to get the operators of the channel.
- * 
- * @return The operators of the channel.
- */
-std::vector<User *> Channel::getOperators() const {
-    return this->_operators;
-}
-
-/**
  * This function aims to get all the users of the channel.
  * 
  * @return All the users of the channel.
  */
-std::vector<User *> Channel::getAllUsers() const {
+std::vector<User *> Channel::getUsers() const {
     std::vector<User *> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
     return allUsers;
@@ -357,17 +339,6 @@ void Channel::removeUser(const std::string &nickname) {
 }
 
 /**
- * This function tells if a user is in the channel.
- * 
- * @param nickname The nickname of the user to check.
- * 
- * @return `true` if the user is in the channel, `false` otherwise.
- */
-bool Channel::isUserInChannel(const std::string &nickname) const {
-    return findOper(nickname) != this->_operators.end() || findUser(nickname) != this->_users.end();
-}
-
-/**
  * This function aims to make a user an operator of the channel.
  * 
  * @param nickname The nickname of the user to make an operator.
@@ -473,9 +444,9 @@ std::string Channel::getModeParams() const {
  * 
  * @param message The message to broadcast.
  */
-void Channel::broadcastToChannel(const std::string &message) {
+void Channel::broadcast(const std::string &message) {
     Server& server = Server::getInstance();
-    std::vector<User *> allUsers = getAllUsers();
+    std::vector<User *> allUsers = getUsers();
     for (std::vector<User *>::iterator it = allUsers.begin(); it != allUsers.end(); it++)
         server.sendMessage((*it)->getFd(), message);
 }

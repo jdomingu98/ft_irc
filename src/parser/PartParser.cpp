@@ -16,14 +16,14 @@
  */
 ACommand *PartParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 2)
-        throw NeedMoreParamsException("PART");
+        throw NeedMoreParamsException(PART);
 
     std::vector<std::string> channels = Utils::split(tokens[1], ',');
 
-    for (size_t i = 0; i < channels.size(); i++) {
-        if (channels[i][0]  != '#' && channels[i][0] != '&')
-            throw BadChannelMaskException(channels[i]);
+    std::vector<std::string>::const_iterator it;
+    for (it = channels.begin(); it != channels.end(); ++it) {
+        if ((*it)[0] != '#' && (*it)[0] != '&')
+            throw BadChannelMaskException(*it);
     }
-
     return new PartCommand(channels);
 }
