@@ -193,10 +193,6 @@ std::vector<User *> Channel::getOperators() const {
 std::vector<User *> Channel::getAllUsers() const {
     std::vector<User *> allUsers = this->_operators;
     allUsers.insert(allUsers.end(), this->_users.begin(), this->_users.end());
-	for (size_t i = 0; i < allUsers.size(); i++) {
-		std::cout << allUsers[i]->getFd() << std::endl;
-		std::cout << allUsers[i]->getNickname() << std::endl;
-	}
     return allUsers;
 }
 

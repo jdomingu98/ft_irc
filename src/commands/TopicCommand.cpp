@@ -48,8 +48,10 @@ void TopicCommand::execute(int clientFd) {
             )
         );
     } else {
-        const std::string &message = _topic.empty() ? NoTopicResponse(nickname, channelName).getReply()
-                                                    : TopicResponse(nickname, channelName, _topic).getReply();
+        const std::string &channelTopic = _channel->getTopic();
+        const std::string &message = channelTopic.empty()
+            ? NoTopicResponse(nickname, channelName).getReply()
+            : TopicResponse(nickname, channelName, channelTopic).getReply();
         Logger::debug("Sending topic to user " + nickname);
         server.sendMessage(clientFd, message);
     }
