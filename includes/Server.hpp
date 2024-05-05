@@ -57,11 +57,11 @@ class Server {
         std::string                 _password;
         int                         _socketFd;
         struct sockaddr_in          _serverAddr;
-        std::vector<struct pollfd>  _fds; //MAX_CLIENTS
+        std::vector<struct pollfd>  _fds; // MAX_CLIENTS
         std::map<int, std::string>  _inputBuffer;
         std::string                 _creationDate;
         std::vector<User *>         _users;
-        std::vector<Channel>        _channels;
+        std::vector<Channel *>		_channels;
 
         // Singleton Pattern
         static Server               *_server;
@@ -99,11 +99,10 @@ class Server {
         std::vector<User *> getUsers();
 
         // Channel
-        std::vector<Channel> &getChannels();
-        Channel &getChannelByName(const std::string &channelName);
-        Channel *getChannelByNamePtr(const std::string &channelName);
+        std::vector<Channel *> &getChannels();
+        Channel *getChannelByName(const std::string &channelName);
         bool    channelExists(const std::string &channelName) const;
-        void    addChannel(const Channel &channel);
+        void    addChannel(Channel *channel);
         void    removeChannel(std::string channelName);
 
         // Disconnection
@@ -120,8 +119,8 @@ class Server {
         std::string getCreationDate() const;
 
         // Channel Iterators
-        std::vector<Channel>::iterator findChannel(const std::string &channelName);
-        std::vector<Channel>::const_iterator findChannel(const std::string &channelName) const;
+        std::vector<Channel *>::iterator findChannel(const std::string &channelName);
+        std::vector<Channel *>::const_iterator findChannel(const std::string &channelName) const;
 };
 
 void signalHandler(int signal);

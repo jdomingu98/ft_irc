@@ -350,13 +350,13 @@ void Channel::removeUser(const std::string &nickname) {
     }
 
     if (this->_users.empty() && this->_operators.empty()) {
-        std::vector<Channel> &serverChannels = server.getChannels();
+        std::vector<Channel *> serverChannels = server.getChannels();
         
         for (size_t i = 0; i < serverChannels.size(); i++) {
-            if (serverChannels[i].getName() == this->_name) {
+            if (serverChannels[i]->getName() == this->_name) {
                 serverChannels.erase(serverChannels.begin() + i);
                 break;
-            }	
+            }
         }
     }
 }

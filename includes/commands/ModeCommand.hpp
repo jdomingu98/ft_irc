@@ -22,7 +22,7 @@ class ModeCommand : public ACommand {
     private:
         const bool _plus;
         const bool _showChannelModes;
-        Channel &_channel;
+        Channel *_channel;
         const std::vector<Mode> _modes;
         const std::vector<std::string> _modeParams;
 

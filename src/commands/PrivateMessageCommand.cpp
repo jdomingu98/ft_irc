@@ -28,11 +28,11 @@ void PrivateMessageCommand::execute(int clientFd) {
             if ((*it)[0] == '#' || (*it)[0] == '&') {
                 Logger::debug("Sending private message to channel " + *it);
 
-                Channel &destinationChannel = server.getChannelByName(*it);
-                if (!sender->isOnChannel(destinationChannel.getName()))
+                Channel *destinationChannel = server.getChannelByName(*it);
+                if (!sender->isOnChannel(destinationChannel->getName()))
                     throw NoSuchNickException(*it);
 
-                sender->sendPrivateMessageToChannel(destinationChannel, _message);
+                sender->sendPrivateMessageToChannel(*destinationChannel, _message);
             } else {
                 const User *destinationUser = server.getUserByNickname(*it);
                 sender->sendPrivateMessageToUser(*destinationUser, _message);

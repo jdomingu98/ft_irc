@@ -28,21 +28,21 @@ void KickCommand::execute(int clientFd) {
 
     for (size_t i = 0; i < _channels.size(); ++i) {
         try {
-            Channel &channel = server.getChannelByName(_channels[i]);
+            Channel *channel = server.getChannelByName(_channels[i]);
 
-            if (!channel.isUserInChannel(nickname))
+            if (!channel->isUserInChannel(nickname))
                 throw NotOnChannelException(_channels[i]);
 
-            if (!channel.isOper(nickname))
+            if (!channel->isOper(nickname))
                 throw ChanOPrivsNeededException(_channels[i]);
 
             if (_channels.size() == 1) {
                 std::vector<User *>::const_iterator userIt;
                 for (userIt = _users.begin(); userIt != _users.end(); ++userIt)
-                    kickUserFromChannel(channel, *user, (*userIt)->getNickname(), comment);
+                    kickUserFromChannel(*channel, *user, (*userIt)->getNickname(), comment);
             } else {
                 const size_t pos = _channels.size() == _users.size() ? i : 0;
-                kickUserFromChannel(channel, *user, _users[pos]->getNickname(), comment);
+                kickUserFromChannel(*channel, *user, _users[pos]->getNickname(), comment);
             }
         } catch (const NoSuchChannelException &e) {
             Logger::debug("Channel " + _channels[i] + " does not exist.");

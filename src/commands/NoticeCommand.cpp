@@ -25,10 +25,10 @@ void NoticeCommand::execute(int clientFd) {
         const std::string recv = _receivers[i];
         try {
             if (recv[0] == '#' || recv[0] == '&') {
-                const Channel &destinationChannel = server.getChannelByName(recv);
+                const Channel *destinationChannel = server.getChannelByName(recv);
                 if (!sender->isOnChannel(recv))
                     throw IgnoreCommandException();
-                sender->sendNoticeToChannel(destinationChannel, _message);
+                sender->sendNoticeToChannel(*destinationChannel, _message);
             } else {
                 const User *destinationUser = server.getUserByNickname(recv);
                 sender->sendNoticeToUser(*destinationUser, _message);

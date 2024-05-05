@@ -33,15 +33,15 @@ void InviteCommand::execute(int clientFd) {
     if (!me->isOnChannel(_channelName))
         throw NotOnChannelException(_channelName);
 
-    Channel &channel = server.getChannelByName(_channelName);
+    Channel *channel = server.getChannelByName(_channelName);
 
-    if (channel.isUserInChannel(_nickname))
+    if (channel->isUserInChannel(_nickname))
         throw UserOnChannelException(_nickname, _channelName);
 
-    if (channel.isInviteOnly() && !channel.isOper(me->getNickname()))
+    if (channel->isInviteOnly() && !channel->isOper(me->getNickname()))
         throw ChanOPrivsNeededException(_channelName);
 
-    channel.inviteUser(_nickname);
+    channel->inviteUser(_nickname);
     server.sendMessage(clientFd, InvitingResponse(_nickname, _channelName).getReply());
 
     server.sendMessage(server.getUserByNickname(_nickname)->getFd(),
