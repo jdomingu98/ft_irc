@@ -64,11 +64,18 @@ a:			$(NAME)
 	clear
 	./$(NAME) $(PORT) $(PASS)
 
-bot: src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o
-	$(CXX) $(FLAGS) $(HEADERS) src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o -o bot
+
+
+BOT_SRCS	= src/bot/GlaskBot.cpp src/bot/IRCClient.cpp src/bot/bot.cpp\
+			  src/bot/message/Message.cpp src/bot/message/SenderEntity.cpp\
+			  src/bot/response/ResponseBuilder.cpp
+BOT_OBJS	= $(BOT_SRCS:.cpp=.o)
+
+bot: $(BOT_OBJS)
+	$(CXX) $(FLAGS) $(HEADERS) $(BOT_OBJS) -o bot
 
 clean_bot:
-	$(RM) src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o
+	$(RM) $(BOT_OBJS)
 
 re_bot: clean_bot bot
 

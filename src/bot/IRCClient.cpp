@@ -64,8 +64,7 @@ void IRCClient::receive() {
         size_t pos = message.find_first_of("\r\n");
         if (pos != std::string::npos)
             while (pos != std::string::npos) {
-                std::string msg = message.substr(0, pos);
-                handleResponse(msg);
+                handleResponse(Message(message));
                 message = message.substr(pos + 2);
                 pos = message.find_first_of("\r\n");
             }
@@ -81,20 +80,3 @@ void IRCClient::startLoop() {
     }
 }
  
-/**
- * Splits the string by the delimiter.
- * 
- * @param s The string to be split.
- * 
- * @return The vector of strings.
- */
-std::vector<std::string> IRCClient::splitParams(const std::string &s) {
-    std::vector<std::string> elems;
-    std::stringstream ss(s);
-    std::string item;
-
-    while (std::getline(ss, item, ' '))
-        if (!item.empty())
-            elems.push_back(item);
-    return elems;
-}
