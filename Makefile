@@ -20,11 +20,11 @@ SRC_DIR		= src
 CMD_DIR		= $(SRC_DIR)/commands/
 PARSER_DIR	= $(SRC_DIR)/parser/
 
-CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who Down Up
+CMD_PREFIXS		= A User Nick Pass Quit PrivateMessage Join Part Invite Mode Kick Topic Notice
 CMD_FILES		= $(addsuffix Command, $(CMD_PREFIXS))
 CMD_SRCS		= $(addprefix $(CMD_DIR), $(CMD_FILES))
 
-PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mode Kick Topic Notice Who Down Up
+PARSER_PREFIXS	= Command User Pass Nick Quit PrivateMessage Join Part Invite Mode Kick Topic Notice
 PARSER_FILES	= $(addsuffix Parser, $(PARSER_PREFIXS))
 PARSER_SRCS		= $(addprefix $(PARSER_DIR), $(PARSER_FILES))
 
@@ -33,7 +33,18 @@ FILES 			= main Server User Channel Utils Logger Responses
 SRCS_PATHS		= $(addprefix $(SRC_DIR)/, $(FILES)) $(CMD_SRCS) $(PARSER_SRCS)
 SRCS			= $(addsuffix .cpp, $(SRCS_PATHS))
 
+BPREFIXS		= Who Down Up
+BCMD_FILES		= $(addsuffix Command, $(BPREFIXS))
+BCMD_SRCS 		= $(addprefix $(CMD_DIR), $(BCMD_FILES))
+
+BPARSER_FILES	= $(addsuffix Parser, $(BPREFIXS))
+BPARSER_SRCS	= $(addprefix $(PARSER_DIR), $(BPARSER_FILES))
+
+BSRCS_PATHS		= $(BCMD_SRCS) $(BPARSER_SRCS)
+BSRCS			= $(addsuffix .cpp, $(BSRCS_PATHS))
+
 OBJS			= $(SRCS:.cpp=.o)
+BOBJS			= $(BSRCS:.cpp=.o)
 
 # =================================================================================
 
@@ -43,13 +54,10 @@ all:		$(NAME)
 	$(CXX) $(FLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME):	$(OBJS)
-	$(RM) files
-	mkdir files
 	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
 clean:
-	$(RM) $(OBJS)
-	$(RM) files
+	$(RM) $(OBJS) $(BOBJS) files
 
 fclean:		clean
 	$(RM) $(NAME)
@@ -64,4 +72,19 @@ a:			$(NAME)
 	clear
 	./$(NAME) $(PORT) $(PASS)
 
-.PHONY: all clean fclean re e a
+bonus: 	$(OBJS) $(BOBJS)
+	$(CXX) $(FLAGS) -D BONUS $(HEADERS) $(SRCS) $(BSRCS) -o $(NAME)
+	$(RM) files
+	mkdir files
+
+be: 		bre
+	clear
+	./$(NAME) $(PORT) $(PASS)
+
+ba:			bonus
+	clear
+	./$(NAME) $(PORT) $(PASS)
+
+bre:		fclean bonus
+
+.PHONY: a all ba be bre bonus clean e fclean re
