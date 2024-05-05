@@ -33,8 +33,8 @@ void WhoCommand::getQueryOfChannel(int clientFd, const Channel &channel) {
             continue;
         
         Server::getInstance().sendMessage(clientFd,
-            WhoReplyResponse(_query, (*it)->getUsername(), (*it)->getHostname(),
-                nick, isOper ? "@" : NONE, (*it)->getRealName()
+            WhoReplyResponse(_query, nick, (*it)->getUsername(),
+				(*it)->getHostname(), isOper ? "@" : NONE, (*it)->getRealName()
             ).getReply()
         );
     }
@@ -47,6 +47,7 @@ void WhoCommand::getQueryOfChannel(int clientFd, const Channel &channel) {
  */
 void WhoCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
+	std::string nickname = server.getUserByFd(clientFd)->getNickname();
     try { // If the query is a channel
         const Channel *channel = server.getChannelByName(_query);
         getQueryOfChannel(clientFd, *channel);
@@ -81,5 +82,5 @@ void WhoCommand::execute(int clientFd) {
             }
         }
     }
-    server.sendMessage(clientFd, EndOfWhoResponse(_query).getReply());
+	server.sendMessage(clientFd, EndOfWhoResponse(nickname, _query.empty() ? "WHO" : _query).getReply());
 }

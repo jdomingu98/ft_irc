@@ -18,8 +18,8 @@ class Channel;
 # define RPL_INVITING(channel, nickname) (channel) + " " + (nickname)
 # define RPL_END_OF_NAMES(channel) (channel) + " :End of NAMES list"
 # define RPL_CHANNEL_MODE_IS(channel, mode, modeParams) (channel) + " " + (mode) + " " + (modeParams)
-# define RPL_WHO_REPLY(channel, user, host, nick, userType, realname) (channel) + " " + (user) + " " + (host) + " " + SERVER_NAME + " " + (nick) + "H" + (userType) + " :0 " + (realname)
-# define END_OF_WHO(name) (name) + " :End of WHO list"
+# define RPL_WHO_REPLY(channel, user, host, nick, userType, realname) (channel) + " " + (user) + " " + (host) + " " + SERVER_NAME + " " + (nick) + " H" + (userType) + " :0 " + (realname)
+# define RPL_END_OF_WHO(query) (query) + " :End of WHO list"
 # define RPL_DOWNLOAD(filename) ":File " + (filename) + " has been downloaded successfully"
 
 # define USER_ID(nickname, username, hostname) ":" + (nickname) + "!" + (username) + "@" + (hostname)
@@ -132,7 +132,7 @@ class WhoReplyResponse : public Responses {
 */
 class EndOfWhoResponse : public Responses {
     public:
-        EndOfWhoResponse(std::string const &nickname) : Responses("315", nickname, END_OF_WHO(nickname)) {}
+        EndOfWhoResponse(std::string const &nickname, std::string const &query) : Responses("315", nickname, RPL_END_OF_WHO(query)) {}
 };
 
 /**

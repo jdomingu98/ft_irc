@@ -391,7 +391,6 @@ void Server::sendMessage(int clientFd, const std::string& message) {
     #else
         msgSignal = MSG_NOSIGNAL;
     #endif
-    std::cout << "Sending message to : " << clientFd << '\n';
     if (send(clientFd, messageToSend.c_str(), messageToSend.size(), msgSignal) < 0) {
         handleClientDisconnection(clientFd);
         Logger::debug(SEND_EXPT);
