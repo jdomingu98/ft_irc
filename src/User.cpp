@@ -31,8 +31,6 @@ User::~User() {}
 User &User::operator=(const User &other) {
     if (this != &other) {
         _fd = other.getFd();
-		std::cout << "fd: " << _fd << "\n";
-		std::cout << "other fd: " << other.getFd() << "\n";
         _registered = other.isRegistered();
         _username = other.getUsername();
         _hostname = other.getHostname();

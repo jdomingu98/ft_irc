@@ -20,7 +20,6 @@ Channel::Channel(const std::string name, User *user)
         throw BadChannelMaskException(name);
     this->_name = name;
     this->_operators.push_back(user);
-	std::cout << "User with fd: " << this->_operators[0]->getFd() << std::endl;
 }
 
 /**
