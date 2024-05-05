@@ -64,4 +64,12 @@ a:			$(NAME)
 	clear
 	./$(NAME) $(PORT) $(PASS)
 
-.PHONY: all clean fclean re e a
+bot: src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o
+	$(CXX) $(FLAGS) $(HEADERS) src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o -o bot
+
+clean_bot:
+	$(RM) src/bot/GlaskBot.o src/bot/IRCClient.o src/bot/bot.o
+
+re_bot: clean_bot bot
+
+.PHONY: all clean fclean re e a clean_bot re_bot
