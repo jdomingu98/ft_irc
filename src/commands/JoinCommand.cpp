@@ -49,71 +49,52 @@ void JoinCommand::sendMessages(int clientFd, const Channel &channel) const {
 void JoinCommand::execute(int clientFd) {
     Server &server = Server::getInstance();
     User *user = server.getUserByFd(clientFd);
-	for (size_t i = 0; i < server.getUsers().size(); i++) {
-		std::cout << "User fd[" << &server.getUsers()[i] << "]: " << server.getUsers()[i]->getFd() << std::endl;
-	}
 
     const std::string &nickname = user->getNickname();
 
     std::map<std::string, std::string>::const_iterator it;
-    Logger::debug("A");
     for (it = _channels.begin(); it != _channels.end(); it++) {
         const std::string &name = it->first;
         std::string key = it->second;
-    Logger::debug("B");
 
         bool isNewChannel = false;
         try {
             if (name[0] != '#' && name[0] != '&')
                 throw BadChannelMaskException(name);
-    Logger::debug("C");
 
             // 1. Check if user has joined max channels
             if (user->isUserInMaxChannels())
                 throw TooManyChannelsException(name);
-    Logger::debug("D");
 
             if (!server.channelExists(name)) {
                 isNewChannel = true;
-                Channel c = Channel(name, user);
-				std::cout << "userfd: " << user->getFd() << std::endl;
+                Channel *c = new Channel(name, user);
                 server.addChannel(c);
             }
-    Logger::debug("E");
 
-            Channel &channel = server.getChannelByName(name);
-			std::cout << "REF: " << &channel << std::endl;
-			std::cout << "User fd returned" << channel.getOperators()[0]->getFd() << std::endl;
-    Logger::debug("EEEEEEEEEEEG");
+            Channel *channel = server.getChannelByName(name);
             if (!isNewChannel && user->isOnChannel(name))
                 throw UserOnChannelException(nickname, name);
-    Logger::debug("F");
 
-            //2. Check if channel[i] is invite-only channel and if user is invited
-            if (channel.isInviteOnly() && !channel.isUserInvited(nickname))
+            // 2. Check if channel[i] is invite-only channel and if user is invited
+            if (channel->isInviteOnly() && !channel->isUserInvited(nickname))
                 throw InviteOnlyChanException(name);
-    Logger::debug("G");
 
-            //3. Check if password is correct if channel[i] is password-protected
-            if (channel.isPasswordSet() && channel.getPassword() != key)
+            // 3. Check if password is correct if channel[i] is password-protected
+            if (channel->isPasswordSet() && channel->getPassword() != key)
                 throw BadChannelKeyException(name);
-    Logger::debug("EH");
 
-            //4. Check if channel[i] has limit and if its full
-            if (channel.hasLimit() && channel.isFull())
+            // 4. Check if channel[i] has limit and if its full
+            if (channel->hasLimit() && channel->isFull())
                 throw ChannelIsFullException(name);
-    Logger::debug("I");
 
             if (!isNewChannel)
-                channel.addUser(user);
-                    Logger::debug("J");
+                channel->addUser(user);
 
-            user->addChannel(&channel);
-    Logger::debug("K");
+            user->addChannel(channel);
 
-            //5. Send JOIN messages
-            sendMessages(clientFd, channel);
-    Logger::debug("L");
+            // 5. Send JOIN messages
+            sendMessages(clientFd, *channel);
         } catch (IRCException &e) {
             server.sendExceptionMessage(clientFd, e);
             continue;

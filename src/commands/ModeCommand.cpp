@@ -43,16 +43,16 @@ void ModeCommand::execute(int clientFd) {
     if (_showChannelModes) {
         server.sendMessage(
             clientFd,
-            ChannelModeIsResponse(me->getNickname(), _channel.getName(), _channel.getModes(), _channel.getModeParams()).getReply()
+            ChannelModeIsResponse(me->getNickname(), _channel->getName(), _channel->getModes(), _channel->getModeParams()).getReply()
         );
         return ;
     }
 
-    if (!me->isOnChannel(_channel.getName()))
-        throw NotOnChannelException(_channel.getName());
+    if (!me->isOnChannel(_channel->getName()))
+        throw NotOnChannelException(_channel->getName());
 
-    if (!_channel.isOper(me->getNickname()))
-        throw ChanOPrivsNeededException(_channel.getName());
+    if (!_channel->isOper(me->getNickname()))
+        throw ChanOPrivsNeededException(_channel->getName());
 
     std::string flag = _plus ? "+" : "-";
     std::vector<std::string>::const_iterator paramIterator = _modeParams.begin();
@@ -83,8 +83,8 @@ void ModeCommand::execute(int clientFd) {
                 return;
         }
     }
-    _channel.broadcastToChannel(
-        CMD_MSG(me->getNickname(), me->getUsername(), me->getHostname(), MODE_MSG(_channel.getName(), flag, modeParams))
+    _channel->broadcastToChannel(
+        CMD_MSG(me->getNickname(), me->getUsername(), me->getHostname(), MODE_MSG(_channel->getName(), flag, modeParams))
     );
 }
 
@@ -94,7 +94,7 @@ void ModeCommand::execute(int clientFd) {
  * Sets the channel as invite-only mode.
  */
 void ModeCommand::inviteOnly() {
-    _channel.setInviteOnly(_plus);
+    _channel->setInviteOnly(_plus);
 }
 
 /**
@@ -103,7 +103,7 @@ void ModeCommand::inviteOnly() {
  * Sets the topic of the channel.
  */
 void ModeCommand::topicProtected() {
-    _channel.setTopicProtected(_plus);
+    _channel->setTopicProtected(_plus);
 }
 
 /**
@@ -116,11 +116,11 @@ void ModeCommand::topicProtected() {
  */
 void ModeCommand::channelKey(const std::string & param) {
     if (_plus) {
-        if (_channel.isPasswordSet())
-            throw KeySetException(_channel.getName());
-        _channel.setPassword(param);
+        if (_channel->isPasswordSet())
+            throw KeySetException(_channel->getName());
+        _channel->setPassword(param);
     } else {
-        _channel.unsetPassword();
+        _channel->unsetPassword();
     }
 }
 
@@ -134,11 +134,11 @@ void ModeCommand::channelKey(const std::string & param) {
  */
 void ModeCommand::channelOperator(const std::string &param) {
     Server::getInstance().getUserByNickname(param); // throw NoSuchNickException if the user does not exist
-    if (!_channel.isUserInChannel(param))
-        throw UserNotInChannelException(param, _channel.getName());
+    if (!_channel->isUserInChannel(param))
+        throw UserNotInChannelException(param, _channel->getName());
 
-    _plus   ? _channel.makeUserAnOper(param)
-            : _channel.makeOperAnUser(param);
+    _plus   ? _channel->makeUserAnOper(param)
+            : _channel->makeOperAnUser(param);
 }
 
 /**
@@ -149,7 +149,7 @@ void ModeCommand::channelOperator(const std::string &param) {
  */
 void ModeCommand::userLimit(const std::string & param) {
     if (!_plus) {
-        _channel.setLimit(NO_LIMIT);
+        _channel->setLimit(NO_LIMIT);
         return ;
     }
 
@@ -158,7 +158,7 @@ void ModeCommand::userLimit(const std::string & param) {
 
     int numUsers = std::atoi(param.c_str());
     numUsers = std::min(numUsers, MAX_CLIENTS);
-    _channel.setLimit(numUsers);
+    _channel->setLimit(numUsers);
 }
 
 /**

@@ -26,13 +26,13 @@ void PartCommand::execute(int clientFd) {
     for (chNamesIt = _channels.begin(); chNamesIt != _channels.end(); ++chNamesIt) {
         const std::string name = *chNamesIt;
         try {
-            Channel &channel = server.getChannelByName(name);
+            Channel *channel = server.getChannelByName(name);
             
             if (!user->isOnChannel(name))
                 throw NotOnChannelException(name);
             Logger::debug("User in channel " + name);
 
-            std::vector<User *> allUsers = channel.getAllUsers();
+            std::vector<User *> allUsers = channel->getAllUsers();
             std::vector<User *>::iterator usersIt;
             Logger::debug("Sending PART message");
             for (usersIt = allUsers.begin(); usersIt != allUsers.end(); ++usersIt)
@@ -42,7 +42,7 @@ void PartCommand::execute(int clientFd) {
                     )
                 );
 
-            channel.removeUser(nickname);
+            channel->removeUser(nickname);
             Logger::debug("User " + nickname + " removed from channel " + name + ".");
         } catch (NoSuchChannelException &e) {
             Logger::debug("Channel " + name + " does not exist.");
