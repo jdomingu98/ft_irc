@@ -47,7 +47,7 @@ Server::~Server() {
         delete _channels[i];
 }
 
-void Server::delete() {
+void Server::deleteServer() {
     delete _server;
 }
 
