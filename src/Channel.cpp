@@ -331,6 +331,7 @@ void Channel::removeUser(const std::string &nickname) {
         
         for (size_t i = 0; i < serverChannels.size(); i++) {
             if (serverChannels[i]->getName() == this->_name) {
+                delete serverChannels[i];
                 serverChannels.erase(serverChannels.begin() + i);
                 break;
             }
