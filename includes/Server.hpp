@@ -85,7 +85,7 @@ class Server {
 
     public:
         ~Server();
-        static void delete();
+        static void deleteServer();
 
         // Singleton Pattern
         static void init(std::string port, std::string password);
