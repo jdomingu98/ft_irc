@@ -64,7 +64,7 @@ void IRCClient::receive() {
         size_t pos = message.find_first_of("\r\n");
         if (pos != std::string::npos)
             while (pos != std::string::npos) {
-                handleResponse(Message(message));
+                handleResponse(Message(message.substr(0, pos)));
                 message = message.substr(pos + 2);
                 pos = message.find_first_of("\r\n");
             }

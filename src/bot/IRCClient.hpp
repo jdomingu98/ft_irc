@@ -12,7 +12,7 @@
 # define BUFFER_SIZE 1024
 
 /**
- * TCP Client class
+ * This class aims to provide a simple interface to interact with an IRC server.
  */
 class IRCClient {
     private:
