@@ -46,5 +46,5 @@ ACommand *ModeParser::parse(const std::vector<std::string>& tokens) {
     for (size_t i = 3; i < tokens.size(); i++)
         modeParams.push_back(tokens[i]);
 
-    return new ModeCommand(modesTok[0] == '+', tokens[1], modes, modeParams);
+    return new ModeCommand(modesTok[0] != '-', tokens[1], modes, modeParams);
 }

@@ -348,10 +348,10 @@ void Channel::removeUser(const std::string &nickname) {
  */
 void Channel::makeUserAnOper(std::string nickname) {
     std::vector<User *>::iterator it = findUser(nickname);
-    if (it == this->_users.end())
-        throw UserNotInChannelException(nickname, this->_name);
-    this->_operators.push_back(*it);
-    this->_users.erase(it);
+    if (it != this->_users.end()) {
+        this->_operators.push_back(*it);
+        this->_users.erase(it);
+    }
 }
 
 /**
@@ -363,10 +363,10 @@ void Channel::makeUserAnOper(std::string nickname) {
  */
 void Channel::makeOperAnUser(std::string nickname) {
     std::vector<User *>::iterator it = findOper(nickname);
-    if (it == this->_operators.end())
-        throw UserNotInChannelException(nickname, this->_name);
-    this->_users.push_back(*it);
-    this->_operators.erase(it);
+    if (it == this->_operators.end()) {
+        this->_users.push_back(*it);
+        this->_operators.erase(it);
+    }
 }
 
 /**
