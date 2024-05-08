@@ -496,7 +496,7 @@ void Channel::uploadFile(const std::string &path) {
  */
 void Channel::downloadFile(const std::string &filename) {
     std::string path = std::string(DOWNLOAD_PATH(this->_name));
-    if (mkdir(path.c_str(), FOLDER_PRIVILEGES) == -1)
+    if (_files.find(filename) == _files.end() || mkdir(path.c_str(), FOLDER_PRIVILEGES) == -1)
         throw CannotOpenStreamException();
     std::ofstream file((path + filename).c_str(), std::ios::binary);
     if (!file)
