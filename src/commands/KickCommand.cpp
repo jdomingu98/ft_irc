@@ -30,7 +30,7 @@ void KickCommand::execute(int clientFd) {
         try {
             Channel *channel = server.getChannelByName(_channels[i]);
 
-            if (!channel->isUserInChannel(nickname))
+            if (!user->isOnChannel(_channels[i]))
                 throw NotOnChannelException(_channels[i]);
 
             if (!channel->isOper(nickname))
@@ -64,10 +64,12 @@ void KickCommand::execute(int clientFd) {
 void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
                                         const std::string &kickedUser, const std::string &comment) {
     Server &server = Server::getInstance();
-    if (!channel.isUserInChannel(kickedUser))
+    User *kicked = server.getUserByNickname(kickedUser);
+
+    if (!kicked->isOnChannel(channel.getName()))
         throw UserNotInChannelException(kickedUser, channel.getName());
 
-    const std::vector<User *> allUsers = channel.getAllUsers();
+    const std::vector<User *> allUsers = channel.getUsers();
     for (std::vector<User *>::const_iterator it = allUsers.begin(); it != allUsers.end(); ++it) {
         Logger::debug("Sending KICK message of user " + kickedUser + " to user " + (*it)->getNickname().c_str());
         server.sendMessage((*it)->getFd(),

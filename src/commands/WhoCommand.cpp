@@ -22,7 +22,7 @@ WhoCommand::WhoCommand(const std::string &query, const bool hasOperatorFlag)
  * @param channel The channel to get the query of
  */
 void WhoCommand::getQueryOfChannel(int clientFd, const Channel &channel) {
-    const std::vector<User *> &users = channel.getAllUsers();
+    const std::vector<User *> &users = channel.getUsers();
     std::vector<User *>::const_iterator it;
 
     for (it = users.begin(); it != users.end(); ++it) {

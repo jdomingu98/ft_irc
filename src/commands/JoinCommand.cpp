@@ -20,7 +20,7 @@ void JoinCommand::sendMessages(int clientFd, const Channel &channel) const {
     User *user = server.getUserByFd(clientFd);
 
     const std::string &channelName = channel.getName();
-    const std::vector<User *> allUsers = channel.getAllUsers();
+    const std::vector<User *> allUsers = channel.getUsers();
 
     const std::string &nickname = user->getNickname();
     for (std::vector<User *>::const_iterator it = allUsers.begin(); it != allUsers.end(); ++it)

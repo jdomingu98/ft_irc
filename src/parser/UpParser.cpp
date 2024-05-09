@@ -17,7 +17,7 @@
  */
 ACommand *UpParser::parse(const std::vector<std::string>& tokens) {
     if (tokens.size() < 3)
-        throw NeedMoreParamsException("UP");
+        throw NeedMoreParamsException(UP);
     
     if (!Server::getInstance().channelExists(tokens[1]))
         throw NoSuchChannelException(tokens[1]);

@@ -41,6 +41,14 @@ Server::Server(const std::string port, const std::string password) : _password(p
  */
 Server::~Server() {
     closeConnections();
+    for (size_t i = 0; i < _users.size(); i++)
+        delete _users[i];
+    for (size_t i = 0; i < _channels.size(); i++)
+        delete _channels[i];
+}
+
+void Server::deleteServer() {
+    delete _server;
 }
 
 /**
@@ -87,7 +95,6 @@ void signalHandler(int signal) {
 void Server::closeConnections() {
     for (size_t i = 0; i < _users.size(); i++)
         close(_users[i]->getFd());
-    std::vector<User *>().swap(_users);
 
     if (_socketFd != -1)
         close(_socketFd);
@@ -203,6 +210,7 @@ void Server::handleClientDisconnection(int clientFd) {
         _inputBuffer.erase(clientFd);
 
     // Remove user from the server vector
+    delete *userIt;
     _users.erase(userIt);
 
     // Close clientFd and remove it from the poll_fds array

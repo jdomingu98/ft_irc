@@ -83,7 +83,7 @@ void ModeCommand::execute(int clientFd) {
                 return;
         }
     }
-    _channel->broadcastToChannel(
+    _channel->broadcast(
         CMD_MSG(me->getNickname(), me->getUsername(), me->getHostname(), MODE_MSG(_channel->getName(), flag, modeParams))
     );
 }
@@ -133,8 +133,9 @@ void ModeCommand::channelKey(const std::string & param) {
  * @throws `UserNotInChannelException` If the user is not in the channel
  */
 void ModeCommand::channelOperator(const std::string &param) {
-    Server::getInstance().getUserByNickname(param); // throw NoSuchNickException if the user does not exist
-    if (!_channel->isUserInChannel(param))
+    User *user = Server::getInstance().getUserByNickname(param);
+
+    if (!user->isOnChannel(_channel->getName()))
         throw UserNotInChannelException(param, _channel->getName());
 
     _plus   ? _channel->makeUserAnOper(param)

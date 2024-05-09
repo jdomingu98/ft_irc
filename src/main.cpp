@@ -28,5 +28,6 @@ int main(int argc, char **argv) {
     } catch (IRCException &e) {
         std::cerr << e.what() << '\n';
     }
+    Server::deleteServer();
     return SUCCESS;
 }

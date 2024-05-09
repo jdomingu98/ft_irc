@@ -24,7 +24,7 @@ void UserCommand::execute(int clientFd) {
     Server& server = Server::getInstance();
     User *user = server.getUserByFd(clientFd);
 
-    if (!user->getUsername().empty())
+    if (user->isRegistered() && !user->getUsername().empty())
         throw AlreadyRegisteredException();
     user->setUsername(_username);
     user->setHostname(_hostname);

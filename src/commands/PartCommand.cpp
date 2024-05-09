@@ -32,7 +32,7 @@ void PartCommand::execute(int clientFd) {
                 throw NotOnChannelException(name);
             Logger::debug("User in channel " + name);
 
-            std::vector<User *> allUsers = channel->getAllUsers();
+            std::vector<User *> allUsers = channel->getUsers();
             std::vector<User *>::iterator usersIt;
             Logger::debug("Sending PART message");
             for (usersIt = allUsers.begin(); usersIt != allUsers.end(); ++usersIt)
