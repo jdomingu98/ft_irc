@@ -7,8 +7,11 @@
 # include "IRCClient.hpp"
 # include "message/Message.hpp"
 # include "response/ResponseBuilder.hpp"
+# include "BadUsageException.hpp"
 
 # define BOT_NAME "glask"
+
+# define BOT_JOINNING_MESSAGE "Uoola a todos!! Soy GlaskBot, un bot creado por el grupo de desarrollo de Glask. Si necesitas ayuda, no dudes en preguntar. ¡Estoy aquí para ayudarte!"
 
 /**
  * This class aims to provide a simple interface to interact with an IRC server.
