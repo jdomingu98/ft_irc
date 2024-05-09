@@ -66,9 +66,9 @@ a:			$(NAME)
 
 
 
-BOT_SRCS	= src/bot/GlaskBot.cpp src/bot/IRCClient.cpp src/bot/bot.cpp\
-			  src/bot/message/Message.cpp src/bot/message/SenderEntity.cpp\
-			  src/bot/response/ResponseBuilder.cpp
+BOT_SRCS	= src/irc_bot/GlaskBot.cpp src/irc_bot/IRCClient.cpp src/irc_bot/bot.cpp\
+			  src/irc_bot/message/Message.cpp src/irc_bot/message/SenderEntity.cpp\
+			  src/irc_bot/response/ResponseBuilder.cpp
 BOT_OBJS	= $(BOT_SRCS:.cpp=.o)
 
 bot: $(BOT_OBJS)

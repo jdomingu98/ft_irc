@@ -19,7 +19,7 @@
 class GlaskBot : public IRCClient {
     private:
         static std::vector<std::string> split(const std::string &response);
-        std::map<std::string, std::string> welcomeMessages;
+        std::map<std::string, std::string> welcomeMessages; // <channel, message>
         void onPrivateMessage(const Message &message);
         void onJoin(const Message &message);
 

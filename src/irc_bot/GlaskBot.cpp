@@ -88,6 +88,8 @@ void GlaskBot::joinChannel(const std::string &destination, const std::vector<std
 
 void GlaskBot::setMessage(const std::vector<std::string> &messageParts) {
     std::string channel = messageParts[0];
+    if (messageParts.size() < 3)
+        throw BadUsageException(channel, "!message <set|unset> <message>");
     if (messageParts[2] == "set") {
         if (messageParts.size() < 4)
             throw BadUsageException(channel, "!message set <message>");
