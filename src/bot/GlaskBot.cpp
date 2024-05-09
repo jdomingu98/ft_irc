@@ -44,11 +44,25 @@ void GlaskBot::onPrivateMessage(const Message &message) {
 		if (messageParts.size() < 2)
 				return ;
 		std::string receiver(messageParts[0]);
+		std::cout << "1 estoy en onPrivateMessage ->" << messageParts[1] << std::endl;
 		if (receiver == BOT_NAME) {
 				if (messageParts[1] == ":!join") {
+						if (messageParts.size() != 3) {
+							this->sendData(ResponseBuilder::privmsg(destination, "usage: !join <channel>"));
+							return ;
+						}					
 						this->sendData(ResponseBuilder::privmsg(destination, "Joining channel " + messageParts[2]));
 						this->sendData(ResponseBuilder::join(messageParts[2]));
-				}
+				} else if (messageParts[1] == ":!setmessage" && messageParts.size() >= 4) {
+					    std::string welcomeMessage;
+    					for (size_t i = 3; i < messageParts.size(); ++i) {
+        					welcomeMessage += messageParts[i];
+       						if (i != messageParts.size() - 1) 
+            					welcomeMessage += " ";
+    					}
+            			setMessage(messageParts[2], welcomeMessage);
+            			this->sendData(ResponseBuilder::privmsg(destination, "Set welcome message for channel " + messageParts[2]));
+        		}
 		}
 }
 
@@ -58,10 +72,15 @@ void GlaskBot::onJoin(const Message &message)
 		std::string channel = message.getParams();
 		std::string welcomeUser = sender->getNickname();
 		std::string nickname = sender->getNickname();
-		if (nickname == BOT_NAME)
-				this->sendData(ResponseBuilder::privmsg(channel, "ME HE UNIDO A TU CANAL DE MIERDAAA HIJO DE PUTA DE MIERDAAA. ME CAGO EN TU PUTA MADRE."));
-		else
-				this->sendData(ResponseBuilder::privmsg(channel, "Welcome to the channel, " + welcomeUser + "!!!" ));
+		if (nickname == BOT_NAME) {
+        	this->sendData(ResponseBuilder::privmsg(channel, "ME HE UNIDO A TU CANAL"));
+    	} else {
+    		std::string welcomeMessage = welcomeMessages[channel];
+    		if (welcomeMessage.empty())
+        		this->sendData(ResponseBuilder::privmsg(channel, "Welcome to the channel, " + nickname + "!!!"));
+    		else 
+        		this->sendData(ResponseBuilder::privmsg(channel, welcomeMessage));
+  		}
 }
 
 std::vector<std::string> GlaskBot::split(const std::string &s) {
@@ -73,4 +92,8 @@ std::vector<std::string> GlaskBot::split(const std::string &s) {
         if (!item.empty())
             elems.push_back(item);
     return elems;
+}
+
+void GlaskBot::setMessage(const std::string &channel, const std::string &message) {
+	welcomeMessages[channel] = message;
 }
