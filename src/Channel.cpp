@@ -363,7 +363,7 @@ void Channel::makeUserAnOper(std::string nickname) {
  */
 void Channel::makeOperAnUser(std::string nickname) {
     std::vector<User *>::iterator it = findOper(nickname);
-    if (it == this->_operators.end()) {
+    if (it != this->_operators.end()) {
         this->_users.push_back(*it);
         this->_operators.erase(it);
     }
