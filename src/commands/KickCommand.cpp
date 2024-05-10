@@ -7,7 +7,7 @@
  * @param users The users to kick
  * @param comment The comment for the kick
  */
-KickCommand::KickCommand(const std::vector<std::string> &channels, const std::vector<User *> &users, const std::string &comment)
+KickCommand::KickCommand(const std::vector<std::string> &channels, const std::vector<std::string> &users, const std::string &comment)
     : ACommand(true), _channels(channels), _users(users), _comment(comment) {}
 
 /**
@@ -20,29 +20,34 @@ KickCommand::KickCommand(const std::vector<std::string> &channels, const std::ve
  * @throws `NoSuchChannelException` If the channel does not exist
  */
 void KickCommand::execute(int clientFd) {
-    Server &server = Server::getInstance();
-    const User *user = server.getUserByFd(clientFd);
 
-    const std::string &nickname = user->getNickname();
+    if (_channels.size() != _users.size() && _channels.size() != 1 && _users.size() != 1)
+        throw NeedMoreParamsException(KICK);
+
+    Server &server = Server::getInstance();
+    const User *me = server.getUserByFd(clientFd);
+
+    const std::string &nickname = me->getNickname();
     const std::string comment = _comment.empty() ? nickname : _comment;
 
     for (size_t i = 0; i < _channels.size(); ++i) {
         try {
             Channel *channel = server.getChannelByName(_channels[i]);
 
-            if (!user->isOnChannel(_channels[i]))
+            if (!me->isOnChannel(_channels[i]))
                 throw NotOnChannelException(_channels[i]);
 
             if (!channel->isOper(nickname))
                 throw ChanOPrivsNeededException(_channels[i]);
 
+            //std::vector<User *> users = initializeUsers(clientFd);
             if (_channels.size() == 1) {
-                std::vector<User *>::const_iterator userIt;
+                std::vector<std::string>::const_iterator userIt;
                 for (userIt = _users.begin(); userIt != _users.end(); ++userIt)
-                    kickUserFromChannel(*channel, *user, (*userIt)->getNickname(), comment);
+                    kickUserFromChannel(*channel, *me, *userIt, comment);
             } else {
                 const size_t pos = _channels.size() == _users.size() ? i : 0;
-                kickUserFromChannel(*channel, *user, _users[pos]->getNickname(), comment);
+                kickUserFromChannel(*channel, *me, _users[pos], comment);
             }
         } catch (const NoSuchChannelException &e) {
             Logger::debug("Channel " + _channels[i] + " does not exist.");
@@ -61,20 +66,26 @@ void KickCommand::execute(int clientFd) {
  * 
  * @throws `UserNotInChannelException` If the user is not in the channel
 */
-void KickCommand::kickUserFromChannel(Channel &channel, const User &user,
-                                        const std::string &kickedUser, const std::string &comment) {
+void KickCommand::kickUserFromChannel(Channel &channel, const User &me, const std::string &kickedUser, const std::string &comment) {
     Server &server = Server::getInstance();
-    User *kicked = server.getUserByNickname(kickedUser);
+    
+    try {
+        User *kicked = server.getUserByNickname(kickedUser);
+        if (!kicked->isOnChannel(channel.getName()))
+            throw NotOnChannelException(channel.getName());
 
-    if (!kicked->isOnChannel(channel.getName()))
-        throw UserNotInChannelException(kickedUser, channel.getName());
-
-    const std::vector<User *> allUsers = channel.getUsers();
-    for (std::vector<User *>::const_iterator it = allUsers.begin(); it != allUsers.end(); ++it) {
-        Logger::debug("Sending KICK message of user " + kickedUser + " to user " + (*it)->getNickname().c_str());
-        server.sendMessage((*it)->getFd(),
-                            CMD_MSG(user.getNickname(), user.getUsername(), user.getHostname(),
-                                    KICK_MSG(channel.getName(), kickedUser, comment)));
-    }
+        const std::vector<User *> allUsers = channel.getUsers();
+        for (std::vector<User *>::const_iterator it = allUsers.begin(); it != allUsers.end(); ++it) {
+            Logger::debug("Sending KICK message of user " + kickedUser + " to user " + (*it)->getNickname().c_str());
+            server.sendMessage((*it)->getFd(),
+                                CMD_MSG(me.getNickname(), me.getUsername(), me.getHostname(),
+                                    KICK_MSG(channel.getName(), kickedUser, comment)
+                                )
+                            );
+        }  
     channel.removeUser(kickedUser);
+    } catch (const IRCException& e) {
+        Logger::debug("User not found!. Continue parsing KICK command.");
+        server.sendExceptionMessage(me.getFd(), e);
+    }
 }
