@@ -40,11 +40,18 @@ BCMD_SRCS 		= $(addprefix $(CMD_DIR), $(BCMD_FILES))
 BPARSER_FILES	= $(addsuffix Parser, $(BPREFIXS))
 BPARSER_SRCS	= $(addprefix $(PARSER_DIR), $(BPARSER_FILES))
 
-BSRCS_PATHS		= $(BCMD_SRCS) $(BPARSER_SRCS)
+BSRCS_PATHS		= $(BCMD_SRCS) $(BPARSER_SRCS) 
 BSRCS			= $(addsuffix .cpp, $(BSRCS_PATHS))
 
 OBJS			= $(SRCS:.cpp=.o)
 BOBJS			= $(BSRCS:.cpp=.o)
+
+# Bonus part (bot)
+BOT_SRCS	= src/irc_bot/GlaskBot.cpp src/irc_bot/IRCClient.cpp src/irc_bot/bot.cpp\
+			  src/irc_bot/message/Message.cpp src/irc_bot/message/SenderEntity.cpp\
+			  src/irc_bot/response/ResponseBuilder.cpp
+BOT_OBJS	= $(BOT_SRCS:.cpp=.o)
+BOT = bot
 
 # =================================================================================
 
@@ -56,10 +63,10 @@ all:		$(NAME)
 $(NAME):	$(OBJS)
 	$(CXX) $(FLAGS) $(HEADERS) $(SRCS) -o $(NAME)
 
-clean:
+clean: 		bot_clean
 	$(RM) $(OBJS) $(BOBJS) files
 
-fclean:		clean
+fclean:		clean bot_fclean
 	$(RM) $(NAME)
 
 re: 		fclean all
@@ -72,7 +79,7 @@ a:			$(NAME)
 	clear
 	./$(NAME) $(PORT) $(PASS)
 
-bonus: 	$(OBJS) $(BOBJS)
+bonus: 	$(OBJS) $(BOBJS) $(BOT)
 	$(CXX) $(FLAGS) -D BONUS $(HEADERS) $(SRCS) $(BSRCS) -o $(NAME)
 	$(RM) files
 	mkdir files
@@ -85,22 +92,17 @@ ba:			bonus
 	clear
 	./$(NAME) $(PORT) $(PASS)
 
-bre:		fclean bonus
+bre:		fclean bonus $(BOT)
 
-.PHONY: a all ba be bre bonus clean e fclean re
+# Bonus rules (bot)
 
+$(BOT): $(BOT_OBJS)
+	$(CXX) $(FLAGS) $(HEADERS) $(BOT_OBJS) -o $(BOT)
 
-########################################################################33
-.PHONY: clean_bot re_bot
-BOT_SRCS	= src/irc_bot/GlaskBot.cpp src/irc_bot/IRCClient.cpp src/irc_bot/bot.cpp\
-			  src/irc_bot/message/Message.cpp src/irc_bot/message/SenderEntity.cpp\
-			  src/irc_bot/response/ResponseBuilder.cpp
-BOT_OBJS	= $(BOT_SRCS:.cpp=.o)
-
-bot: $(BOT_OBJS)
-	$(CXX) $(FLAGS) $(HEADERS) $(BOT_OBJS) -o bot
-
-clean_bot:
+bot_clean:
 	$(RM) $(BOT_OBJS)
 
-re_bot: clean_bot bot
+bot_fclean: bot_clean
+	$(RM) $(BOT)
+
+.PHONY: a all ba be bre bonus clean e fclean re bot_clean bot_fclean
