@@ -4,9 +4,10 @@
 # include <sstream>
 # include <iostream>
 # include <map>
+
 # include "IRCClient.hpp"
-# include "message/Message.hpp"
-# include "response/ResponseBuilder.hpp"
+# include "Message.hpp"
+# include "ResponseBuilder.hpp"
 # include "BadUsageException.hpp"
 
 # define BOT_NAME "glask"

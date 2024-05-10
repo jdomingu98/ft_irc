@@ -5,6 +5,7 @@
  * 
  * @param address The address of the server
  * @param port The port of the server
+ * @param password The password to connect to the server
  */
 GlaskBot::GlaskBot(const std::string &address, int port, const std::string &password) : IRCClient(address, port) {
 	if (!password.empty())
@@ -22,7 +23,7 @@ GlaskBot::~GlaskBot() {}
 /**
  * This function aims to handle the response from the server.
  * 
- * @param response The response from the server.
+ * @param message The message
  */
 void GlaskBot::handleResponse(const Message &message) {
     try {
@@ -39,6 +40,11 @@ void GlaskBot::handleResponse(const Message &message) {
     }
 }
 
+/**
+ * This function aims to handle the private messages.
+ * 
+ * @param message The message
+ */
 void GlaskBot::onPrivateMessage(const Message &message) {
     std::string destination = message.getSender()->getNickname();
     std::vector<std::string> messageParts = GlaskBot::split(message.getParams());
@@ -58,6 +64,11 @@ void GlaskBot::onPrivateMessage(const Message &message) {
     }
 }
 
+/**
+ * This function aims to handle the join message.
+ * 
+ * @param message The message
+ */
 void GlaskBot::onJoin(const Message &message) {
     const SenderEntity *sender = message.getSender();
     std::string channel = message.getParams();
@@ -76,6 +87,12 @@ void GlaskBot::onJoin(const Message &message) {
     }
 }
 
+/**
+ * Join a channel.
+ * 
+ * @param destination The destination
+ * @param messageParts The message parts
+ */
 void GlaskBot::joinChannel(const std::string &destination, const std::vector<std::string> &messageParts) {
     std::string channel(messageParts[2]);
     if (messageParts.size() != 3)
@@ -86,6 +103,11 @@ void GlaskBot::joinChannel(const std::string &destination, const std::vector<std
     this->sendData(ResponseBuilder::join(channel));
 }
 
+/**
+ * Set the message for the channel.
+ * 
+ * @param messageParts The message parts
+ */
 void GlaskBot::setMessage(const std::vector<std::string> &messageParts) {
     std::string channel = messageParts[0];
     if (messageParts.size() < 3)
@@ -110,17 +132,28 @@ void GlaskBot::setMessage(const std::vector<std::string> &messageParts) {
 
 }
 
+/**
+ * Splits the string by the delimiter (space).
+ * 
+ * @param s The string to be split.
+ */
 std::vector<std::string> GlaskBot::split(const std::string &s) {
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
 
-    while (std::getline(ss, item, ' '))
+    while (std::getline(ss, item, ' ')) {
         if (!item.empty())
             elems.push_back(item);
+    }
     return elems;
 }
 
+/**
+ * Check if the receiver is a channel.
+ * 
+ * @param receiver The receiver
+ */
 bool GlaskBot::isChannel(const std::string &receiver) {
     return receiver.length() > 0 && (receiver[0] == '#' || receiver[0] == '&');
 }

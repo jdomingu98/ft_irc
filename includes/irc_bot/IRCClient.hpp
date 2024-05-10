@@ -7,7 +7,7 @@
 # include <cstring>
 # include <unistd.h>
 # include <vector>
-# include "message/Message.hpp"
+# include "Message.hpp"
 
 # define BUFFER_SIZE 1024
 

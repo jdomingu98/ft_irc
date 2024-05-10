@@ -1,10 +1,19 @@
 #include "IRCClient.hpp"
- 
+
+/**
+ * Constructor
+ * 
+ * @param address The address to connect to
+ * @param port The port to connect to
+ */ 
 IRCClient::IRCClient(const std::string &address , int port)
     : _connectionEstablished(false), _address(address), port(port) {
     conn();
 }
 
+/**
+ * Destructor
+ */
 IRCClient::~IRCClient() {
     close(this->_sock);
 }
@@ -37,10 +46,13 @@ void IRCClient::conn() {
  
 /**
  * Send data to the connected host
+ * 
+ * @param data The data to send
  */
 bool IRCClient::sendData(const std::string &data) {
     const std::string message = data + "\r\n";
-    if(send(this->_sock, message.c_str(), message.size(), 0) < 0) {
+
+    if (send(this->_sock, message.c_str(), message.size(), 0) < 0) {
         std::cout << "Send failed" << std::endl;
         return false;
     }
@@ -62,17 +74,18 @@ void IRCClient::receive() {
     else {
         std::string message(buffer);
         size_t pos = message.find_first_of("\r\n");
-        if (pos != std::string::npos)
+        if (pos != std::string::npos) {
             while (pos != std::string::npos) {
                 handleResponse(Message(message.substr(0, pos)));
                 message = message.substr(pos + 2);
                 pos = message.find_first_of("\r\n");
             }
+        }
     }
 }
 
 /**
- * Start the loop to receive data from the connected host
+ * Starts the loop to receive data from the connected host
 */
 void IRCClient::startLoop() {
     while (true) {

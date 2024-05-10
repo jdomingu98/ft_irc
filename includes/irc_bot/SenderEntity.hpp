@@ -2,8 +2,11 @@
 # define SENDER_ENTITY_HPP
 
 # include <string>
-# include "../MalformedException.hpp"
+# include "MalformedException.hpp"
 
+/**
+ * This class represents the entity that sent a message.
+ */
 class SenderEntity {
 	private:
 		bool _isServer;

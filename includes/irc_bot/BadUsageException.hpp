@@ -6,6 +6,9 @@
 
 # define USAGE_EXCEPTION_MESSAGE(message) "usage: " + (message)
 
+/**
+ * Exception thrown when a command is used incorrectly
+ */
 class BadUsageException : public std::exception {
 	private:
 		std::string _message;
@@ -24,4 +27,5 @@ class BadUsageException : public std::exception {
 			return _to;
 		}
 };
+
 #endif
