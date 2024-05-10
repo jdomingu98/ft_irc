@@ -26,20 +26,5 @@ ACommand *KickParser::parse(const std::vector<std::string>& tokens) {
         if ((*it)[0] != '#' && (*it)[0] != '&')
             throw BadChannelMaskException(*it);
     }
-
-    std::vector<User *> users;
-    std::vector<std::string>::const_iterator it2;
-    for (it2 = usersList.begin(); it2 != usersList.end(); ++it2) {
-        try {
-            User *user = Server::getInstance().getUserByNickname(*it2);
-            users.push_back(user);
-        } catch (const NoSuchNickException& e) {
-            Logger::debug("User not found!. Continue parsing KICK command.");
-        }
-    }
-
-    if (channels.size() != users.size() && channels.size() != 1 && users.size() != 1)
-        throw NeedMoreParamsException(KICK);
-
-    return new KickCommand(channels, users, tokens.size() > 3 ? tokens[3] : NONE);
+    return new KickCommand(channels, usersList, tokens.size() > 3 ? tokens[3] : NONE);
 }

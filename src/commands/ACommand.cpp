@@ -4,7 +4,7 @@
  * ACommand constructor.
  * 
  * @param needValidation If the command needs validation
-*/
+ */
 ACommand::ACommand(bool needsValidation) : _needsValidation(needsValidation) {}
 
 /**
