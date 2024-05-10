@@ -33,5 +33,6 @@
 
 # Other files
 ircserv
+bot
 .DS_Store
 .vscode
